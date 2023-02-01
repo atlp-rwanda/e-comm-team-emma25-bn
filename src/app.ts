@@ -1,8 +1,11 @@
-import express from 'express'
+import express, {Application} from 'express'
 import { config } from 'dotenv'
+
 import connectdb from './db/database'
 import authRoutes from './routes/authroutes'
-const app = express()
+
+const app:Application = express()
+
 config()
 //middleware section
 app.use(express.json())
