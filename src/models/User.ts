@@ -1,7 +1,7 @@
-import { sequelize } from "../db/database";
-import { Sequelize,DataTypes} from "sequelize";
+import { sequelizedb } from "../db/database";
+import {DataTypes} from "sequelize";
 import bcrypt from "bcrypt"
-const USER =  sequelize.define('user',
+const USER =  sequelizedb.define('user',
 {
     firstName:{
         type : DataTypes.STRING,
@@ -25,5 +25,6 @@ const USER =  sequelize.define('user',
           }      
     }
 })
+USER.sync()
 
 export default USER 

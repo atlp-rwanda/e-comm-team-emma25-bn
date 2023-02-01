@@ -5,7 +5,7 @@ config()
 so the connection below uses connection string 
 */
 
-export const sequelize = new Sequelize( process.env.DBLINK as string,
+export const sequelizedb = new Sequelize( process.env.DBLINK as string,
     {
         dialect: 'postgres',
         protocol: 'postgres',
@@ -19,7 +19,7 @@ export const sequelize = new Sequelize( process.env.DBLINK as string,
       // the code below will connect to the database 
       const connectdb = async ()=>{
         try {
-            sequelize.authenticate()
+            sequelizedb.authenticate()
             console.log('conneced to database successfully')            
         } catch (error) {
             console.error('failed to connect to the database :', error);
