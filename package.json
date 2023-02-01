@@ -13,8 +13,23 @@
   },
   "homepage": "https://github.com/atlp-rwanda/team-emma-25-e-comm-backend#readme",
   "scripts": {
-    "start": "tsc && nodemon app"
+    "start": "tsc && nodemon ./dist/app"
   },
-  "keywords": ["typescript", "postgresql", "atlp", "e-commerce", "express", "dotenv"],
-  "description": "e-Commerce backend API"
+  "keywords": [
+    "typescript",
+    "postgresql",
+    "atlp",
+    "e-commerce",
+    "express",
+    "dotenv"
+  ],
+  "description": "e-Commerce backend API",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "sequelize": "^6.28.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
 }
