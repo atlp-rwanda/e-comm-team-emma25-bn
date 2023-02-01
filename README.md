@@ -7,7 +7,6 @@ This is back-end API for e-commerce in Team emma
   - [Running the app](#running-the-app)
 
 
-
 ### Project information
 The backend API for an e-commerce app
 
@@ -17,6 +16,10 @@ You can clone this repo and start to add/change some features
 #### Tools used
 - Languages
   - typescript
+- Software
+  - NodeJs
+  - PostgreSQL
+  - Text Editor or IDE
   
 - Dependencies
   - express
