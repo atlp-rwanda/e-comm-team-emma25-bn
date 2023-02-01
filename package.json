@@ -12,9 +12,6 @@
     "url": "https://github.com/atlp-rwanda/team-emma-25-e-comm-backend/issues"
   },
   "homepage": "https://github.com/atlp-rwanda/team-emma-25-e-comm-backend#readme",
-  "directories": {
-    "test": "test"
-  },
   "scripts": {
     "start": "tsc && nodemon app"
   },
