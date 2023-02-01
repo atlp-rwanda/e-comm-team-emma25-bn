@@ -1,6 +1,6 @@
-import express from 'express'
+import express, {Application} from 'express'
 import { config } from 'dotenv'
-const app = express()
+const app:Application = express()
 config()
 
 console.log('Hello Team emma This backend API')
