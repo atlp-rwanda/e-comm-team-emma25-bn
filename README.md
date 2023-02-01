@@ -52,4 +52,15 @@ nano .env
 #### Running the app
 ```bash
 npm start
+```
+
+
+- [**dist**](dist) (Contains all compiled js files ignored by default)
+- [**src**](src) (Contains all source files)
+    - [**auth**](src/auth) (Contains all files to be used in authentication and authorization such as passport)
+    - [**controllers**](src/controllers) (Contains all routes controller functions)
+    - [**db**](src/db)
+    - [**models**](src/models) (Contains all models)
+    - [**routes**](src/routes) (Contains all routes in the app)
+    - [**test**](src/test) (Contains all test files)
 
