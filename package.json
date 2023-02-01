@@ -1,0 +1,23 @@
+{
+  "name": "team-emma-25-e-comm-backend",
+  "version": "1.0.0",
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/atlp-rwanda/team-emma-25-e-comm-backend.git"
+  },
+  "author": "TresorRw <alaintresorcyusa683@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/atlp-rwanda/team-emma-25-e-comm-backend/issues"
+  },
+  "homepage": "https://github.com/atlp-rwanda/team-emma-25-e-comm-backend#readme",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "start": "tsc && nodemon app"
+  },
+  "keywords": ["typescript", "postgresql", "atlp", "e-commerce", "express", "dotenv"],
+  "description": "e-Commerce backend API"
+}
