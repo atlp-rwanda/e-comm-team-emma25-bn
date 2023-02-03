@@ -1,5 +1,6 @@
 This is back-end API for e-commerce in Team emma
-**Table of Content**
+### Table of Content
+- [Table of Content](#table-of-content)
 - [Project information](#project-information)
 - [Getting started](#getting-started)
   - [Tools used](#tools-used)
