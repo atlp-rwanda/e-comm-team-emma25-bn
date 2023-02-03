@@ -85,3 +85,6 @@ npm start
 Feel free to create/add a feature or report a bug.
 You can pull a request here 👉[Create a pull request](https://github.com/atlp-rwanda/e-comm-team-emma25-bn/pulls). <br>
 Report a bug here 👉[Submit issue](https://github.com/atlp-rwanda/e-comm-team-emma25-bn/issues)
+
+
+[![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com)
