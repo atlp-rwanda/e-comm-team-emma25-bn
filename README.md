@@ -1,6 +1,4 @@
-[![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com)
-
-[![Coverage Status](https://coveralls.io/repos/github/atlp-rwanda/e-comm-team-emma25-bn/badge.svg?branch=ch-test-code-coverage-%23184359063)](https://coveralls.io/github/atlp-rwanda/e-comm-team-emma25-bn?branch=ch-test-code-coverage-%23184359063)
+[![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com) [![Coverage Status](https://coveralls.io/repos/github/atlp-rwanda/e-comm-team-emma25-bn/badge.svg?branch=ch-test-code-coverage-%23184359063)](https://coveralls.io/github/atlp-rwanda/e-comm-team-emma25-bn?branch=ch-test-code-coverage-%23184359063)
 
 This is back-end API for e-commerce in Team emma
 
