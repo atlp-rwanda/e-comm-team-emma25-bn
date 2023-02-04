@@ -39,4 +39,4 @@ function swaggerDocs(app: Application) {
     res.send(swaggerSpec)
   })
 }
-export default swaggerDocs
+export default swaggerDocs 
