@@ -22,10 +22,6 @@ jobs:
         run: |
           npm run test
 
-      - name: Test coverage with Jest
-        run: |
-          npm run test:coverage
-
       - name: Coveralls
 
-        run: env GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} npm run coverage --if-present
+        run: P8wGi6Heh2WvFDPxYN4tvDbqazyHk4IKi npm run test:coverage
