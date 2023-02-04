@@ -27,6 +27,5 @@ jobs:
           npm run test:coverage
 
       - name: Coveralls
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: P8wGi6Heh2WvFDPxYN4tvDbqazyHk4IKi
+
+        run: env GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} npm run coverage --if-present
