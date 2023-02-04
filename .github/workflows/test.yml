@@ -22,6 +22,12 @@ jobs:
         run: |
           npm run test
 
-      - name: Coveralls
+      - name: Generate coverage information
+        run: |
+          npm run test:coverage
 
-        run: P8wGi6Heh2WvFDPxYN4tvDbqazyHk4IKi npm run test:coverage
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          flags: --debug
