@@ -1,6 +1,10 @@
-on: ['push', 'pull_request']
-
 name: Test Coveralls
+
+on:
+  push:
+    branches: ['develop']
+  pull_request:
+    branches: ['develop']
 
 jobs:
   build:
@@ -22,11 +26,12 @@ jobs:
         run: |
           npm run test
 
-      - name: Test coverage with Jest
+      - name: Generate coverage information
         run: |
           npm run test:coverage
 
       - name: Coveralls
         uses: coverallsapp/github-action@master
         with:
-          github-token: P8wGi6Heh2WvFDPxYN4tvDbqazyHk4IKi
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          flags: --debug
