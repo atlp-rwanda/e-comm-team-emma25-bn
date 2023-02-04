@@ -2,17 +2,11 @@ import express, {Application} from 'express'
 import {config} from 'dotenv'
 import swaggerDocs from './docs/swagger'
 import connectdb from './db/database'
-import authRoutes from './routes/authroutes'
-import profileRoutes from "./routes/profileroutes"
-const app: Application = express()
+import createServer from './utils/server'
+const app = createServer()
 
 config()
 //middleware section
-app.use(express.json())
-
-app.use(authRoutes)
-app.use(profileRoutes)
-console.log('Hello Team emma This backend API')
 
 const PORT = process.env.PORT || 3000
 app.get('/', (req, res) => res.send('Hello, use  "/docs" to view the swagger docs'))
@@ -23,4 +17,4 @@ connectdb().then(() => {
   // change this to just port in case someone is listening from 127.0.0.1 instead of localhost
 })
 
-export default app 
+export default app
