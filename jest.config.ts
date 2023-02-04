@@ -7,5 +7,6 @@ export default {
   },
   testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$',
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
-  coverageReporters: ['text', 'html'],
+  coverageReporters: ['lcov', 'text'],
+  coverageDirectory: 'coverage',
 }
