@@ -2,6 +2,7 @@ import USER from "../models/User";
 import {Request , Response} from "express"
 
 /* this class hold functions for authentication */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 class auth {
     static async signup(req: Request ,res:Response){
         //defined the type of user to be created 
