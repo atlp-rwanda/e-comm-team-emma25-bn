@@ -46,6 +46,7 @@ You can clone this repo and start to add/change some features
   - @typescript-eslint/parser
   - eslint
   - ts-node-dev
+  - jest
 - Stack to use
   **PERN:** PostgreSQL Express React NodeJS
 
