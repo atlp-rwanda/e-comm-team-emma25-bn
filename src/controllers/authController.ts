@@ -101,7 +101,7 @@ class auth {
     }
     static verify2FA(req: Request, res:Response) {
         const userPhone: string = req.params.phone;
-        const userCode: string = req.body.cToken;
+        const userCode: string = req.params.code;
         if (account_sid && authToken && service_sid) {
             const Client = new Twilio(account_sid, authToken);
             Client.verify.v2.services(service_sid)
