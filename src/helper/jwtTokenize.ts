@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-export const encode = (claims:any)=>{
+export const encode = (claims)=>{
     const token= jwt.sign(claims, process.env.JWT_SECRET as string, { expiresIn: "7d"});
     return token;
 };
