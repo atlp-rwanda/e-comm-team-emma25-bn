@@ -10,4 +10,5 @@ export default {
   coverageReporters: ['lcov', 'text'],
   coverageDirectory: '../coverage',
   collectCoverage: true,
+  verbose: true,
 }

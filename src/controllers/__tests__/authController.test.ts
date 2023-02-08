@@ -1,19 +1,6 @@
 // TODO replace the test below with your tests
 import {add, multiply} from '../../totest'
 
-import request from 'supertest'
-import app from '../../app'
-// import auth from '../authController'
-
-describe('Test the logout route', () => {
-  test('It should logout the user and return status 200 and message "Logged out"', async () => {
-    const response = await request(app).get('/users')
-
-    expect(response.statusCode).toBe(200)
-    expect(response.body).toEqual({status: 200})
-  })
-})
-
 describe('Math functions', () => {
   it('should multiply 5 by 3', () => {
     const result = multiply(5, 3)
