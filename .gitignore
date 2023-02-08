@@ -3,3 +3,10 @@ node_modules/
 dist/
 coverage/
 .vscode/
+package-lock.json
+.DS_Store
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.gif

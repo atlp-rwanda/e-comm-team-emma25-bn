@@ -1,0 +1,35 @@
+version: 2.1
+jobs:
+  run_tests:
+    docker:
+      - image: circleci/node
+    steps:
+      - checkout
+      - run:
+          name: Install npm dependencies
+          command: |
+            npm install
+      - run:
+          name: Run Unit Tests
+          command: |
+            npm run test
+      - run:
+          name: Saving the coveralls
+          command: |
+            npm run test:coverage
+  assign_env_vars:
+    docker:
+      - image: circleci/node
+    steps:
+      - checkout
+      - run:
+          name: env var getting
+          command: |
+            echo $DBLINK
+workflows:
+  getting_env_vars:
+    jobs:
+      - assign_env_vars
+  build_tests:
+    jobs:
+      - run_tests
