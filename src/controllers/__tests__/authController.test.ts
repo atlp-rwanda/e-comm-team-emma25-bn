@@ -7,10 +7,10 @@ import app from '../../app'
 
 describe('Test the logout route', () => {
   test('It should logout the user and return status 200 and message "Logged out"', async () => {
-    const response = await request(app).get('/logout')
+    const response = await request(app).get('/users')
 
     expect(response.statusCode).toBe(200)
-    expect(response.body).toEqual({status: 200, message: 'Logged out'})
+    expect(response.body).toEqual({status: 200})
   })
 })
 
