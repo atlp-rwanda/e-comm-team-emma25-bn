@@ -15,7 +15,7 @@
   "scripts": {
     "start": "tsc && nodemon ./dist/app",
     "dev": "tsnd --respawn ./src/app.ts",
-    "test": "jest",
+    "test": "jest --config ./src/jest.config.ts",
     "test:coverage": "jest --coverage"
   },
   "keywords": [
