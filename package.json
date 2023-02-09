@@ -15,8 +15,9 @@
   "scripts": {
     "start": "tsc && nodemon ./dist/app",
     "dev": "tsnd --respawn ./src/app.ts",
-    "test": "jest",
-    "test:coverage": "jest --coverage"
+    "test": "jest --config ./src/jest.config.ts",
+    "test:w": "jest  --config ./src/jest.config.ts --watch",
+    "test:coverage": "jest  --config ./src/jest.config.ts --coverage"
   },
   "keywords": [
     "typescript",
@@ -35,6 +36,7 @@
     "pg": "^8.9.0",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.28.0",
+    "supertest": "^6.3.3",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.0",
     "twilio": "^3.84.1"
