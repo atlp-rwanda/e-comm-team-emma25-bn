@@ -11,12 +11,12 @@ const {
 } = process.env
 module.exports = {
   development: {
-    username: 'postgres',
-    password: '1234567',
-    database: 'signup',
-    host: 'localhost',
+    username: DB_USER,
+    password: DB_PASSWORD,
+    database: DB_NAME,
+    host: DB_HOST,
     dialect: 'postgres',
-    port: 5432,
+    port: DB_PORT,
   },
   test: {
     username: DB_USER,
