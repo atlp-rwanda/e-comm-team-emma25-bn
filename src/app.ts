@@ -1,4 +1,3 @@
-import express, {Application} from 'express'
 import {config} from 'dotenv'
 import swaggerDocs from './docs/swagger'
 import connectdb from './db/database'
@@ -17,4 +16,4 @@ connectdb().then(() => {
   // change this to just port in case someone is listening from 127.0.0.1 instead of localhost
 })
 
-export default app
+export default app 
