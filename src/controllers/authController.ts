@@ -1,4 +1,5 @@
 import USER from '../models/User'
+
 import {Request, Response} from 'express'
 import {Twilio} from 'twilio'
 import {encode} from '../helper/jwtTokenize'
