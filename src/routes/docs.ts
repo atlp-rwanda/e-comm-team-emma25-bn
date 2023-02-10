@@ -1,3 +1,7 @@
+import auth from "../controllers/authController";
+import signupValidation from "../middelwares/signupValidation";
+import router from "./authroutes";
+
 /**
  * @swagger
  * /signup:
@@ -31,6 +35,9 @@
  *             description: successfully logged in;
  *       
  * */
+router.post('/signup', signupValidation, auth.signup)
+
+
 
 /**
  * @swagger

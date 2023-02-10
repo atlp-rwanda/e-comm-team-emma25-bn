@@ -8,7 +8,7 @@ so the connection below uses connection string
 export const sequelizedb = new Sequelize( process.env.DBLINK as string,
     {
         dialect: 'postgres',
-        protocol: 'postgres',
+        protocol: 'postgres', 
         dialectOptions: {
           ssl: true,
           native:true
