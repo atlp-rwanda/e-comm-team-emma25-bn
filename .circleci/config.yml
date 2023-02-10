@@ -1,0 +1,23 @@
+version: 2.1
+jobs:
+  run_tests:
+    docker:
+      - image: circleci/node
+    steps:
+      - checkout
+      - run:
+          name: Install npm dependencies
+          command: |
+            npm install
+      - run:
+          name: Run Unit Tests
+          command: |
+            npm run test
+      - run:
+          name: Saving the coveralls
+          command: |
+            npm run test:coverage
+workflows:
+  build_tests:
+    jobs:
+      - run_tests
