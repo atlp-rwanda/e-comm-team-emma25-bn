@@ -38,7 +38,7 @@ class auth {
           res.status(400).json(err)
         })
     } else {
-      console.log('Please fill all vals')
+      res.status(400).json({status: 400, message: "Twilio Credentials are not found!"})
     }
   }
 
@@ -58,7 +58,7 @@ class auth {
           res.status(400).json(err)
         })
     } else {
-      console.log('Please fill all vals')
+      res.status(400).json({status: 400, message: "Twilio Credentials are not found!"})
     }
   }
   /* End: 2FA Feature for sellers */
