@@ -1,16 +1,11 @@
-import express, {Application} from 'express'
 import {config} from 'dotenv'
 import swaggerDocs from './docs/swagger'
 import connectdb from './db/database'
-import authRoutes from './routes/authroutes'
-
-const app: Application = express()
+import createServer from './utils/server'
+const app = createServer()
 
 config()
 //middleware section
-app.use(express.json())
-
-app.use(authRoutes)
 
 console.log('Hello Team emma This backend API')
 
