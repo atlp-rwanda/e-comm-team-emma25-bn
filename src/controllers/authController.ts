@@ -26,9 +26,6 @@ class auth {
   // Sending an OTP to user provided phone number
   static sendCode(req: Request, res: Response) {
     const userPhone: string = req.params.phone
-    if(!userPhone) {
-      return res.status(400).json({status: 400, message: "Missing Phone Number"})
-    }
     if (account_sid && authToken && service_sid) {
       const Client = new Twilio(account_sid, authToken)
       Client.verify.v2
@@ -49,9 +46,6 @@ class auth {
   static verify2FA(req: Request, res: Response) {
     const userPhone: string = req.params.phone
     const userCode: string = req.params.code
-    if(!userPhone || !userCode) {
-      return res.status(400).json({status: 400, message: "Missing Phone Number/OTP Code"})
-    }
     if (account_sid && authToken && service_sid) {
       const Client = new Twilio(account_sid, authToken)
       Client.verify.v2
