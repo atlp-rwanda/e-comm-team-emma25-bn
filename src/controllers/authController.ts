@@ -14,7 +14,6 @@ const service_sid = process.env.TWILIO_SERVICE_SID
 /* this class hold functions for authentication */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 class auth {
-  
   static sendCode(req: Request, res: Response) {
     const userPhone: string = req.params.phone
     if (account_sid && authToken && service_sid) {
@@ -51,7 +50,7 @@ class auth {
     }
   }
 
-  // LOGOUT
+  // TODO UPDATE TO REMOVE JWT FROM REDUS
   static async logout(req: Request, res: Response) {
     try {
       res.cookie('jwt', '', {httpOnly: true, maxAge: 1000})
@@ -63,9 +62,9 @@ class auth {
       })
     }
   }
-    static async signup(req: Request, res: Response) {
-        try {
-        // await USER.drop()
+  static async signup(req: Request, res: Response) {
+    try {
+      // await USER.drop()
       const {firstName, lastName, email, role, password} = req.body
       //   const hash = await bcrypt.hashSync(password, 10)
       const checkUser = await USER.findOne({
