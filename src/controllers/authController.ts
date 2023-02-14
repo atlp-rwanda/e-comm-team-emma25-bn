@@ -2,9 +2,11 @@ import USER from '../models/User'
 
 import {Request, Response} from 'express'
 import {Twilio} from 'twilio'
-import {encode} from '../helper/jwtTokenize'
+import { encode } from '../helper/jwtTokenize'
+import bcrypt from 'bcrypt'
 
 import {config} from 'dotenv'
+import { object } from 'joi'
 config()
 
 const account_sid = process.env.TWILIO_ACCOUNT_SID
@@ -109,6 +111,8 @@ class auth {
       })
     }
   }
+  // LOGIN
+
 
   static async getAlluser(req: Request, res: Response) {
     try {

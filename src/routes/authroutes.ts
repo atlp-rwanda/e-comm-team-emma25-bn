@@ -38,6 +38,7 @@ const router = Router()
  *       
  * */
 router.post('/signup', signupValidation, auth.signup)
+// router.get('/login', auth.login)
 router.get('/users', auth.getAlluser)
 router.delete('/delete/:id', auth.deleteUser)
 router.get('/sendcode/:phone', auth.sendCode)
