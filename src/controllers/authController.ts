@@ -117,6 +117,63 @@ class auth {
   }
   // LOGIN
 
+static async Login (req: Request, res: Response;) {
+    try {
+      const {email, password} = req.body
+      const findUser = await USER.findOne({
+        where: {email: email},
+        attributes: ['id', 'firstName','lastName', 'email', 'role'],
+      })
+      if (!req.users) {
+        res.status(404).json({
+          status: 404,
+          message: 'The requested resource does not exist',
+        })
+      } else {
+        const dbEmail = req.user.email
+        const dbPassword = req.user.password
+        const dbRole = req.user.role
+        const decreptedPassword = await bcrypt.compare(password, dbPassword)
+        console.log(dbEmail, decreptedPassword, dbRole)
+
+        if (dbEmail == email) {
+          if (decreptedPassword) {
+            const token = await encode({
+              email,
+              dbRole,
+            })
+            // const {findUser} = {...others,password}
+            return res.status(200).json({
+              stastus: 200,
+              message: 'Login succefull ',
+              data: findUser,
+              token: token,
+            })
+          } else {
+            return res.status(400).json({
+              stastus: 400,
+              message: 'Bad request',
+              data: findUser,
+              token: token,
+            })
+          }
+        } else {
+          return res.status(400).json({
+            stastus: 400,
+            message: 'Bad request',
+            data: findUser,
+            token: token,
+          })
+        }
+      }
+    } catch (error) {
+      res.status(500).json({
+        stastus: 500,
+        message: 'server problem' + error.message,
+      })
+    }
+  }
+
 
   static async getAlluser(req: Request, res: Response) {
     try {
