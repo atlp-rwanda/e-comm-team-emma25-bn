@@ -1,10 +1,11 @@
 import USER from '../models/User'
+
 import {Request, Response} from 'express'
 import {Twilio} from 'twilio'
 import { encode } from '../helper/jwtTokenize'
 import bcrypt from 'bcrypt'
 
-import {config} from 'dotenv'
+import { config } from 'dotenv'
 import session from 'express-session'
 import connectRedis from 'connect-redis'
 import {createClient} from 'redis'
@@ -21,15 +22,16 @@ const service_sid = process.env.TWILIO_SERVICE_SID
 /* this class hold functions for authentication */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 class auth {
+
   static sendCode(req: Request, res: Response) {
     const userPhone: string = req.params.phone
     if (account_sid && authToken && service_sid) {
       const Client = new Twilio(account_sid, authToken)
       Client.verify.v2
         .services(service_sid)
-        .verifications.create({to: userPhone, channel: 'sms'})
+        .verifications.create({ to: userPhone, channel: 'sms' })
         .then((resp) => {
-          res.status(200).json({message: 'Success sent', resp})
+          res.status(200).json({ message: 'Success sent', resp })
         })
         .catch((err) => {
           res.status(400).json(err)
@@ -45,9 +47,9 @@ class auth {
       const Client = new Twilio(account_sid, authToken)
       Client.verify.v2
         .services(service_sid)
-        .verificationChecks.create({to: userPhone, code: userCode})
+        .verificationChecks.create({ to: userPhone, code: userCode })
         .then((resp) => {
-          res.status(200).json({message: 'Success sent', resp})
+          res.status(200).json({ message: 'Success sent', resp })
         })
         .catch((err) => {
           res.status(400).json(err)
@@ -68,14 +70,13 @@ class auth {
     //   }
     // })
   }
-
   static async signup(req: Request, res: Response) {
     try {
       // await USER.drop()
-      const {firstName, lastName, email, password} = req.body
+      const { firstName, lastName, email, role, password } = req.body
       //   const hash = await bcrypt.hashSync(password, 10)
       const checkUser = await USER.findOne({
-        where: {email: email},
+        where: { email: email },
       })
       if (checkUser) {
         return res.status(400).json({
@@ -99,13 +100,13 @@ class auth {
           password,
         })
         const user = await USER.findOne({
-          where: {email: email},
+          where: { email: email },
           attributes: ['id', 'firstName', 'lastName', 'email', 'role'],
         })
         res.status(200).json({
           status: 200,
           message: 'account created successfully',
-          token: encode({id: createData.id, email: createData.email}),
+          token: encode({ id: createData.id, email: createData.email }),
         })
       }
     } catch (error: any) {
@@ -117,56 +118,35 @@ class auth {
   }
   // LOGIN
 
-static async Login (req: Request, res: Response;) {
+  static async Login(req: Request, res: Response) {
     try {
-      const {email, password} = req.body
+      const { email, password } = req.body
       const findUser = await USER.findOne({
-        where: {email: email},
-        attributes: ['id', 'firstName','lastName', 'email', 'role'],
+        where: { email: email },
+        attributes: ['id', 'firstName', 'lastName', 'email', 'role', 'password'],
       })
-      if (!req.users) {
-        res.status(404).json({
-          status: 404,
-          message: 'The requested resource does not exist',
-        })
+      if (!findUser) {
+        res.status(404).json({ message: "User not found" })
       } else {
-        const dbEmail = req.user.email
-        const dbPassword = req.user.password
-        const dbRole = req.user.role
+        const dbPassword = findUser.dataValues.password
         const decreptedPassword = await bcrypt.compare(password, dbPassword)
-        console.log(dbEmail, decreptedPassword, dbRole)
-
-        if (dbEmail == email) {
-          if (decreptedPassword) {
-            const token = await encode({
-              email,
-              dbRole,
-            })
-            // const {findUser} = {...others,password}
-            return res.status(200).json({
-              stastus: 200,
-              message: 'Login succefull ',
-              data: findUser,
-              token: token,
-            })
-          } else {
-            return res.status(400).json({
-              stastus: 400,
-              message: 'Bad request',
-              data: findUser,
-              token: token,
-            })
-          }
-        } else {
-          return res.status(400).json({
-            stastus: 400,
-            message: 'Bad request',
+        // console.log(decreptedPassword)
+        if (decreptedPassword) {
+          res.status(200).json({
+            stastus: 200,
+            message: 'Login succefull ',
             data: findUser,
-            token: token,
+            token: encode({ id: findUser.dataValues.id, email: findUser.dataValues.email, role: findUser.dataValues.role })
           })
+        } else {
+          res.status(400).json({
+            stastus: 400,
+            message: 'Wrong password',
+          })  
         }
       }
-    } catch (error) {
+
+    } catch (error: any) {
       res.status(500).json({
         stastus: 500,
         message: 'server problem' + error.message,
@@ -178,7 +158,7 @@ static async Login (req: Request, res: Response;) {
   static async getAlluser(req: Request, res: Response) {
     try {
       const users: object = await USER.findAll({
-        attributes: {exclude: ['password']},
+        attributes: { exclude: ['password'] },
       })
       res.status(200).json({
         statuscode: 200,
@@ -195,7 +175,7 @@ static async Login (req: Request, res: Response;) {
   static async deleteUser(req: Request, res: Response) {
     const userid: string = req.params.id
     try {
-      await USER.destroy({where: {id: userid}})
+      await USER.destroy({ where: { id: userid } })
       res.status(200).json({
         statusCode: 200,
         message: `deleted user with id ${userid}`,
