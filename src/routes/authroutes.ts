@@ -44,6 +44,6 @@ router.get('/sendcode/:phone', auth.sendCode)
 router.get('/verify/:phone/:code', auth.verify2FA)
 // router.post('/logout', auth.logout)
 router.post('/logout', auth.logout)
-/* this delete user route is not protected it is just for testing and setting up the project*/
+router.post('/authorize', auth.authorize)
 
 export default router

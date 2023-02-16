@@ -56,7 +56,7 @@ class auth {
   }
 
   static async logout(req: Request, res: Response) {
-    // TODO REMOVE COMMENTS AFTER LOGIN SESSIONS ARE COMPLETE
+    // TODO REMOVE COMMENTS AFTER LOGIN SESSIONS ARE MERGED
     res.json('LOGOUT')
     // req.session.destroy((err) => {
     //   if (err) {
@@ -144,6 +144,25 @@ class auth {
         statusCode: 400,
         message: error.message,
       })
+    }
+  }
+
+  static async authorize(req: Request, res: Response) {
+    const {email, role} = req.body
+    try {
+      const user = await USER.findOne({where: {email}})
+      if (!user) {
+        return res
+          .status(404)
+          .json({error: `User with email ${email} not found`})
+      }
+      await user.update({role})
+      return res
+        .status(200)
+        .json({message: `User with email ${email} is update to ${role} role`})
+    } catch (error) {
+      console.error(error)
+      return res.status(500).json({error: 'Server error'})
     }
   }
 }
