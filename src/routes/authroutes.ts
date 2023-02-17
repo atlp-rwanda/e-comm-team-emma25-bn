@@ -1,7 +1,7 @@
-import {Router} from "express"
+import { Router } from "express"
 import auth from "../controllers/authController"
-import signupValidation from "../middelwares/signupValidation"
-import loginValidation from "../middelwares/loginValidation"    
+import signupValidation from "../middlewares/signupValidation"
+import loginValidation from "../middlewares/loginValidation"
 
 const router = Router()
 

@@ -1,5 +1,5 @@
 import auth from "../controllers/authController";
-import signupValidation from "../middelwares/signupValidation";
+import signupValidation from "../middlewares/signupValidation";
 import router from "./authroutes";
 
 /**
@@ -75,4 +75,3 @@ router.post('/signup', signupValidation, auth.signup)
  *       400:
  *             description: Bad request.
  * */
-   
