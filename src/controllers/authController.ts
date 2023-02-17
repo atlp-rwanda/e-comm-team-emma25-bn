@@ -1,10 +1,15 @@
 import USER from '../models/User'
-
 import {Request, Response} from 'express'
 import {Twilio} from 'twilio'
 import {encode} from '../helper/jwtTokenize'
 
 import {config} from 'dotenv'
+import session from 'express-session'
+import connectRedis from 'connect-redis'
+import {createClient} from 'redis'
+import Redis from 'ioredis'
+
+const RedisStore = connectRedis(session)
 config()
 
 const account_sid = process.env.TWILIO_ACCOUNT_SID
@@ -14,7 +19,6 @@ const service_sid = process.env.TWILIO_SERVICE_SID
 /* this class hold functions for authentication */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 class auth {
-  
   static sendCode(req: Request, res: Response) {
     const userPhone: string = req.params.phone
     if (account_sid && authToken && service_sid) {
@@ -51,22 +55,22 @@ class auth {
     }
   }
 
-  // LOGOUT
   static async logout(req: Request, res: Response) {
-    try {
-      res.cookie('jwt', '', {httpOnly: true, maxAge: 1000})
-      res.status(200).json({status: 200, message: 'Logged out'})
-    } catch (error: any) {
-      res.status(400).json({
-        statusCode: 400,
-        message: error.message,
-      })
-    }
+    // TODO REMOVE COMMENTS AFTER LOGIN SESSIONS ARE MERGED
+    res.json('LOGOUT')
+    // req.session.destroy((err) => {
+    //   if (err) {
+    //     res.status(500).send('Error logging out')
+    //   } else {
+    //     res.send('Successfully logged out')
+    //   }
+    // })
   }
-    static async signup(req: Request, res: Response) {
-        try {
-        // await USER.drop()
-      const {firstName, lastName, email, role, password} = req.body
+
+  static async signup(req: Request, res: Response) {
+    try {
+      // await USER.drop()
+      const {firstName, lastName, email, password} = req.body
       //   const hash = await bcrypt.hashSync(password, 10)
       const checkUser = await USER.findOne({
         where: {email: email},
@@ -140,6 +144,25 @@ class auth {
         statusCode: 400,
         message: error.message,
       })
+    }
+  }
+
+  static async authorize(req: Request, res: Response) {
+    const {email, role} = req.body
+    try {
+      const user = await USER.findOne({where: {email}})
+      if (!user) {
+        return res
+          .status(404)
+          .json({error: `User with email ${email} not found`})
+      }
+      await user.update({role})
+      return res
+        .status(200)
+        .json({message: `User with email ${email} is update to ${role} role`})
+    } catch (error) {
+      console.error(error)
+      return res.status(500).json({error: 'Server error'})
     }
   }
 }
