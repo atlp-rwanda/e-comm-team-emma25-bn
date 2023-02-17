@@ -1,8 +1,8 @@
 import USER from '../models/User'
 
-import {Request, Response} from 'express'
-import {Twilio} from 'twilio'
-import { encode } from '../helper/jwtTokenize'
+import { Request, Response } from 'express'
+import { Twilio } from 'twilio'
+import {  encode  } from '../helper/jwtTokenize'
 import bcrypt from 'bcrypt'
 
 import { config } from 'dotenv'
@@ -10,8 +10,10 @@ import session from 'express-session'
 import connectRedis from 'connect-redis'
 import {createClient} from 'redis'
 import Redis from 'ioredis'
+import bcrypt from 'bcrypt'
 
 const RedisStore = connectRedis(session)
+import {  object  } from 'joi'
 import { object } from 'joi'
 config()
 
@@ -60,15 +62,15 @@ class auth {
   }
 
   static async logout(req: Request, res: Response) {
-    // TODO REMOVE COMMENTS AFTER LOGIN SESSIONS ARE MERGED
-    res.json('LOGOUT')
-    // req.session.destroy((err) => {
-    //   if (err) {
-    //     res.status(500).send('Error logging out')
-    //   } else {
-    //     res.send('Successfully logged out')
-    //   }
-    // })
+    try {
+      res.cookie('jwt', '', {httpOnly: true, maxAge: 1000})
+      res.status(200).json({status: 200, message: 'Logged out'})
+    } catch (error: any) {
+      res.status(400).json({
+        statusCode: 400,
+        message: error.message,
+      })
+    }
   }
   static async signup(req: Request, res: Response) {
     try {
