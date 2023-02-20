@@ -9,7 +9,6 @@ import session from 'express-session'
 import connectRedis from 'connect-redis'
 import {createClient} from 'redis'
 import Redis from 'ioredis'
-import bcrypt from 'bcrypt'
 
 const RedisStore = connectRedis(session)
 import { object } from 'joi'
