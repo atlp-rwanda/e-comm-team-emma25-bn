@@ -1,7 +1,13 @@
+<<<<<<< HEAD
 import { sequelizedb } from "../db/database";
 import {DataTypes} from "sequelize";
 import bcrypt from "bcrypt"
 import Profile from "./profilemodels/profile";
+=======
+import {sequelizedb} from '../db/database'
+import {DataTypes} from 'sequelize'
+import bcrypt from 'bcrypt'
+>>>>>>> 1e531f7 (disAccount)
 const USER = sequelizedb.define('user', {
   firstName: {
     type: DataTypes.STRING,
@@ -18,8 +24,9 @@ const USER = sequelizedb.define('user', {
   },
   role: {
     type: DataTypes.STRING,
-    defaultValue:"Buyer"
+    defaultValue: 'Buyer',
   },
+  status: {type: DataTypes.STRING, defaultValue: 'active'},
   password: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -34,6 +41,10 @@ const USER = sequelizedb.define('user', {
 })
 USER.sync()
 
+<<<<<<< HEAD
 USER.hasOne(Profile, { foreignKey: 'userId', as: 'profile' });
 Profile.belongsTo(Profile, { foreignKey: 'userId' });
 export default USER 
+=======
+export default USER
+>>>>>>> 1e531f7 (disAccount)

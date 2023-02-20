@@ -1,15 +1,16 @@
 import USER from '../models/User'
 
-import { Request, Response } from 'express'
-import { Twilio } from 'twilio'
-import {  encode  } from '../helper/jwtTokenize'
+import {Request, Response} from 'express'
+import {Twilio} from 'twilio'
+import {encode} from '../helper/jwtTokenize'
+const {User} = require('../db/models')
+import bcrypt from 'bcrypt'
 
-import { config } from 'dotenv'
+import {config} from 'dotenv'
 import session from 'express-session'
 import connectRedis from 'connect-redis'
 import {createClient} from 'redis'
 import Redis from 'ioredis'
-import bcrypt from 'bcrypt'
 
 const RedisStore = connectRedis(session)
 import { object } from 'joi'
@@ -26,16 +27,15 @@ const service_sid = process.env.TWILIO_SERVICE_SID
 or authentication */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 class auth {
-
   static sendCode(req: Request, res: Response) {
     const userPhone: string = req.params.phone
     if (account_sid && authToken && service_sid) {
       const Client = new Twilio(account_sid, authToken)
       Client.verify.v2
         .services(service_sid)
-        .verifications.create({ to: userPhone, channel: 'sms' })
+        .verifications.create({to: userPhone, channel: 'sms'})
         .then((resp) => {
-          res.status(200).json({ message: 'Success sent', resp })
+          res.status(200).json({message: 'Success sent', resp})
         })
         .catch((err) => {
           res.status(400).json(err)
@@ -51,9 +51,9 @@ class auth {
       const Client = new Twilio(account_sid, authToken)
       Client.verify.v2
         .services(service_sid)
-        .verificationChecks.create({ to: userPhone, code: userCode })
+        .verificationChecks.create({to: userPhone, code: userCode})
         .then((resp) => {
-          res.status(200).json({ message: 'Success sent', resp })
+          res.status(200).json({message: 'Success sent', resp})
         })
         .catch((err) => {
           res.status(400).json(err)
@@ -77,10 +77,10 @@ class auth {
   static async signup(req: Request, res: Response) {
     try {
       // await USER.drop()
-      const { firstName, lastName, email, role, password } = req.body
+      const {firstName, lastName, email, role, password} = req.body
       //   const hash = await bcrypt.hashSync(password, 10)
       const checkUser = await USER.findOne({
-        where: { email: email },
+        where: {email: email},
       })
       if (checkUser) {
         return res.status(400).json({
@@ -89,7 +89,7 @@ class auth {
         })
       } else {
         // type userType = {
-        //   id: string 
+        //   id: string
         //   firstName: string
         //   lastName: string
         //   email: string
@@ -100,6 +100,7 @@ class auth {
           firstName,
           lastName,
           email,
+          role: 'admin',
           password,
         })
         //create profile 
@@ -118,10 +119,10 @@ class auth {
       }
         //create pofile
         const user = await USER.findOne({
-          where: { email: email },
+          where: {email: email},
           attributes: ['id', 'firstName', 'lastName', 'email', 'role'],
         })
-        res.status(200).json({
+        return res.status(200).json({
           status: 200,
           message: 'account created successfully',
           token: encode({ id: createData.id, email: createData.email , role : createData.role}),//changed the token to keep same fields as login
@@ -138,13 +139,20 @@ class auth {
 
   static async Login(req: Request, res: Response) {
     try {
-      const { email, password } = req.body
+      const {email, password} = req.body
       const findUser = await USER.findOne({
-        where: { email: email },
-        attributes: ['id', 'firstName', 'lastName', 'email', 'role', 'password'],
+        where: {email: email},
+        attributes: [
+          'id',
+          'firstName',
+          'lastName',
+          'email',
+          'role',
+          'password',
+        ],
       })
       if (!findUser) {
-        res.status(404).json({ message: "User not found" })
+        res.status(404).json({message: 'User not found'})
       } else {
         const dbPassword = findUser.dataValues.password
         const decreptedPassword = await bcrypt.compare(password, dbPassword)
@@ -154,16 +162,19 @@ class auth {
             stastus: 200,
             message: 'Login succefull ',
             data: findUser,
-            token: encode({ id: findUser.dataValues.id, email: findUser.dataValues.email, role: findUser.dataValues.role })
+            token: encode({
+              id: findUser.dataValues.id,
+              email: findUser.dataValues.email,
+              role: findUser.dataValues.role,
+            }),
           })
         } else {
           res.status(400).json({
             stastus: 400,
             message: 'Wrong password',
-          })  
+          })
         }
       }
-
     } catch (error: any) {
       res.status(500).json({
         stastus: 500,
@@ -172,11 +183,10 @@ class auth {
     }
   }
 
-
   static async getAlluser(req: Request, res: Response) {
     try {
       const users: object = await USER.findAll({
-        attributes: { exclude: ['password'] },
+        attributes: {exclude: ['password']},
       })
       res.status(200).json({
         statuscode: 200,
@@ -193,7 +203,7 @@ class auth {
   static async deleteUser(req: Request, res: Response) {
     const userid: string = req.params.id
     try {
-      await USER.destroy({ where: { id: userid } })
+      await USER.destroy({where: {id: userid}})
       res.status(200).json({
         statusCode: 200,
         message: `deleted user with id ${userid}`,
@@ -222,6 +232,43 @@ class auth {
     } catch (error) {
       console.error(error)
       return res.status(500).json({error: 'Server error'})
+    }
+  }
+
+  static async disableAccount(req: Request, res: Response) {
+    const userid: string = req.params.id
+    const user: any = await USER.findOne({where: {id: userid}})
+    try {
+      if (user) {
+        if (user.status == 'active') {
+          user.status = 'inactive'
+          await user.save()
+
+          return res.status(200).json({
+            statusCode: 200,
+            message: 'account Disabled',
+          })
+        }
+        if (user.status == 'inactive') {
+          user.status = 'active'
+          await user.save()
+
+          return res.status(200).json({
+            statusCode: 200,
+            message: 'account enabled',
+          })
+        }
+      } else {
+        res.status(404).json({
+          statusCode: 404,
+          message: 'Product with provided id is not exist',
+        })
+      }
+    } catch (error: any) {
+      res.status(500).json({
+        statusCode: 500,
+        message: error.message,
+      })
     }
   }
 }

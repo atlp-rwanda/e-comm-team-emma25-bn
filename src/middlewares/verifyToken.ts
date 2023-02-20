@@ -54,4 +54,4 @@ try {
 
 }
 
-export default verifyToken;
+export default verifyToken
