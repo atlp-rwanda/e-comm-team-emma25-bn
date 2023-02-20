@@ -76,7 +76,7 @@
  *   post:
  *     tags:
  *       - users
- *     summary: send token to email
+ *     summary: send token to email 
  *     security: []
  *     requestBody:
  *        required: true

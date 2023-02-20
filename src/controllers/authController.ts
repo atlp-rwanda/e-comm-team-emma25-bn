@@ -3,7 +3,6 @@ import USER from '../models/User'
 import { Request, Response } from 'express'
 import { Twilio } from 'twilio'
 import {  encode  } from '../helper/jwtTokenize'
-import bcrypt from 'bcrypt'
 
 import { config } from 'dotenv'
 import session from 'express-session'
@@ -13,7 +12,6 @@ import Redis from 'ioredis'
 import bcrypt from 'bcrypt'
 
 const RedisStore = connectRedis(session)
-import {  object  } from 'joi'
 import { object } from 'joi'
 config()
 

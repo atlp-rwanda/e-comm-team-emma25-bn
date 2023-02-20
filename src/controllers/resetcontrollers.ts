@@ -32,7 +32,7 @@ class resetpass{
                 })
             }
             else {                             
-                let token: any = await Tokens.findOne({where :{id : usertochange.id}})
+                let token: any = await Tokens.findOne({where :{userId : `${usertochange.id}`}})
                 if(!token){
                    token = await Tokens.create({
                         userId: usertochange.id,
@@ -51,7 +51,7 @@ class resetpass{
         catch(error: any){
             res.status(400).json({
                 statuCode: 200,
-                message: error.details.message
+                message: error.message
             })
         }
     }
@@ -59,15 +59,16 @@ class resetpass{
         try {
             const useremail= req.params.useremail
             const user:any = await USER.findOne({where: {email: useremail }})  
-            const userId =  user.id      
-
-            const passtoken = req.params.token
+            const userId =  `${user.id}`
+            const passtoken = `${req.params.token}`
             const newpassword = req.body.newpassword 
             const confirmpass = req.body.confirmpass            
+            
              const findtoken:any = await Tokens.findOne({where: {
                 userId: userId,
                 token: passtoken,
              }})
+             
              if(findtoken){
                 if (newpassword==confirmpass){
                const editeduser = await USER.update({password: newpassword},{where: {id: userId}})               
@@ -97,6 +98,7 @@ class resetpass{
             
 
         } catch (error: any) {
+            console.log(error)
             res.status(400).json({
                 statusCode: 400,
                 message: error.message
@@ -107,7 +109,6 @@ class resetpass{
     
 
 }
-
 
 
 export default resetpass
