@@ -37,6 +37,37 @@ import router from "./authroutes";
  * */
 router.post('/signup', signupValidation, auth.signup)
 
+/**
+ * @swagger
+ * /login:
+ *   post:
+ *     summary: Log in  into your account to get more prevalleges
+ *     tags: [Authantication routes]
+ *     requestBody:
+ *       description: Please fill all required fields
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *                 type: object
+ *                 required:                    
+ *                    - email
+ *                    - password                   
+ *                 properties:                 
+ *                    email:
+ *                      type: string
+ *                    password: 
+ *                       type : string 
+ *     responses:
+ *       '200':
+ *         description: user log in succesfully
+ *       400:
+ *         description: Bad request
+ */
+
+//user login
+router.post('/login', auth.Login)
+
 
 
 /**

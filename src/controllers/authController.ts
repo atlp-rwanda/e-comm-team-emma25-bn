@@ -10,11 +10,9 @@ import session from 'express-session'
 import connectRedis from 'connect-redis'
 import {createClient} from 'redis'
 import Redis from 'ioredis'
-import bcrypt from 'bcrypt'
 
 const RedisStore = connectRedis(session)
 import {  object  } from 'joi'
-import { object } from 'joi'
 config()
 
 const account_sid = process.env.TWILIO_ACCOUNT_SID
