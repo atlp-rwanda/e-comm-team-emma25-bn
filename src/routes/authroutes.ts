@@ -1,6 +1,7 @@
-import {Router} from 'express'
-import auth from '../controllers/authController'
-import signupValidation from '../middelwares/signupValidation'
+import { Router } from "express"
+import auth from "../controllers/authController"
+import signupValidation from "../middlewares/signupValidation"
+import loginValidation from "../middlewares/loginValidation"
 
 const router = Router()
 
@@ -38,6 +39,7 @@ const router = Router()
  *
  * */
 router.post('/signup', signupValidation, auth.signup)
+router.post('/login', loginValidation, auth.Login)
 router.get('/users', auth.getAlluser)
 router.delete('/delete/:id', auth.deleteUser)
 router.get('/sendcode/:phone', auth.sendCode)
