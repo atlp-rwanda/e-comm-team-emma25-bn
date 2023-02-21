@@ -4,7 +4,7 @@ import { Request, Response } from 'express'
 import { Twilio } from 'twilio'
 import {  encode  } from '../helper/jwtTokenize'
 
-import { config } from 'dotenv'
+
 import {createClient} from 'redis'
 import Redis from 'ioredis'
 import bcrypt from 'bcrypt'
@@ -12,6 +12,8 @@ import { object } from 'joi'
 import PROFILE from '../models/profilemodels/profile'
 import ADDRESS from '../models/profilemodels/Address'
 import BILLINGADDRESS from '../models/profilemodels/BillingAdress'
+import {config} from 'dotenv'
+import sendEmail from '../helper/sendMail'
 config()
 
 const account_sid = process.env.TWILIO_ACCOUNT_SID
@@ -117,6 +119,12 @@ class auth {
           where: { email: email },
           attributes: ['id', 'firstName', 'lastName', 'email', 'role'],
         })
+        const msg ={
+          to:'process.env.SENDGRIG_EMAIL',
+          from:'process.env.SENDGRID_EMAIL',
+          subject:'E-commerce email verification',
+        }
+        await sendEmail(msg)
         res.status(200).json({
           status: 200,
           message: 'account created successfully',
