@@ -1,3 +1,7 @@
+import auth from '../controllers/authController'
+import signupValidation from '../middlewares/signupValidation'
+import router from './authroutes'
+
 /**
  * @swagger
  * /signup:
@@ -12,26 +16,27 @@
  *           application/json:
  *              schema:
  *                 type: object
- *                 required:                    
+ *                 required:
  *                    - email
  *                    - firstName
  *                    - lastName
- *                    - password                   
- *                 properties:                 
+ *                    - password
+ *                 properties:
  *                    email:
  *                      type: string
  *                    firstname:
  *                      type: string
  *                    lastName:
  *                       type: string
- *                    password: 
- *                       type : string                   
+ *                    password:
+ *                       type : string
  *     responses:
  *       201:
  *             description: successfully logged in;
- *       
+ *
  * */
 
+router.post('/signup', signupValidation, auth.signup)
 
 /**
  * @swagger
@@ -137,6 +142,7 @@
 
 /**
  * @swagger
+<<<<<<< HEAD
  * /profile/edit:
  *   patch:
  *     summary: Update user profile details
@@ -258,3 +264,24 @@
  *       '500':
  *         description: Internal server error
  */
+=======
+ * /users/{id}/disable-account:
+ *   post:
+ *     tags:
+ *       - users
+ *     summary:
+ *     security: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: id
+ *
+ *         in: path
+ *         required: true
+ *     responses:
+ *       200:
+ *             description: Successfully Deleted.
+ *       400:
+ *             description: Bad request.
+ * */
+>>>>>>> 333dbd3 (disAccount)

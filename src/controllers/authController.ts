@@ -261,7 +261,7 @@ class auth {
       } else {
         res.status(404).json({
           statusCode: 404,
-          message: 'Product with provided id is not exist',
+          message: 'User with provided id is not exist',
         })
       }
     } catch (error: any) {
