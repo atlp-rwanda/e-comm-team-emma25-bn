@@ -10,18 +10,7 @@ export const encode = (claims: any) => {
   return token
 }
 
-<<<<<<< HEAD
-export const encode = (claims)=>{
-    const token= jwt.sign(claims, process.env.JWT_SECRET as string, { expiresIn: "7d"});
-    return token;
-};
-
-export const decode=(token:string)=>{
-    const payload=jwt.verify(token, process.env.JWT_SECRET as string) 
-    return payload;
-=======
 export const decode = (token: string) => {
   const payload = jwt.verify(token, process.env.JWT_SECRET as string)
   return payload
->>>>>>> 055cb4d (disAccount)
 }

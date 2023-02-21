@@ -13,7 +13,6 @@ const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
     if (decoded.role.toString() != 'admin') {
       return res.status(403).send('Your are not admin')
     }
-    // req.user = decoded;
 
     return next()
   } catch (error) {

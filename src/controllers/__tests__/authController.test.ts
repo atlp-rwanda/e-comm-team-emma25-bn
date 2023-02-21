@@ -122,17 +122,9 @@ describe("Math functions", () => {
     jest.setTimeout(20000);
 
     test("200 status for disabling account", async () => {
-      const signUp = await request(app).post("/signup").send({
-        firstName: "Festo",
-        lastName: "kabab",
-        email: "admin1234@gmail.com",
-        password: "admin1",
-      });
-      console.log(signUp.body.token);
-
       const login = await request(app).post("/login").send({
-        email: "admin1234@gmail.com",
-        password: "admin1",
+        email: "admin@gmail.com",
+        password: "adminpass",
       });
       const users = await request(app).get("/users");
       console.log(users);
@@ -146,8 +138,8 @@ describe("Math functions", () => {
     });
     test("404 status for unexisting user", async () => {
       const login = await request(app).post("/login").send({
-        email: "admin1234@gmail.com",
-        password: "admin1",
+        email: "admin@gmail.com",
+        password: "adminpass",
       });
       console.log(login.body);
       const unExist = await request(app)
