@@ -7,6 +7,7 @@ import { httpRequest, httpResponse } from "../mock/user.mock";
 import GoogleController from "../googleAuthController";
 import Tokens from "../../models/token";
 import createServer from "../../utils/server";
+import request from "supertest";
 
 const app = createServer();
 
@@ -107,6 +108,54 @@ describe("reset password", () => {
         .patch(`/changepassword/josephrukundo2002@gmail.com/${token.token}`)
         .send({ newpassword: "newpas", confirmpass: "newpas" });
       expect(response.status).toBe(200);
+    });
+  });
+});
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+describe("Math functions", () => {
+  it("should multiply 5 by 3", () => {
+    const result = multiply(5, 3);
+    expect(result).toEqual(15);
+  });
+  describe("disabling account", () => {
+    jest.setTimeout(20000);
+
+    test("200 status for disabling account", async () => {
+      const signUp = await request(app).post("/signup").send({
+        firstName: "Festo",
+        lastName: "kabab",
+        email: "admin1234@gmail.com",
+        password: "admin1",
+      });
+      console.log(signUp.body.token);
+
+      const login = await request(app).post("/login").send({
+        email: "admin1234@gmail.com",
+        password: "admin1",
+      });
+      const users = await request(app).get("/users");
+      console.log(users);
+      const user = users.body.users[0];
+
+      const disable = await request(app)
+        .post(`/users/${user.id}/disable-account`)
+        .set("Authorization", `Bearer ${login.body.token}`)
+        .send();
+      expect(disable.statusCode).toBe(200);
+    });
+    test("404 status for unexisting user", async () => {
+      const login = await request(app).post("/login").send({
+        email: "admin1234@gmail.com",
+        password: "admin1",
+      });
+      console.log(login.body);
+      const unExist = await request(app)
+        .post(`/users/234567/disable-account`)
+        .set("Authorization", `Bearer ${login.body.token}`)
+        .send();
+      console.log(unExist.body);
+      expect(unExist.statusCode).toBe(404);
     });
   });
 });

@@ -1,3 +1,7 @@
+import auth from "../controllers/authController";
+import signupValidation from "../middlewares/signupValidation";
+import router from "./authroutes";
+
 /**
  * @swagger
  * tags:
@@ -231,7 +235,7 @@
  * @swagger
  * /products/wishlist/add/{id}:
  *  post:
- *      tags: 
+ *      tags:
  *          - Products
  *      summary: Endpoint for a buyer to add product on his/her wishlist
  *      parameters:
