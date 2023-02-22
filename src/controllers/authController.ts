@@ -124,7 +124,11 @@ class auth {
           subject: 'E-commerce email verification, Please verify your email',
           html: '<strong>Thank you for Sign Up</strong>',
         }
-        await sendEmail(msg)
+        await sendEmail(
+          createData.email as string,
+          'E-commerce email verification, Please verify your email',
+          'text',
+        )
         res.status(200).json({
           status: 200,
           message: 'account created successfully',
