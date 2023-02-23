@@ -94,11 +94,9 @@ class resetpass{
                     statusCode: 200,
                     message: "token not found" 
                 })
-             }
-            
+             }          
 
-        } catch (error: any) {
-            console.log(error)
+        } catch (error: any) {            
             res.status(400).json({
                 statusCode: 400,
                 message: error.message
