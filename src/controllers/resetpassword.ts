@@ -9,12 +9,8 @@ const sendEmail= async(email: string ,subject: string  ,text: string )=>{
             secure: true,
             port: 587,
             auth: {
-               // type: 'OAuth2',
                 user: process.env.USER,
-                pass: process.env.PASS,
-                clientId: process.env.OAUTH_CLIENTID,
-                clientSecret: process.env.OAUTH_CLIENT_SECRET,
-                refreshToken: process.env.OAUTH_REFRESH_TOKEN           
+                pass: process.env.PASS,      
           },
           tls: {
             rejectUnauthorized: false
