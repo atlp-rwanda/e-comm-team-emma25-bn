@@ -1,4 +1,6 @@
-import USER from '../models/User'
+// import USER from '../models/User'
+import USER from '../db/models/User'
+// import ROLE from ''
 
 import {Request, Response} from 'express'
 import {Twilio} from 'twilio'
@@ -212,6 +214,24 @@ class auth {
     } catch (error) {
       console.error(error)
       return res.status(500).json({error: 'Server error'})
+    }
+  }
+
+  static async addrole(req: Request, res: Response) {
+    const {roleName, description} = req.body
+    try {
+      if (!roleName || !description) {
+        res.status(400).json({
+          status: 400,
+          message: 'Please Add both Role name and descripiton',
+        })
+      } else {
+        res
+          .status(201)
+          .json({'New Role Name ': roleName, Description: description})
+      }
+    } catch (error) {
+      res.send('failed')
     }
   }
 }

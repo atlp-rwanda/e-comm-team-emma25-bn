@@ -1,7 +1,7 @@
-import { Router } from "express"
-import auth from "../controllers/authController"
-import signupValidation from "../middlewares/signupValidation"
-import loginValidation from "../middlewares/loginValidation"
+import {Router} from 'express'
+import auth from '../controllers/authController'
+import signupValidation from '../middlewares/signupValidation'
+import loginValidation from '../middlewares/loginValidation'
 
 const router = Router()
 
@@ -48,5 +48,6 @@ router.get('/verify/:phone/:code', auth.verify2FA)
 router.post('/logout', auth.logout)
 // TODO PROTECT THE ROUTE
 router.post('/authorize', auth.authorize)
+router.post('/admin/addrole', auth.addrole)
 
 export default router
