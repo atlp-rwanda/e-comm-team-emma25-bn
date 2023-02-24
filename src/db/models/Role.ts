@@ -1,5 +1,9 @@
 'use strict'
-const {Model} = require('sequelize')
+import {sequelizedb} from '../database'
+import {Model} from 'sequelize'
+// const {
+//   Model
+// } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Role extends Model {
     /**
@@ -13,16 +17,25 @@ module.exports = (sequelize, DataTypes) => {
   }
   Role.init(
     {
-      role_name: {
+      name: {
         type: DataTypes.STRING,
         unique: true,
+        allowNull: false,
+        set(value: string) {
+          this.setDataValue('name', value.toLowerCase())
+        },
       },
-      role_description: DataTypes.STRING,
+      description: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
     },
     {
       sequelize,
-      modelName: 'Role',
+      tableName: 'roles',
+      underscored: true,
     },
   )
+
   return Role
 }

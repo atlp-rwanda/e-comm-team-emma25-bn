@@ -17,7 +17,7 @@ const USER = sequelizedb.define('user', {
   },
   role: {
     type: DataTypes.STRING,
-    defaultValue: 'Buyer',
+    defaultValue: 'user',
   },
   password: {
     type: DataTypes.STRING,
