@@ -3,7 +3,6 @@ import USER from '../models/User'
 import { Request, Response } from 'express'
 import { Twilio } from 'twilio'
 import {  encode  } from '../helper/jwtTokenize'
-import bcrypt from 'bcrypt'
 
 import { config } from 'dotenv'
 import session from 'express-session'
@@ -19,7 +18,8 @@ const account_sid = process.env.TWILIO_ACCOUNT_SID
 const authToken = process.env.TWILIO_AUTH_TOKEN
 const service_sid = process.env.TWILIO_SERVICE_SID
 
-/* this class hold functions for authentication */
+/* this class hold functions f
+or authentication */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 class auth {
 
@@ -84,13 +84,13 @@ class auth {
           message: 'User is already SignUp',
         })
       } else {
-        type userType = {
-          id: string
-          firstName: string
-          lastName: string
-          email: string
-          password: string
-        }
+        // type userType = {
+        //   id: string 
+        //   firstName: string
+        //   lastName: string
+        //   email: string
+        //   password: string
+        // }
 
         const createData: any = await USER.create({
           firstName,
