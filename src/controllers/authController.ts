@@ -2,8 +2,8 @@ import USER from '../models/User'
 
 import { Request, Response } from 'express'
 import { Twilio } from 'twilio'
-import { encode } from '../helper/jwtTokenize'
-import bcrypt from 'bcrypt'
+import {  encode  } from '../helper/jwtTokenize'
+
 import { config } from 'dotenv'
 import session from 'express-session'
 import connectRedis from 'connect-redis'
@@ -65,8 +65,8 @@ class auth {
 
   static async logout(req: Request, res: Response) {
     try {
-      res.cookie('jwt', '', { httpOnly: true, maxAge: 1000 })
-      res.status(200).json({ status: 200, message: 'Logged out' })
+      res.cookie('jwt', '', {httpOnly: true, maxAge: 1000})
+      res.status(200).json({status: 200, message: 'Logged out'})
     } catch (error: any) {
       res.status(400).json({
         statusCode: 400,
