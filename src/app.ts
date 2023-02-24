@@ -3,8 +3,21 @@ import {config} from 'dotenv'
 import swaggerDocs from './docs/swagger'
 import connectdb from './db/database'
 import authRoutes from './routes/authroutes'
-import profileRoutes from "./routes/profileroutes"
+import profileRoutes from './routes/profileroutes'
+import passport from 'passport'
+import session from 'express-session'
+
 const app: Application = express()
+import './config/googlePassport.config'
+app.use(
+  session({
+    secret: `process.env.SECRET`,
+    resave: false,
+    saveUninitialized: true,
+  }),
+)
+app.use(passport.initialize())
+app.use(passport.session())
 
 config()
 //middleware section
@@ -23,4 +36,4 @@ connectdb().then(() => {
   // change this to just port in case someone is listening from 127.0.0.1 instead of localhost
 })
 
-export default app 
+export default app
