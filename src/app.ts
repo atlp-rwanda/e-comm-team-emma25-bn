@@ -7,8 +7,6 @@ const app = createServer()
 config()
 //middleware section
 
-console.log('Hello Team emma This backend API')
-
 const PORT = process.env.PORT || 3000
 
 /*called the database connection below */
