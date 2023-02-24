@@ -15,7 +15,7 @@
   "scripts": {
     "start": "tsc && nodemon ./dist/app",
     "dev": "tsnd --respawn ./src/app.ts",
-    "test": "jest --config ./src/jest.config.ts",
+    "test": "jest --detect-openHandles --config ./src/jest.config.ts --forceExit",
     "test:w": "jest  --config ./src/jest.config.ts --watch",
     "test:coverage": "jest  --config ./src/jest.config.ts --coverage"
   },
