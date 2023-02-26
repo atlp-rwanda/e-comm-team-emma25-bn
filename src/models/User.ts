@@ -1,6 +1,7 @@
 import { sequelizedb } from "../db/database";
 import {DataTypes} from "sequelize";
 import bcrypt from "bcrypt"
+import Profile from "./profilemodels/profile";
 const USER = sequelizedb.define('user', {
   firstName: {
     type: DataTypes.STRING,
@@ -33,4 +34,6 @@ const USER = sequelizedb.define('user', {
 })
 USER.sync()
 
+USER.hasOne(Profile, { foreignKey: 'userId', as: 'profile' });
+Profile.belongsTo(Profile, { foreignKey: 'userId' });
 export default USER 
