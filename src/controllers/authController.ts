@@ -1,10 +1,5 @@
+import {decode} from './../helper/jwtTokenize'
 import USER from '../models/User'
-
-import { Request, Response } from 'express'
-import { Twilio } from 'twilio'
-import {  encode  } from '../helper/jwtTokenize'
-
-
 import {createClient} from 'redis'
 import Redis from 'ioredis'
 import bcrypt from 'bcrypt'
@@ -12,6 +7,10 @@ import { object } from 'joi'
 import PROFILE from '../models/profilemodels/profile'
 import ADDRESS from '../models/profilemodels/Address'
 import BILLINGADDRESS from '../models/profilemodels/BillingAdress'
+import {Request, Response} from 'express'
+import {Twilio} from 'twilio'
+import {encode} from '../helper/jwtTokenize'
+import jwt from 'jsonwebtoken'
 import {config} from 'dotenv'
 import sendEmail from '../helper/sendMail'
 config()
@@ -124,10 +123,17 @@ class auth {
           subject: 'E-commerce email verification, Please verify your email',
           html: '<strong>Thank you for Sign Up</strong>',
         }
+        const token = jwt.sign(
+          {id: createData.id},
+          process.env.JWT_SECRET as string,
+          {
+            expiresIn: '1d',
+          },
+        )
         await sendEmail(
           createData.email as string,
           'E-commerce email verification, Please verify your email',
-          'text',
+          `to verify your Email click on the link below ${process.env.BASE_URL}/verify-email/${token}`,
         )
         res.status(200).json({
           status: 200,
@@ -180,6 +186,20 @@ class auth {
     }
   }
 
+
+  static async verifyEmail(req: Request, res: Response) {
+    const token = req.params.token
+    const result: any = decode(token)
+    const updatedata = await USER.update(
+      {
+        emailVerified: true,
+      },
+      {where: {id: result.id}, returning: true},
+    )
+    res.status(200).json({
+      message: 'Email verified successfully, Please Sign In.',
+    })
+  }
 
   static async getAlluser(req: Request, res: Response) {
     try {
