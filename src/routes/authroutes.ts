@@ -1,8 +1,10 @@
-import { Router } from "express"
-import auth from "../controllers/authController"
-import signupValidation from "../middlewares/signupValidation"
-import loginValidation from "../middlewares/loginValidation"
-import resetpass from "../controllers/resetcontrollers"
+import {Router} from 'express'
+import auth from '../controllers/authController'
+import signupValidation from '../middlewares/signupValidation'
+import loginValidation from '../middlewares/loginValidation'
+import resetpass from '../controllers/resetcontrollers'
+import verifyToken from '../middlewares/verifyToken'
+import isAdmin from '../middlewares/checkAdmin'
 
 const router = Router()
 
@@ -45,13 +47,17 @@ router.get('/users', auth.getAlluser)
 router.delete('/delete/:id', auth.deleteUser)
 router.get('/sendcode/:phone', auth.sendCode)
 router.get('/verify/:phone/:code', auth.verify2FA)
-// router.post('/logout', auth.logout)
 router.post('/logout', auth.logout)
 router.post('/authorize', auth.authorize)
 router.post('/resetpassword/link', resetpass.sendlink)
 router.patch('/changepassword/:useremail/:token', resetpass.changepassword)
 
-
 /* this delete user route is not protected it is just for testing and setting up the project*/
+router.post(
+  '/users/:id/disable-account',
+  verifyToken,
+  isAdmin,
+  auth.disableAccount,
+)
 
 export default router
