@@ -1,5 +1,3 @@
-import USER from '../models/User'
-
 import { Request, Response } from 'express'
 import { Twilio } from 'twilio'
 import {  encode  } from '../helper/jwtTokenize'
@@ -10,6 +8,10 @@ import session from 'express-session'
 import connectRedis from 'connect-redis'
 import {createClient} from 'redis'
 import Redis from 'ioredis'
+
+import USER from '../models/User'
+import { foundUser } from '../helper/authHelpers'
+// import { decreptedPassword } from '../helper/passwordHelpers'
 
 const RedisStore = connectRedis(session)
 import {  object  } from 'joi'
@@ -121,22 +123,22 @@ class auth {
   static async Login(req: Request, res: Response) {
     try {
       const { email, password } = req.body
-      const findUser = await USER.findOne({
-        where: { email: email },
-        attributes: ['id', 'firstName', 'lastName', 'email', 'role', 'password'],
-      })
-      if (!findUser) {
+      const userFound = await foundUser(email)
+      
+      if (!userFound) {
         res.status(404).json({ message: "User not found" })
       } else {
-        const dbPassword = findUser.dataValues.password
-        const decreptedPassword = await bcrypt.compare(password, dbPassword)
+        const dbPassword = (userFound as any).password
+        const id = (userFound as any).id
+        const role = (userFound as any).role
+        const decreptedPassword = bcrypt.compareSync(password, dbPassword)
         // console.log(decreptedPassword)
         if (decreptedPassword) {
           res.status(200).json({
             stastus: 200,
             message: 'Login succefull ',
-            data: findUser,
-            token: encode({ id: findUser.dataValues.id, email: findUser.dataValues.email, role: findUser.dataValues.role })
+            data: userFound,
+            token: encode({ id, email, role })
           })
         } else {
           res.status(400).json({
@@ -153,7 +155,7 @@ class auth {
       })
     }
   }
-
+  
 
   static async getAlluser(req: Request, res: Response) {
     try {
