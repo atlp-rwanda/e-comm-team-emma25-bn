@@ -283,15 +283,19 @@ class auth {
   }
 
   static async deleteOneRole(req: Request, res: Response) {
-    const id = req.params.name
-    const {name} = req.body
+    const roleName = req.params.name
 
     const role = await ROLE.findOne({
-      where: {id},
+      where: {name: roleName},
     })
     try {
       if (role) {
-        await ROLE.destroy({where: {name: name}})
+        // Delete everyone named "Jane"
+        await ROLE.destroy({
+          where: {
+            name: roleName,
+          },
+        })
         res
           .status(200)
           .json({statusCode: 200, message: 'Success', 'Deleted Role': role})

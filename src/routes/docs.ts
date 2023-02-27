@@ -259,12 +259,13 @@
 
 /**
  * @swagger
+ * tags:
+ *   name: User Roles
+ *   description: API for managing user roles
  * /role:
  *   post:
- *     tags:
- *       - Roles
- *     summary: all Users
- *     security: []
+ *     summary: Create a new user role
+ *     tags: [User Roles]
  *     requestBody:
  *        required: true
  *        content:
@@ -277,10 +278,105 @@
  *                 properties:
  *                    name:
  *                      type: string
+ *                      description: The name of the user role
  *                    description:
  *                      type: string
+ *                      description: A description of the user role
  *     responses:
  *       201:
- *             description: successfully Created New users Role;
+ *         description: User role created successfully
+ *       400:
+ *         description: Invalid request payload
+ *       500:
+ *         description: Internal server error
  *
- * */
+ *
+ */
+
+/**
+ * @swagger
+ * /role/{name}:
+ *   patch:
+ *     summary: Update user role by name
+ *     tags: [User Roles]
+ *     parameters:
+ *       - in: path
+ *         name: name
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Name of the role to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - description
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: The updated name of the role
+ *               description:
+ *                 type: string
+ *                 description: A brief description of the updated role
+ *     security: []
+ *     responses:
+ *       '201':
+ *         description: Role successfully updated
+ */
+
+/**
+ * @swagger
+ * /role/{name}:
+ *   get:
+ *     summary: Get a role by name
+ *     tags: [User Roles]
+ *     parameters:
+ *       - in: path
+ *         name: name
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Name of the role
+ *     security: []
+ *     responses:
+ *       '200':
+ *         description: Role successfully retrieved
+ */
+
+/**
+ * @swagger
+ * /role:
+ *   get:
+ *     summary: Retrieve all roles
+ *     tags: [User Roles]
+ *     security: []
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       "200":
+ *         description: Successfully retrieved all roles.
+ */
+
+/**
+ * @swagger
+ * /role/{name}:
+ *   delete:
+ *     summary: Delete a role by name
+ *     tags:
+ *       - User Roles
+ *     parameters:
+ *       - in: path
+ *         name: name
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Name of the role to delete
+ *     security: []
+ *     responses:
+ *       '200':
+ *         description: Role successfully deleted
+ */
