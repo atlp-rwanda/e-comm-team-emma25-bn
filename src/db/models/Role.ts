@@ -1,6 +1,6 @@
 import {sequelizedb} from '../database'
 import {DataTypes} from 'sequelize'
-const ROLE = sequelizedb.define('user', {
+const ROLE = sequelizedb.define('role', {
   name: {
     type: DataTypes.STRING,
     unique: true,

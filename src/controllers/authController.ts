@@ -85,11 +85,13 @@ class auth {
           message: 'User is already SignUp',
         })
       } else {
+        // TODO USE THE DEFINED USER MODEL FOR ROLES TO APPLY
         type userType = {
           id: string
           firstName: string
           lastName: string
           email: string
+          role: string
           password: string
         }
 
@@ -97,7 +99,7 @@ class auth {
           firstName,
           lastName,
           email,
-          role: 'User',
+          role,
           password,
         })
         const user = await USER.findOne({

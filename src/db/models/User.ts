@@ -16,7 +16,8 @@ const USER = sequelizedb.define('user', {
     unique: true,
   },
   role: {
-    type: DataTypes.STRING,
+    // type: DataTypes.STRING,
+    type: DataTypes.ENUM('admin', 'user', 'seller'),
     defaultValue: 'user',
   },
   password: {
