@@ -31,8 +31,7 @@
  *             description: successfully logged in;
  *       
  * */
-<<<<<<< HEAD
-router.post('/signup', signupValidation, auth.signup)
+
 
 /**
  * @swagger
@@ -63,10 +62,7 @@ router.post('/signup', signupValidation, auth.signup)
  */
 
 //user login
-router.post('/login', auth.Login)
 
-=======
->>>>>>> fb2cfdb620fbbb148adc29129cd841d067dd1d29
 
 
 /**
