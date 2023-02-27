@@ -16,13 +16,17 @@ import bcrypt from 'bcrypt'
 
 const RedisStore = connectRedis(session)
 import {object} from 'joi'
+import PROFILE from '../models/profilemodels/profile'
+import ADDRESS from '../models/profilemodels/Address'
+import BILLINGADDRESS from '../models/profilemodels/BillingAdress'
 config()
 
 const account_sid = process.env.TWILIO_ACCOUNT_SID
 const authToken = process.env.TWILIO_AUTH_TOKEN
 const service_sid = process.env.TWILIO_SERVICE_SID
 
-/* this class hold functions for authentication */
+/* this class hold functions f
+or authentication */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 class auth {
   static sendCode(req: Request, res: Response) {
@@ -86,15 +90,13 @@ class auth {
           message: 'User is already SignUp',
         })
       } else {
-        // TODO USE THE DEFINED USER MODEL FOR ROLES TO APPLY
-        type userType = {
-          id: string
-          firstName: string
-          lastName: string
-          email: string
-          role: string
-          password: string
-        }
+        // type userType = {
+        //   id: string
+        //   firstName: string
+        //   lastName: string
+        //   email: string
+        //   password: string
+        // }
 
         const createData: any = await USER.create({
           firstName,
@@ -103,6 +105,20 @@ class auth {
           role,
           password,
         })
+        //create profile
+        // BILLINGADDRESS.drop()
+        // ADDRESS.drop()
+
+        if (createData) {
+          const profiledata = {
+            firstName: createData.firstName,
+            lastName: createData.lastName,
+            email: createData.email,
+            userId: createData.id,
+          }
+          await PROFILE.create({...profiledata})
+        }
+        //create pofile
         const user = await USER.findOne({
           where: {email: email},
           attributes: ['id', 'firstName', 'lastName', 'email', 'role'],
@@ -110,7 +126,11 @@ class auth {
         res.status(200).json({
           status: 200,
           message: 'account created successfully',
-          token: encode({id: createData.id, email: createData.email}),
+          token: encode({
+            id: createData.id,
+            email: createData.email,
+            role: createData.role,
+          }), //changed the token to keep same fields as login
         })
       }
     } catch (error: any) {
