@@ -1,6 +1,6 @@
 import USER from '../models/User'
 
-export const foundUser = async (email) => {
+export const foundUser = async (email: string) => {
     const findUser = await USER.findOne({
         where: { email: email },
         attributes: ['id', 'firstName', 'lastName', 'email', 'role', 'password'],

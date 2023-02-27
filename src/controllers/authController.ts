@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { Twilio } from 'twilio'
-import {  encode  } from '../helper/jwtTokenize'
+import { encode } from '../helper/jwtTokenize'
 
 import { config } from 'dotenv'
 import session from 'express-session'
@@ -11,7 +11,7 @@ import bcrypt from 'bcrypt'
 
 import USER from '../models/User'
 import { foundUser } from '../helper/authHelpers'
-// import { decreptedPassword } from '../helper/passwordHelpers'
+import { comparePassword } from '../helper/passwordHelpers'
 
 const RedisStore = connectRedis(session)
 import PROFILE from '../models/profilemodels/profile'
@@ -148,14 +148,17 @@ class auth {
         const dbPassword = (userFound as any).password
         const id = (userFound as any).id
         const role = (userFound as any).role
-        const decreptedPassword = bcrypt.compareSync(password, dbPassword)
-        // console.log(decreptedPassword)
+        // const decreptedPassword = bcrypt.compareSync(password, dbPassword)
+        const decreptedPassword = await comparePassword(password, dbPassword)
+
         if (decreptedPassword) {
+          const token = encode({ id })
+          res.cookie('token', token, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 }) // set the token cookie to expire in 7 days
           res.status(200).json({
             stastus: 200,
             message: 'Login succefully',
             data: userFound,
-            token: encode({ id, email, role })
+            token: token
           })
         } else {
           res.status(400).json({
@@ -168,7 +171,7 @@ class auth {
     } catch (error: any) {
       res.status(500).json({
         stastus: 500,
-        message: 'server problem' + error.message,
+        message: 'server problem ' + error.message,
       })
     }
   }

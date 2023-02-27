@@ -1,11 +1,7 @@
 import { Router } from "express"
 import auth from "../controllers/authController"
 import signupValidation from "../middlewares/signupValidation"
-<<<<<<< HEAD
-=======
-import loginValidation from "../middlewares/loginValidation"
 import resetpass from "../controllers/resetcontrollers"
->>>>>>> fb2cfdb620fbbb148adc29129cd841d067dd1d29
 
 const router = Router()
 

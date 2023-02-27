@@ -1,6 +1,5 @@
-// import bcrypt from "bcrypt";
+import bcrypt from 'bcrypt'
 
-// export const decreptedPassword = async (bodyPassword: string, dbPassword: string) => {
-//     const comparePassword = await bcrypt.compare(bodyPassword, dbPassword)
-//     return comparePassword
-// }
+export const comparePassword = async (password: string, dbPassword: string): Promise<boolean> => {
+    return await bcrypt.compare(password, dbPassword)
+}
