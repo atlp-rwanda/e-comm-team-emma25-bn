@@ -240,7 +240,7 @@ class auth {
     }
   }
 
-  static async role(req: Request, res: Response) {
+  static async createNewRole(req: Request, res: Response) {
     const {name, description} = req.body
     try {
       if (!name || !description) {
@@ -249,12 +249,88 @@ class auth {
           message: 'Please Add both Role name and descripiton',
         })
       } else {
-        // Create a new user
         const newRole = await ROLE.create({name, description})
         res.status(201).json({'New Role': newRole})
       }
+    } catch (err) {
+      res.json({statusCode: 400, message: err})
+    }
+  }
+
+  static async getAllRoles(req: Request, res: Response) {
+    try {
+      const roles = await ROLE.findAll()
+      res.status(200).json({statusCode: 200, data: roles})
     } catch (error) {
-      res.json({failed: error})
+      res.status(400).json({statusCode: 400, data: error})
+    }
+  }
+
+  static async getOneRole(req: Request, res: Response) {
+    const name = req.params.name
+    try {
+      const role = await ROLE.findOne({
+        where: {name: name},
+      })
+      if (role) {
+        res.status(200).json({statusCode: 200, data: role})
+      } else {
+        res.status(404).json({statusCode: 404, Message: 'User does not exist'})
+      }
+    } catch (error) {
+      res.status(400).json({statusCode: 400, data: error})
+    }
+  }
+
+  static async deleteOneRole(req: Request, res: Response) {
+    const id = req.params.name
+    const {name} = req.body
+
+    const role = await ROLE.findOne({
+      where: {id},
+    })
+    try {
+      if (role) {
+        await ROLE.destroy({where: {name: name}})
+        res
+          .status(200)
+          .json({statusCode: 200, message: 'Success', 'Deleted Role': role})
+      } else {
+        res.status(404).json({statusCode: 404, Message: 'Role does not exist'})
+      }
+    } catch (error) {
+      res.status(400).json({statusCode: 400, data: error})
+    }
+  }
+
+  static async updateOneRole(req: Request, res: Response) {
+    const roleName = req.params.name
+    const role = await ROLE.findOne({
+      where: {name: roleName},
+    })
+    const {name, description} = req.body
+
+    try {
+      if (!role) {
+        return res.status(404).json({
+          statusCode: 404,
+          message: `Role called ${name} does not exist`,
+        })
+      } else {
+        // Change everyone without a last name to "Doe"
+        await ROLE.update(
+          {name, description},
+          {
+            where: {
+              name: roleName,
+            },
+          },
+        )
+        return res.status(201).json({statusCode: 201, message: 'Success'})
+      }
+    } catch (error) {
+      console.error(error)
+      return res.status(500).json({statusCode: 400, error: 'Server error'})
     }
   }
 }

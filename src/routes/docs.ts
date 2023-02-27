@@ -12,26 +12,25 @@
  *           application/json:
  *              schema:
  *                 type: object
- *                 required:                    
+ *                 required:
  *                    - email
  *                    - firstName
  *                    - lastName
- *                    - password                   
- *                 properties:                 
+ *                    - password
+ *                 properties:
  *                    email:
  *                      type: string
  *                    firstname:
  *                      type: string
  *                    lastName:
  *                       type: string
- *                    password: 
- *                       type : string                   
+ *                    password:
+ *                       type : string
  *     responses:
  *       201:
  *             description: successfully logged in;
- *       
+ *
  * */
-
 
 /**
  * @swagger
@@ -69,7 +68,7 @@
  *       400:
  *             description: Bad request.
  * */
-   
+
 /**
  * @swagger
  * /resetpassword/link:
@@ -215,7 +214,6 @@
  *         description: Internal server error
  */
 
-
 /**
  * Get user profile by ID
  * @swagger
@@ -258,3 +256,31 @@
  *       '500':
  *         description: Internal server error
  */
+
+/**
+ * @swagger
+ * /role:
+ *   post:
+ *     tags:
+ *       - Roles
+ *     summary: all Users
+ *     security: []
+ *     requestBody:
+ *        required: true
+ *        content:
+ *           application/json:
+ *              schema:
+ *                 type: object
+ *                 required:
+ *                    - name
+ *                    - description
+ *                 properties:
+ *                    name:
+ *                      type: string
+ *                    description:
+ *                      type: string
+ *     responses:
+ *       201:
+ *             description: successfully Created New users Role;
+ *
+ * */
