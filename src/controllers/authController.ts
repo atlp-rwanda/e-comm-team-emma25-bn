@@ -1,5 +1,6 @@
 // import USER from '../models/User'
 import USER from '../db/models/User'
+import ROLE from '../db/models/Role'
 // import ROLE from ''
 
 import {Request, Response} from 'express'
@@ -219,21 +220,21 @@ class auth {
     }
   }
 
-  static async addrole(req: Request, res: Response) {
-    const {roleName, description} = req.body
+  static async role(req: Request, res: Response) {
+    const {name, description} = req.body
     try {
-      if (!roleName || !description) {
+      if (!name || !description) {
         res.status(400).json({
           status: 400,
           message: 'Please Add both Role name and descripiton',
         })
       } else {
-        res
-          .status(201)
-          .json({'New Role Name ': roleName, Description: description})
+        // Create a new user
+        const newRole = await ROLE.create({name, description})
+        res.status(201).json({'New Role': newRole})
       }
     } catch (error) {
-      res.send('failed')
+      res.json({failed: error})
     }
   }
 }

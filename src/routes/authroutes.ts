@@ -48,6 +48,6 @@ router.get('/verify/:phone/:code', auth.verify2FA)
 router.post('/logout', auth.logout)
 // TODO PROTECT THE ROUTE
 router.post('/authorize', auth.authorize)
-router.post('/admin/addrole', auth.addrole)
+router.post('/role', auth.role)
 
 export default router
