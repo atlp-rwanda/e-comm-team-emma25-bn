@@ -1,14 +1,15 @@
 import USER from '../models/User'
-
+import jwt from 'jsonwebtoken'
 import { Request, Response } from 'express'
 import { Twilio } from 'twilio'
 import {  encode  } from '../helper/jwtTokenize'
-
+import {decode} from './../helper/jwtTokenize'
 import { config } from 'dotenv'
 import {createClient} from 'redis'
 import Redis from 'ioredis'
 import bcrypt from 'bcrypt'
 import { object } from 'joi'
+import sendEmail from '../helper/sendMail'
 import PROFILE from '../models/profilemodels/profile'
 import ADDRESS from '../models/profilemodels/Address'
 import BILLINGADDRESS from '../models/profilemodels/BillingAdress'
@@ -22,16 +23,15 @@ const service_sid = process.env.TWILIO_SERVICE_SID
 or authentication */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 class auth {
-
   static sendCode(req: Request, res: Response) {
     const userPhone: string = req.params.phone
     if (account_sid && authToken && service_sid) {
       const Client = new Twilio(account_sid, authToken)
       Client.verify.v2
         .services(service_sid)
-        .verifications.create({ to: userPhone, channel: 'sms' })
+        .verifications.create({to: userPhone, channel: 'sms'})
         .then((resp) => {
-          res.status(200).json({ message: 'Success sent', resp })
+          res.status(200).json({message: 'Success sent', resp})
         })
         .catch((err) => {
           res.status(400).json(err)
@@ -47,9 +47,9 @@ class auth {
       const Client = new Twilio(account_sid, authToken)
       Client.verify.v2
         .services(service_sid)
-        .verificationChecks.create({ to: userPhone, code: userCode })
+        .verificationChecks.create({to: userPhone, code: userCode})
         .then((resp) => {
-          res.status(200).json({ message: 'Success sent', resp })
+          res.status(200).json({message: 'Success sent', resp})
         })
         .catch((err) => {
           res.status(400).json(err)
@@ -73,10 +73,10 @@ class auth {
   static async signup(req: Request, res: Response) {
     try {
       // await USER.drop()
-      const { firstName, lastName, email, role, password } = req.body
+      const {firstName, lastName, email, role, password} = req.body
       //   const hash = await bcrypt.hashSync(password, 10)
       const checkUser = await USER.findOne({
-        where: { email: email },
+        where: {email: email},
       })
       if (checkUser) {
         return res.status(400).json({
@@ -84,43 +84,65 @@ class auth {
           message: 'User is already SignUp',
         })
       } else {
-        // type userType = {
-        //   id: string 
-        //   firstName: string
-        //   lastName: string
-        //   email: string
-        //   password: string
-        // }
+        type userType = {
+          id: string
+          firstName: string
+          lastName: string
+          email: string
+          password: string
+        }
 
         const createData: any = await USER.create({
           firstName,
           lastName,
           email,
+          role:'User',
           password,
         })
-        //create profile 
+        //create profile
         // BILLINGADDRESS.drop()
         // ADDRESS.drop()
 
-        if(createData){
-        const profiledata={
-          firstName: createData.firstName,
-          lastName: createData.lastName,
-          email: createData.email,
-          userId: createData.id
+        if (createData) {
+          const profiledata = {
+            firstName: createData.firstName,
+            lastName: createData.lastName,
+            email: createData.email,
+            userId: createData.id,
+          }
+          await PROFILE.create({...profiledata})
         }
-      await PROFILE.create({...profiledata})
-
-      }
         //create pofile
         const user = await USER.findOne({
-          where: { email: email },
+          where: {email: email},
           attributes: ['id', 'firstName', 'lastName', 'email', 'role'],
         })
+         const msg = {
+           to: createData.email,
+           from: process.env.SENDGRID_EMAIL,
+           subject: 'E-commerce email verification, Please verify your email',
+           html: '<strong>Thank you for Sign Up</strong>',
+         }
+         const token = jwt.sign(
+           {id: createData.id},
+           process.env.JWT_SECRET as string,
+           {
+             expiresIn: '1d',
+           },
+         )
+         await sendEmail(
+           createData.email as string,
+           'E-commerce email verification, Please verify your email',
+           `to verify your Email click on the link below ${process.env.BASE_URL}/verify-email/${token}`,
+         )
         res.status(200).json({
           status: 200,
           message: 'account created successfully',
-          token: encode({ id: createData.id, email: createData.email , role : createData.role}),//changed the token to keep same fields as login
+          token: encode({
+            id: createData.id,
+            email: createData.email,
+            role: createData.role,
+          }), //changed the token to keep same fields as login
         })
       }
     } catch (error: any) {
@@ -130,17 +152,38 @@ class auth {
       })
     }
   }
+
+  static async verifyEmail(req: Request, res: Response) {
+    const token = req.params.token
+    const result: any = decode(token)
+    const updatedata = await USER.update(
+      {
+        emailVerified: true,
+      },
+      {where: {id: result.id}, returning: true},
+    )
+    res.status(200).json({
+      message: 'Email verified successfully, Please Sign In.',
+    })
+  }
   // LOGIN
 
   static async Login(req: Request, res: Response) {
     try {
-      const { email, password } = req.body
+      const {email, password} = req.body
       const findUser = await USER.findOne({
-        where: { email: email },
-        attributes: ['id', 'firstName', 'lastName', 'email', 'role', 'password'],
+        where: {email: email},
+        attributes: [
+          'id',
+          'firstName',
+          'lastName',
+          'email',
+          'role',
+          'password',
+        ],
       })
       if (!findUser) {
-        res.status(404).json({ message: "User not found" })
+        res.status(404).json({message: 'User not found'})
       } else {
         const dbPassword = findUser.dataValues.password
         const decreptedPassword = await bcrypt.compare(password, dbPassword)
@@ -150,16 +193,19 @@ class auth {
             stastus: 200,
             message: 'Login succefull ',
             data: findUser,
-            token: encode({ id: findUser.dataValues.id, email: findUser.dataValues.email, role: findUser.dataValues.role })
+            token: encode({
+              id: findUser.dataValues.id,
+              email: findUser.dataValues.email,
+              role: findUser.dataValues.role,
+            }),
           })
         } else {
           res.status(400).json({
             stastus: 400,
             message: 'Wrong password',
-          })  
+          })
         }
       }
-
     } catch (error: any) {
       res.status(500).json({
         stastus: 500,
@@ -168,11 +214,10 @@ class auth {
     }
   }
 
-
   static async getAlluser(req: Request, res: Response) {
     try {
       const users: object = await USER.findAll({
-        attributes: { exclude: ['password'] },
+        attributes: {exclude: ['password']},
       })
       res.status(200).json({
         statuscode: 200,
@@ -189,7 +234,7 @@ class auth {
   static async deleteUser(req: Request, res: Response) {
     const userid: string = req.params.id
     try {
-      await USER.destroy({ where: { id: userid } })
+      await USER.destroy({where: {id: userid}})
       res.status(200).json({
         statusCode: 200,
         message: `deleted user with id ${userid}`,

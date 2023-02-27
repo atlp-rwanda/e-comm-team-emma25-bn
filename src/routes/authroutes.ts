@@ -20,24 +20,24 @@ const router = Router()
  *           application/json:
  *              schema:
  *                 type: object
- *                 required:
+ *                 required:                    
  *                    - email
  *                    - firstName
  *                    - lastName
- *                    - password
- *                 properties:
+ *                    - password                   
+ *                 properties:                 
  *                    email:
  *                      type: string
  *                    firstname:
  *                      type: string
  *                    lastName:
  *                       type: string
- *                    password:
- *                       type : string
+ *                    password: 
+ *                       type : string                   
  *     responses:
  *       201:
  *             description: successfully logged in;
- *
+ *       
  * */
 router.post('/signup', signupValidation, auth.signup)
 router.post('/login', loginValidation, auth.Login)
@@ -45,6 +45,7 @@ router.get('/users', auth.getAlluser)
 router.delete('/delete/:id', auth.deleteUser)
 router.get('/sendcode/:phone', auth.sendCode)
 router.get('/verify/:phone/:code', auth.verify2FA)
+router.post('/verify-email/:token', auth.verifyEmail)
 // router.post('/logout', auth.logout)
 router.post('/logout', auth.logout)
 router.post('/authorize', auth.authorize)
