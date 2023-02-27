@@ -76,7 +76,7 @@ class auth {
       const {firstName, lastName, email, role, password} = req.body
       //   const hash = await bcrypt.hashSync(password, 10)
       const checkUser = await USER.findOne({
-        where: { email: email },
+        where: {email: email},
       })
       if (checkUser) {
         return res.status(400).json({
@@ -84,61 +84,65 @@ class auth {
           message: 'User is already SignUp',
         })
       } else {
-        // type userType = {
-        //   id: string 
-        //   firstName: string
-        //   lastName: string
-        //   email: string
-        //   password: string
-        // }
+        type userType = {
+          id: string
+          firstName: string
+          lastName: string
+          email: string
+          password: string
+        }
 
         const createData: any = await USER.create({
           firstName,
           lastName,
           email,
+          role:'User',
           password,
         })
-        //create profile 
+        //create profile
         // BILLINGADDRESS.drop()
         // ADDRESS.drop()
 
-        if(createData){
-        const profiledata={
-          firstName: createData.firstName,
-          lastName: createData.lastName,
-          email: createData.email,
-          userId: createData.id
+        if (createData) {
+          const profiledata = {
+            firstName: createData.firstName,
+            lastName: createData.lastName,
+            email: createData.email,
+            userId: createData.id,
+          }
+          await PROFILE.create({...profiledata})
         }
-      await PROFILE.create({...profiledata})
-
-      }
         //create pofile
         const user = await USER.findOne({
-          where: { email: email },
+          where: {email: email},
           attributes: ['id', 'firstName', 'lastName', 'email', 'role'],
         })
-        const msg = {
-          to: createData.email,
-          from: process.env.SENDGRID_EMAIL,
-          subject: 'E-commerce email verification, Please verify your email',
-          html: '<strong>Thank you for Sign Up</strong>',
-        }
-        const token = jwt.sign(
-          {id: createData.id},
-          process.env.JWT_SECRET as string,
-          {
-            expiresIn: '1d',
-          },
-        )
-        await sendEmail(
-          createData.email as string,
-          'E-commerce email verification, Please verify your email',
-          `to verify your Email click on the link below ${process.env.BASE_URL}/verify-email/${token}`,
-        )
+         const msg = {
+           to: createData.email,
+           from: process.env.SENDGRID_EMAIL,
+           subject: 'E-commerce email verification, Please verify your email',
+           html: '<strong>Thank you for Sign Up</strong>',
+         }
+         const token = jwt.sign(
+           {id: createData.id},
+           process.env.JWT_SECRET as string,
+           {
+             expiresIn: '1d',
+           },
+         )
+         await sendEmail(
+           createData.email as string,
+           'E-commerce email verification, Please verify your email',
+           `to verify your Email click on the link below ${process.env.BASE_URL}/verify-email/${token}`,
+         )
         res.status(200).json({
           status: 200,
           message: 'account created successfully',
-          token: encode({ id: createData.id, email: createData.email , role : createData.role}),//changed the token to keep same fields as login
+          token: encode({
+            id: createData.id,
+            email: createData.email,
+            role: createData.role,
+          }), //changed the token to keep same fields as login
         })
       }
     } catch (error: any) {
@@ -147,6 +151,20 @@ class auth {
         message: 'Server error :' + error.message,
       })
     }
+  }
+
+  static async verifyEmail(req: Request, res: Response) {
+    const token = req.params.token
+    const result: any = decode(token)
+    const updatedata = await USER.update(
+      {
+        emailVerified: true,
+      },
+      {where: {id: result.id}, returning: true},
+    )
+    res.status(200).json({
+      message: 'Email verified successfully, Please Sign In.',
+    })
   }
   // LOGIN
 
@@ -185,22 +203,7 @@ class auth {
       })
     }
   }
-
-
-  static async verifyEmail(req: Request, res: Response) {
-    const token = req.params.token
-    const result: any = decode(token)
-    const updatedata = await USER.update(
-      {
-        emailVerified: true,
-      },
-      {where: {id: result.id}, returning: true},
-    )
-    res.status(200).json({
-      message: 'Email verified successfully, Please Sign In.',
-    })
-  }
-
+  
   static async getAlluser(req: Request, res: Response) {
     try {
       const users: object = await USER.findAll({
