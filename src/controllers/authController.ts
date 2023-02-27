@@ -5,13 +5,9 @@ import { Twilio } from 'twilio'
 import {  encode  } from '../helper/jwtTokenize'
 
 import { config } from 'dotenv'
-import session from 'express-session'
-import connectRedis from 'connect-redis'
 import {createClient} from 'redis'
 import Redis from 'ioredis'
 import bcrypt from 'bcrypt'
-
-const RedisStore = connectRedis(session)
 import { object } from 'joi'
 import PROFILE from '../models/profilemodels/profile'
 import ADDRESS from '../models/profilemodels/Address'
