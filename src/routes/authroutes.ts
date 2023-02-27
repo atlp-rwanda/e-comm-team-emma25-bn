@@ -53,6 +53,7 @@ router.patch('/changepassword/:useremail/:token', resetpass.changepassword)
 
 
 /* this delete user route is not protected it is just for testing and setting up the project*/
+
 router.post('/verify-email/:token', auth.verifyEmail)
 
 export default router
