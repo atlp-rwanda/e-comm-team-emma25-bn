@@ -284,13 +284,11 @@ class auth {
 
   static async deleteOneRole(req: Request, res: Response) {
     const roleName = req.params.name
-
     const role = await ROLE.findOne({
       where: {name: roleName},
     })
     try {
       if (role) {
-        // Delete everyone named "Jane"
         await ROLE.destroy({
           where: {
             name: roleName,

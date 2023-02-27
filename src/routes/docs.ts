@@ -261,7 +261,7 @@
  * @swagger
  * tags:
  *   name: User Roles
- *   description: API for managing user roles
+ *   description: API for managing roles
  * /role:
  *   post:
  *     summary: Create a new user role
@@ -379,4 +379,32 @@
  *     responses:
  *       '200':
  *         description: Role successfully deleted
+ */
+
+/**
+ * @swagger
+ * /authorize:
+ *   post:
+ *     summary: Update a user role by user email
+ *     tags: [User Roles]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - role
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: email of the user to update their role
+ *               role:
+ *                 type: string
+ *                 description: The update role name for the user
+ *     security: []
+ *     responses:
+ *       '201':
+ *         description: Role successfully updated
  */
