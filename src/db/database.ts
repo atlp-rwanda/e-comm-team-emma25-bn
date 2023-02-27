@@ -12,7 +12,8 @@ export const sequelizedb = new Sequelize( process.env.DBLINK as string,
         dialectOptions: {
           ssl: true,
           native:true
-        }
+      },
+      logging: false
       } )
 
 
