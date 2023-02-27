@@ -1,6 +1,11 @@
 import { Router } from "express"
 import auth from "../controllers/authController"
 import signupValidation from "../middlewares/signupValidation"
+<<<<<<< HEAD
+=======
+import loginValidation from "../middlewares/loginValidation"
+import resetpass from "../controllers/resetcontrollers"
+>>>>>>> fb2cfdb620fbbb148adc29129cd841d067dd1d29
 
 const router = Router()
 
@@ -45,5 +50,10 @@ router.get('/sendcode/:phone', auth.sendCode)
 router.get('/verify/:phone/:code', auth.verify2FA)
 router.post('/logout', auth.logout)
 router.post('/authorize', auth.authorize)
+router.post('/resetpassword/link', resetpass.sendlink)
+router.patch('/changepassword/:useremail/:token', resetpass.changepassword)
+
+
+/* this delete user route is not protected it is just for testing and setting up the project*/
 
 export default router
