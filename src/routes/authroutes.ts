@@ -47,13 +47,20 @@ router.get('/sendcode/:phone', auth.sendCode)
 router.get('/verify/:phone/:code', auth.verify2FA)
 // router.post('/logout', auth.logout)
 router.post('/logout', auth.logout)
-router.post('/authorize', auth.authorize)
 router.post('/resetpassword/link', resetpass.sendlink)
 router.patch('/changepassword/:useremail/:token', resetpass.changepassword)
+// ROLES
+router.post('/authorize', auth.authorize)
 router.post('/role', auth.createNewRole)
 router.get('/role', auth.getAllRoles)
 router.get('/role/:name', auth.getOneRole)
 router.delete('/role/:name', auth.deleteOneRole)
 router.patch('/role/:name', auth.updateOneRole)
+// PERMISSIONS
+router.post('/permission', auth.createNewPermission)
+router.get('/permission', auth.getAllPermissions)
+router.get('/permission/:name', auth.getOnePermission)
+router.delete('/permission/:name', auth.deleteOnePermission)
+router.patch('/permission/:name', auth.updateOnePermission)
 
 export default router

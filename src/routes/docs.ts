@@ -408,3 +408,129 @@
  *       '201':
  *         description: Role successfully updated
  */
+
+// ////////////////////////////////////////
+
+/**
+ * @swagger
+ * tags:
+ *   name: User Roles
+ *   description: API for managing permissions
+ * /permission:
+ *   post:
+ *     summary: Create a new user permission
+ *     tags: [User Permissions]
+ *     requestBody:
+ *        required: true
+ *        content:
+ *           application/json:
+ *              schema:
+ *                 type: object
+ *                 required:
+ *                    - name
+ *                    - description
+ *                 properties:
+ *                    name:
+ *                      type: string
+ *                      description: The name of the user permission
+ *                    description:
+ *                      type: string
+ *                      description: A description of the user permission
+ *     responses:
+ *       201:
+ *         description: User permission created successfully
+ *       400:
+ *         description: Invalid request payload
+ *       500:
+ *         description: Internal server error
+ *
+ *
+ */
+
+/**
+ * @swagger
+ * /permission/{name}:
+ *   patch:
+ *     summary: Update user permission by name
+ *     tags: [User Permissions]
+ *     parameters:
+ *       - in: path
+ *         name: name
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Name of the permission to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - description
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: The updated name of the permission
+ *               description:
+ *                 type: string
+ *                 description: A brief description of the updated permission
+ *     security: []
+ *     responses:
+ *       '201':
+ *         description: Permission successfully updated
+ */
+
+/**
+ * @swagger
+ * /permission/{name}:
+ *   get:
+ *     summary: Get a permission by name
+ *     tags: [User Permissions]
+ *     parameters:
+ *       - in: path
+ *         name: name
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Name of the permission
+ *     security: []
+ *     responses:
+ *       '200':
+ *         description: Permission successfully retrieved
+ */
+
+/**
+ * @swagger
+ * /permission:
+ *   get:
+ *     summary: Retrieve all permissions
+ *     tags: [User Permissions]
+ *     security: []
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       "200":
+ *         description: Successfully retrieved all permissions.
+ */
+
+/**
+ * @swagger
+ * /permission/{name}:
+ *   delete:
+ *     summary: Delete a permission by name
+ *     tags:
+ *       - User Permissions
+ *     parameters:
+ *       - in: path
+ *         name: name
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Name of the permission to delete
+ *     security: []
+ *     responses:
+ *       '200':
+ *         description: Permission successfully deleted
+ */
