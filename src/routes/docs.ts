@@ -134,3 +134,127 @@
  *       200:
  *         description: The user's password has been changed successfully
  */
+
+/**
+ * @swagger
+ * /profile/edit:
+ *   patch:
+ *     summary: Update user profile details
+ *     description: Update the user's profile details and billing and shipping addresses
+ *     tags:
+ *       - Profile
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               profileDetails:
+ *                 type: object
+ *                 properties:
+ *                   phoneNumber:
+ *                     type: string
+ *                     example: "+250788000000"
+ *                   gender:
+ *                     type: string
+ *                     example: "Female"
+ *                   birthday:
+ *                     type: string
+ *                     format: date-time
+ *                     example: "2023-02-19T11:55:10.439Z"
+ *                   language:
+ *                     type: string
+ *                     example: "kinyarwanda"
+ *               billingAddress:
+ *                 type: object
+ *                 properties:
+ *                   streetAddress:
+ *                     type: string
+ *                     example: "kk509"
+ *                   city:
+ *                     type: string
+ *                     example: "kigali"
+ *                   stateOrProvince:
+ *                     type: string
+ *                     example: "kigali"
+ *                   zipOrPostalCode:
+ *                     type: string
+ *                     example: "00000"
+ *                   country:
+ *                     type: string
+ *                     example: "Rwanda"
+ *               address:
+ *                 type: object
+ *                 properties:
+ *                   streetAddress:
+ *                     type: string
+ *                     example: "kk509"
+ *                   city:
+ *                     type: string
+ *                     example: "kigali"
+ *                   stateOrProvince:
+ *                     type: string
+ *                     example: "kigali"
+ *                   zipOrPostalCode:
+ *                     type: string
+ *                     example: "00000"
+ *                   country:
+ *                     type: string
+ *                     example: "Rwanda"
+ *     responses:
+ *       200:
+ *         description: Successfully updated profile details
+ *       400:
+ *         description: Invalid request body
+ *       401:
+ *         description: Unauthorized - missing or invalid authentication token
+ *       403:
+ *         description: Forbidden - user is not authorized to access this resource
+ *       500:
+ *         description: Internal server error
+ */
+
+
+/**
+ * Get user profile by ID
+ * @swagger
+ * /profile/{userId}:
+ *   get:
+ *     summary: Get user profile by ID
+ *     description: Retrieve user profile by ID
+ *     tags:
+ *       - Profile
+ *     security: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID of the user profile
+ *     responses:
+ *       '200':
+ *         description: A user profile object
+ *       '404':
+ *         description: User profile not found
+ *       '500':
+ *         description: Internal server error
+ */
+
+/**
+ * Get all user profiles
+ * @swagger
+ * /profiles:
+ *   get:
+ *     summary: Get all user profiles
+ *     description: Retrieve all user profiles
+ *     tags:
+ *       - Profile
+ *     security: []
+ *     responses:
+ *       '200':
+ *         description: An array of user profile objects
+ *       '500':
+ *         description: Internal server error
+ */

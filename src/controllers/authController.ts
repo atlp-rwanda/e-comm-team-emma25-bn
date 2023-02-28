@@ -12,6 +12,9 @@ import Redis from 'ioredis'
 
 const RedisStore = connectRedis(session)
 import { object } from 'joi'
+import PROFILE from '../models/profilemodels/profile'
+import ADDRESS from '../models/profilemodels/Address'
+import BILLINGADDRESS from '../models/profilemodels/BillingAdress'
 config()
 
 const account_sid = process.env.TWILIO_ACCOUNT_SID
@@ -96,9 +99,23 @@ class auth {
           firstName,
           lastName,
           email,
-          role: 'User',
           password,
         })
+        //create profile 
+        // BILLINGADDRESS.drop()
+        // ADDRESS.drop()
+
+        if(createData){
+        const profiledata={
+          firstName: createData.firstName,
+          lastName: createData.lastName,
+          email: createData.email,
+          userId: createData.id
+        }
+      await PROFILE.create({...profiledata})
+
+      }
+        //create pofile
         const user = await USER.findOne({
           where: { email: email },
           attributes: ['id', 'firstName', 'lastName', 'email', 'role'],
@@ -106,7 +123,7 @@ class auth {
         res.status(200).json({
           status: 200,
           message: 'account created successfully',
-          token: encode({ id: createData.id, email: createData.email }),
+          token: encode({ id: createData.id, email: createData.email , role : createData.role}),//changed the token to keep same fields as login
         })
       }
     } catch (error: any) {

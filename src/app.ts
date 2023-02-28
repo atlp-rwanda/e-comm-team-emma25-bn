@@ -3,7 +3,7 @@ import {config} from 'dotenv'
 import swaggerDocs from './docs/swagger'
 import connectdb from './db/database'
 import authRoutes from './routes/authroutes'
-
+import profileRoutes from "./routes/profileroutes"
 const app: Application = express()
 
 config()
@@ -11,7 +11,7 @@ config()
 app.use(express.json())
 
 app.use(authRoutes)
-
+app.use(profileRoutes)
 console.log('Hello Team emma This backend API')
 
 const PORT = process.env.PORT || 3000
