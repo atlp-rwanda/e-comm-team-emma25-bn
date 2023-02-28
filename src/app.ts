@@ -23,11 +23,11 @@ app.use(passport.session());
 
 config();
 //middleware section
-app.use(express.json());
-
-app.use(authRoutes);
-app.use(profileRoutes);
-console.log("Hello Team emma This backend API");
+app.use(express.json())
+app.use(cookieParser())
+app.use(authRoutes)
+app.use(profileRoutes)
+app.use('/products', productRoutes)
 
 const PORT = process.env.PORT || 3000;
 app.get("/", (req, res) =>
