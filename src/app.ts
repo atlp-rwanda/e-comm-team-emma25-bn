@@ -1,9 +1,12 @@
-import {config} from 'dotenv'
+import express, { Application } from 'express'
+import authRoutes from './routes/authroutes'
+import { config } from 'dotenv'
 import swaggerDocs from './docs/swagger'
 import connectdb from './db/database'
-import createServer from './utils/server'
-const app = createServer()
+const app: Application = express()
 
+app.use(express.json())
+app.use(authRoutes)
 config()
 //middleware section
 
