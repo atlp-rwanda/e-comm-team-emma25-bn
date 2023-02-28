@@ -13,7 +13,8 @@
   },
   "homepage": "https://github.com/atlp-rwanda/team-emma-25-e-comm-backend#readme",
   "scripts": {
-    "start": "tsc && nodemon ./dist/app",
+    "build": "rimraf ./dist && tsc",
+    "start": "node ./dist/app.js",
     "dev": "tsnd --respawn ./src/app.ts",
     "test": "jest --config ./src/jest.config.ts",
     "test:w": "jest  --config ./src/jest.config.ts --watch",
@@ -51,7 +52,8 @@
     "supertest": "^6.3.3",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.0",
-    "twilio": "^4.7.2"
+    "twilio": "^4.7.2",
+    "yarn": "^1.22.19"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
