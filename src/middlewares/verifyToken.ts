@@ -12,7 +12,7 @@ interface User {
   role: string;
 }
 export interface CustomRequest extends Request {
-  user?: User;
+  users?: User;
   [key: string]: any;
 }
 

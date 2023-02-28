@@ -15,7 +15,7 @@ app.use(profileRoutes)
 console.log('Hello Team emma This backend API')
 
 const PORT = process.env.PORT || 3000
-
+app.get('/', (req, res) => res.send('Hello, use  "/docs" to view the swagger docs'))
 /*called the database connection below */
 connectdb().then(() => {
   app.listen(PORT, () => console.log(`Server started on port ${PORT}`))
