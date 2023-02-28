@@ -15,6 +15,7 @@
   "scripts": {
     "build": "rimraf ./dist && tsc",
     "start": "node ./dist/app.js",
+    "dev": "tsnd --respawn ./src/app.ts",
     "test": "jest --config ./src/jest.config.ts",
     "test:w": "jest  --config ./src/jest.config.ts --watch",
     "test:coverage": "jest  --config ./src/jest.config.ts --coverage"
