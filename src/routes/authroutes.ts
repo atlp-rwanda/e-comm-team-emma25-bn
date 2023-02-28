@@ -69,6 +69,7 @@ const router = Router()
  *      tags: 
  *          - users
  *      summary: Verify user-provided OTP
+ *      security: []
  *      parameters:
  *          - in: path
  *            name: phone

@@ -1,5 +1,5 @@
 // TODO replace the test below with your tests
-import {add, multiply} from '../../totest'
+import { add, multiply } from '../../totest'
 import supertest from 'supertest'
 import app from '../../app'
 import USER from '../../models/User'
@@ -18,48 +18,59 @@ describe('Math functions', () => {
   })
 })
 // reset password coontroller tests
-describe('reset password',()=>{
-  describe('send link to email' , ()=>{
-    test('incase of unregistered email', async ()=>{     
-      const response = await supertest(app).post("/resetpassword/link").send({email: "unregistered@gmail.com"})      
+describe('reset password', () => {
+  describe('send link to email', () => {
+    test('incase of unregistered email', async () => {
+      const response = await supertest(app)
+        .post('/resetpassword/link')
+        .send({ email: 'unregistered@gmail.com' })
       expect(response.status).toBe(400)
-          }, 10000)// timeout 10 seconds
+    }, 30000) // timeout 30 seconds
   })
-    test('incase of a registered email', async ()=>{        
-      const response = await supertest(app).post("/resetpassword/link").send({email: "josephrukundo2002@gmail.com"})      
-      expect(response.status).toBe(200)
-          }, 20000)
-     test('incase invalid email input', async ()=>{     
-            const response = await supertest(app).post("/resetpassword/link").send({email: "rukundjoseph"})      
-            expect(response.status).toBe(400)
-                }, 20000)
-  describe('add token and change password',()=>{
-    test('incase incorrect token', async ()=>{     
-      const response = await supertest(app).patch("/changepassword/josephrukundo2002@gmail.com/65328dba23").send({newpassword : "newpassword",
-    confirmpass: "newpassword"})      
+  test('incase of a registered email', async () => {
+    const response = await supertest(app)
+      .post('/resetpassword/link')
+      .send({ email: 'josephrukundo2002@gmail.com' })
+    expect(response.status).toBe(200)
+  }, 20000)
+  test('incase invalid email input', async () => {
+    const response = await supertest(app)
+      .post('/resetpassword/link')
+      .send({ email: 'rukundjoseph' })
+    expect(response.status).toBe(400)
+  }, 20000)
+  describe('add token and change password', () => {
+    test('incase incorrect token', async () => {
+      const response = await supertest(app)
+        .patch('/changepassword/josephrukundo2002@gmail.com/65328dba23')
+        .send({ newpassword: 'newpassword', confirmpass: 'newpassword' })
       expect(response.status).toBe(400)
-          }, 20000)
-    test('incase incorrect token', async ()=>{     
-            const response = await supertest(app).patch("/changepassword/josephrukundo2002@gmail.com/65328dba23").send({newpassword : "newpassword",
-          confirmpass: "newpassword"})      
-            expect(response.status).toBe(400)
-                }, 20000)
-                test('incase of a unmatching passwords', async ()=>{
-                  const user: any = await USER.findOne({where: {email: "josephrukundo2002@gmail.com"}})
-                  const token: any = await Tokens.findOne({where: {userId: `${user.id}`}})
-                  const response  = await supertest(app).patch(`/changepassword/josephrukundo2002@gmail.com/${token.token}`).send({newpassword : "newpas",
-          confirmpass: "newpaa"})
-          expect(response.status).toBe(400)
-                })
-    test('incase of a valid token and email', async ()=>{
-                  const user: any = await USER.findOne({where: {email: "josephrukundo2002@gmail.com"}})
-                  const token: any = await Tokens.findOne({where: {userId: `${user.id}`}})
-                  const response  = await supertest(app).patch(`/changepassword/josephrukundo2002@gmail.com/${token.token}`).send({newpassword : "newpas",
-          confirmpass: "newpas"})
-          expect(response.status).toBe(200)
-                })     
-    
-              })
-        })
-
-
+    }, 20000)
+    test('incase incorrect token', async () => {
+      const response = await supertest(app)
+        .patch('/changepassword/josephrukundo2002@gmail.com/65328dba23')
+        .send({ newpassword: 'newpassword', confirmpass: 'newpassword' })
+      expect(response.status).toBe(400)
+    }, 20000)
+    test('incase of a unmatching passwords', async () => {
+      const user: any = await USER.findOne({
+        where: { email: 'josephrukundo2002@gmail.com' },
+      })
+      const token: any = await Tokens.findOne({ where: { userId: `${user.id}` } })
+      const response = await supertest(app)
+        .patch(`/changepassword/josephrukundo2002@gmail.com/${token.token}`)
+        .send({ newpassword: 'newpas', confirmpass: 'newpaa' })
+      expect(response.status).toBe(400)
+    })
+    test('incase of a valid token and email', async () => {
+      const user: any = await USER.findOne({
+        where: { email: 'josephrukundo2002@gmail.com' },
+      })
+      const token: any = await Tokens.findOne({ where: { userId: `${user.id}` } })
+      const response = await supertest(app)
+        .patch(`/changepassword/josephrukundo2002@gmail.com/${token.token}`)
+        .send({ newpassword: 'newpas', confirmpass: 'newpas' })
+      expect(response.status).toBe(200)
+    })
+  })
+})
