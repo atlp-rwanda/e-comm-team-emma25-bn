@@ -82,9 +82,7 @@ class auth {
 
   static async signup(req: Request, res: Response) {
     try {
-      // await USER.drop()
       const {firstName, lastName, email, role, password} = req.body
-      //   const hash = await bcrypt.hashSync(password, 10)
       const checkUser = await USER.findOne({
         where: {email: email},
       })
@@ -109,9 +107,6 @@ class auth {
           role: 'User',
           password,
         })
-        //create profile
-        // BILLINGADDRESS.drop()
-        // ADDRESS.drop()
 
         if (createData) {
           const profiledata = {
@@ -129,12 +124,6 @@ class auth {
           where: {email: email},
           attributes: ['id', 'firstName', 'lastName', 'email', 'role'],
         })
-        const msg = {
-          to: createData.email,
-          from: process.env.SENDGRID_EMAIL,
-          subject: 'E-commerce email verification, Please verify your email',
-          html: '<strong>Thank you for Sign Up</strong>',
-        }
         const token = jwt.sign(
           {id: createData.id},
           process.env.JWT_SECRET as string,
@@ -169,7 +158,6 @@ class auth {
 
   static async verifyEmail(req: Request, res: Response) {
     const token = req.params.token
-    console.log(token)
     const result: any = decode(token)
     const updatedata = await USER.update(
       {
