@@ -1,11 +1,9 @@
 import { DataTypes } from "sequelize";
 import { sequelizedb } from "../../db/database";
-import countrylist from "country-data-list"
 import BillingAddress from "./BillingAdress";
 import Address from "./Address";
 
-// const currencys = countrylist.currencies.all
-// const languages = countrylist.languages.all
+
 
 const Profile = sequelizedb.define('profiles',{
     firstName: { 
@@ -34,7 +32,7 @@ const Profile = sequelizedb.define('profiles',{
         allowNull: true,
         validate: {
       isIn:{
-        args: [['male', 'female']],
+        args: [['male', 'female','Male','Female']],
         msg: "Must be male or female"
       } 
         }
@@ -42,6 +40,9 @@ const Profile = sequelizedb.define('profiles',{
      birthdate: {
         type: DataTypes.DATE,
         allowNull: true,
+        validate: {
+          
+        }
      },
      language: {
         type: DataTypes.STRING,
