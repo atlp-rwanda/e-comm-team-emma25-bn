@@ -6,39 +6,7 @@ import resetpass from "../controllers/resetcontrollers"
 
 const router = Router()
 
-/**
- * @swagger
- * /signup:
- *   post:
- *     tags:
- *       - users
- *     summary: all Users
- *     security: []
- *     requestBody:
- *        required: true
- *        content:
- *           application/json:
- *              schema:
- *                 type: object
- *                 required:                    
- *                    - email
- *                    - firstName
- *                    - lastName
- *                    - password                   
- *                 properties:                 
- *                    email:
- *                      type: string
- *                    firstname:
- *                      type: string
- *                    lastName:
- *                       type: string
- *                    password: 
- *                       type : string                   
- *     responses:
- *       201:
- *             description: successfully logged in;
- *       
- * */
+
 router.post('/signup', signupValidation, auth.signup)
 router.post('/login', loginValidation, auth.Login)
 router.get('/users', auth.getAlluser)
