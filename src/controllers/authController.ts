@@ -1,4 +1,6 @@
-/* eslint-disable  @typescript-eslint/no-explicit-any */
+/* this class hold functions f
+or authentication */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import USER from "../models/User";
 
@@ -12,14 +14,12 @@ import connectRedis from "connect-redis";
 import { createClient } from "redis";
 import Redis from "ioredis";
 import bcrypt from "bcrypt";
-
 const RedisStore = connectRedis(session);
 import { object } from "joi";
 import PROFILE from "../models/profilemodels/profile";
 import ADDRESS from "../models/profilemodels/Address";
 import BILLINGADDRESS from "../models/profilemodels/BillingAdress";
 config();
-
 const account_sid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const service_sid = process.env.TWILIO_SERVICE_SID;
@@ -113,7 +113,6 @@ class auth {
           };
           await PROFILE.create({ ...profiledata });
         }
-        //create pofile
         const user = await USER.findOne({
           where: { email: email },
           attributes: ["id", "firstName", "lastName", "email", "role"],

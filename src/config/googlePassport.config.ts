@@ -1,8 +1,7 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-
 import passport from "passport";
-import GoogleStrategy = require("passport-google-oauth2").Strategy;
-require("dotenv").config();
+import { Strategy as GoogleStrategy } from "passport-google-oauth2";
+import dotenv from "dotenv";
+dotenv.config();
 passport.use(
   new GoogleStrategy(
     {
@@ -20,6 +19,5 @@ passport.serializeUser((user, done) => {
   done(null, user);
 });
 passport.deserializeUser((user, done) => {
-  done(null, user
-  );
+  done(user);
 });

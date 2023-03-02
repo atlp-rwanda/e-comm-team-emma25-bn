@@ -1,7 +1,7 @@
 {
   "name": "team-emma-25-e-comm-backend",
   "version": "1.0.0",
-  "main": "app.js",
+  "main": "app.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/atlp-rwanda/team-emma-25-e-comm-backend.git"
@@ -15,8 +15,8 @@
   "scripts": {
     "build": "rimraf ./dist && tsc",
     "start": "node ./dist/app.js",
-    "lint": "npx eslint .",
-     "lint-fix": "npx eslint --fix .",
+    "lint": "npx eslint ./src",
+     "lint-fix": "npx eslint --fix ./src",
     "dev": "tsnd --respawn ./src/app.ts",
     "test": "jest --config ./src/jest.config.ts",
     "test:w": "jest  --config ./src/jest.config.ts --watch",
