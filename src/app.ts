@@ -3,7 +3,9 @@ import {config} from 'dotenv'
 import swaggerDocs from './docs/swagger'
 import connectdb from './db/database'
 import authRoutes from './routes/authroutes'
-import profileRoutes from "./routes/profileroutes"
+import profileRoutes from './routes/profileroutes'
+import roleRoutes from './routes/role.route'
+import permissionRoutes from './routes/permission.route'
 const app: Application = express()
 
 config()
@@ -12,6 +14,8 @@ app.use(express.json())
 
 app.use(authRoutes)
 app.use(profileRoutes)
+app.use(roleRoutes)
+app.use(permissionRoutes)
 console.log('Hello Team emma This backend API')
 
 const PORT = process.env.PORT || 3000
@@ -23,4 +27,4 @@ connectdb().then(() => {
   // change this to just port in case someone is listening from 127.0.0.1 instead of localhost
 })
 
-export default app 
+export default app

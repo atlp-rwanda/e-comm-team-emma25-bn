@@ -20,7 +20,7 @@
  *                 properties:
  *                    email:
  *                      type: string
- *                    firstname:
+ *                    firstName:
  *                      type: string
  *                    lastName:
  *                       type: string
@@ -260,12 +260,12 @@
 /**
  * @swagger
  * tags:
- *   name: User Roles
+ *   name: Roles
  *   description: API for managing roles
  * /role:
  *   post:
- *     summary: Create a new user role
- *     tags: [User Roles]
+ *     summary: Create a new role
+ *     tags: [Roles]
  *     requestBody:
  *        required: true
  *        content:
@@ -278,13 +278,13 @@
  *                 properties:
  *                    name:
  *                      type: string
- *                      description: The name of the user role
+ *                      description: The name of the role
  *                    description:
  *                      type: string
- *                      description: A description of the user role
+ *                      description: A description of the role
  *     responses:
  *       201:
- *         description: User role created successfully
+ *         description: Role created successfully
  *       400:
  *         description: Invalid request payload
  *       500:
@@ -297,8 +297,8 @@
  * @swagger
  * /role/{name}:
  *   patch:
- *     summary: Update user role by name
- *     tags: [User Roles]
+ *     summary: Update role by name
+ *     tags: [Roles]
  *     parameters:
  *       - in: path
  *         name: name
@@ -333,7 +333,7 @@
  * /role/{name}:
  *   get:
  *     summary: Get a role by name
- *     tags: [User Roles]
+ *     tags: [Roles]
  *     parameters:
  *       - in: path
  *         name: name
@@ -352,7 +352,7 @@
  * /role:
  *   get:
  *     summary: Retrieve all roles
- *     tags: [User Roles]
+ *     tags: [Roles]
  *     security: []
  *     produces:
  *       - application/json
@@ -367,7 +367,7 @@
  *   delete:
  *     summary: Delete a role by name
  *     tags:
- *       - User Roles
+ *       - Roles
  *     parameters:
  *       - in: path
  *         name: name
@@ -385,8 +385,8 @@
  * @swagger
  * /authorize:
  *   post:
- *     summary: Update a user role by user email
- *     tags: [User Roles]
+ *     summary: Update a role by user email
+ *     tags: [Roles]
  *     requestBody:
  *       required: true
  *       content:
@@ -414,12 +414,12 @@
 /**
  * @swagger
  * tags:
- *   name: User Roles
+ *   name: Permissions
  *   description: API for managing permissions
  * /permission:
  *   post:
- *     summary: Create a new user permission
- *     tags: [User Permissions]
+ *     summary: Create a new permission
+ *     tags: [Permissions]
  *     requestBody:
  *        required: true
  *        content:
@@ -432,13 +432,13 @@
  *                 properties:
  *                    name:
  *                      type: string
- *                      description: The name of the user permission
+ *                      description: The name of the permission
  *                    description:
  *                      type: string
- *                      description: A description of the user permission
+ *                      description: A description of the permission
  *     responses:
  *       201:
- *         description: User permission created successfully
+ *         description: Permission created successfully
  *       400:
  *         description: Invalid request payload
  *       500:
@@ -451,8 +451,8 @@
  * @swagger
  * /permission/{name}:
  *   patch:
- *     summary: Update user permission by name
- *     tags: [User Permissions]
+ *     summary: Update permission by name
+ *     tags: [Permissions]
  *     parameters:
  *       - in: path
  *         name: name
@@ -487,7 +487,7 @@
  * /permission/{name}:
  *   get:
  *     summary: Get a permission by name
- *     tags: [User Permissions]
+ *     tags: [Permissions]
  *     parameters:
  *       - in: path
  *         name: name
@@ -506,7 +506,7 @@
  * /permission:
  *   get:
  *     summary: Retrieve all permissions
- *     tags: [User Permissions]
+ *     tags: [Permissions]
  *     security: []
  *     produces:
  *       - application/json
@@ -521,7 +521,7 @@
  *   delete:
  *     summary: Delete a permission by name
  *     tags:
- *       - User Permissions
+ *       - Permissions
  *     parameters:
  *       - in: path
  *         name: name

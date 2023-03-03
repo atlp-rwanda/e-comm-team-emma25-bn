@@ -2,7 +2,6 @@
 import USER from '../models/User'
 import ROLE from '../db/models/Role'
 import PERMISSION from '../db/models/Permission'
-// import ROLE from ''
 
 import {Request, Response} from 'express'
 import {Twilio} from 'twilio'
@@ -72,7 +71,7 @@ class auth {
   static async signup(req: Request, res: Response) {
     try {
       // await USER.drop()
-      const {firstName, lastName, email, role, password} = req.body
+      const {firstName, lastName, email, password} = req.body
       //   const hash = await bcrypt.hashSync(password, 10)
       const checkUser = await USER.findOne({
         where: {email: email},
@@ -95,7 +94,6 @@ class auth {
           firstName,
           lastName,
           email,
-          role,
           password,
         })
         //create profile
@@ -114,7 +112,7 @@ class auth {
         //create pofile
         const user = await USER.findOne({
           where: {email: email},
-          attributes: ['id', 'firstName', 'lastName', 'email', 'role'],
+          attributes: ['id', 'firstName', 'lastName', 'email', 'roleID'],
         })
         res.status(200).json({
           status: 200,
@@ -122,7 +120,6 @@ class auth {
           token: encode({
             id: createData.id,
             email: createData.email,
-            role: createData.role,
           }), //changed the token to keep same fields as login
         })
       }
@@ -145,7 +142,7 @@ class auth {
           'firstName',
           'lastName',
           'email',
-          'role',
+          'roleID',
           'password',
         ],
       })
@@ -211,231 +208,6 @@ class auth {
         statusCode: 400,
         message: error.message,
       })
-    }
-  }
-
-  static async authorize(req: Request, res: Response) {
-    const {email, role} = req.body
-    try {
-      const user = await USER.findOne({where: {email}})
-      if (!user) {
-        return res
-          .status(404)
-          .json({error: `User with email ${email} not found`})
-      }
-      await user.update({role})
-      return res
-        .status(200)
-        .json({message: `User with email ${email} is update to ${role} role`})
-    } catch (error) {
-      console.error(error)
-      return res.status(500).json({error: 'Server error'})
-    }
-  }
-
-  static async createNewRole(req: Request, res: Response) {
-    const {name, description} = req.body
-    try {
-      if (!name || !description) {
-        res.status(400).json({
-          status: 400,
-          message: 'Please Add both Role name and descripiton',
-        })
-      } else {
-        const newRole = await ROLE.create({name, description})
-        res.status(201).json({'New Role': newRole})
-      }
-    } catch (err) {
-      res.json({statusCode: 400, message: err})
-    }
-  }
-
-  static async getAllRoles(req: Request, res: Response) {
-    try {
-      const roles = await ROLE.findAll()
-      res.status(200).json({statusCode: 200, data: roles})
-    } catch (error) {
-      res.status(400).json({statusCode: 400, data: error})
-    }
-  }
-
-  static async getOneRole(req: Request, res: Response) {
-    const name = req.params.name
-    try {
-      const role = await ROLE.findOne({
-        where: {name: name},
-      })
-      if (role) {
-        res.status(200).json({statusCode: 200, data: role})
-      } else {
-        res.status(404).json({
-          statusCode: 404,
-          Message: `Role with name ${name}  does not exist`,
-        })
-      }
-    } catch (error) {
-      res.status(400).json({statusCode: 400, data: error})
-    }
-  }
-
-  static async deleteOneRole(req: Request, res: Response) {
-    const roleName = req.params.name
-    const role = await ROLE.findOne({
-      where: {name: roleName},
-    })
-    try {
-      if (role) {
-        await ROLE.destroy({
-          where: {
-            name: roleName,
-          },
-        })
-        res
-          .status(200)
-          .json({statusCode: 200, message: 'Success', 'Deleted Role': role})
-      } else {
-        res.status(404).json({
-          statusCode: 404,
-          Message: `Role with name ${roleName} does not exist`,
-        })
-      }
-    } catch (error) {
-      res.status(400).json({statusCode: 400, data: error})
-    }
-  }
-
-  static async updateOneRole(req: Request, res: Response) {
-    const roleName = req.params.name
-    const role = await ROLE.findOne({
-      where: {name: roleName},
-    })
-    const {name, description} = req.body
-
-    try {
-      if (!role) {
-        return res.status(404).json({
-          statusCode: 404,
-          message: `Role with the name ${name} does not exist`,
-        })
-      } else {
-        // Change everyone without a last name to "Doe"
-        await ROLE.update(
-          {name, description},
-          {
-            where: {
-              name: roleName,
-            },
-          },
-        )
-        return res.status(201).json({statusCode: 201, message: 'Success'})
-      }
-    } catch (error) {
-      console.error(error)
-      return res.status(500).json({statusCode: 400, error: 'Server error'})
-    }
-  }
-  // PERMISSIONS
-  static async createNewPermission(req: Request, res: Response) {
-    const {name, description} = req.body
-    try {
-      if (!name || !description) {
-        res.status(400).json({
-          status: 400,
-          message: 'Please Add both Permission name and descripiton',
-        })
-      } else {
-        const newPermission = await PERMISSION.create({name, description})
-        res.status(201).json({'New Permission': newPermission})
-      }
-    } catch (err) {
-      res.json({statusCode: 400, message: err})
-    }
-  }
-
-  static async getAllPermissions(req: Request, res: Response) {
-    try {
-      const permissions = await PERMISSION.findAll()
-      res.status(200).json({statusCode: 200, data: permissions})
-    } catch (error) {
-      res.status(400).json({statusCode: 400, data: error})
-    }
-  }
-
-  static async getOnePermission(req: Request, res: Response) {
-    const name = req.params.name
-    try {
-      const permission = await PERMISSION.findOne({
-        where: {name: name},
-      })
-      if (permission) {
-        res.status(200).json({statusCode: 200, data: permission})
-      } else {
-        res.status(404).json({
-          statusCode: 404,
-          Message: `Permission with name ${name} does not exist`,
-        })
-      }
-    } catch (error) {
-      res.status(400).json({statusCode: 400, data: error})
-    }
-  }
-
-  static async deleteOnePermission(req: Request, res: Response) {
-    const permissionName = req.params.name
-    const permission = await ROLE.findOne({
-      where: {name: permissionName},
-    })
-    try {
-      if (permission) {
-        await PERMISSION.destroy({
-          where: {
-            name: permissionName,
-          },
-        })
-        res.status(200).json({
-          statusCode: 200,
-          message: 'Success',
-          'Deleted Role': permission,
-        })
-      } else {
-        res.status(404).json({
-          statusCode: 404,
-          Message: `Permission with name ${permissionName} does not exist`,
-        })
-      }
-    } catch (error) {
-      res.status(400).json({statusCode: 400, data: error})
-    }
-  }
-
-  static async updateOnePermission(req: Request, res: Response) {
-    const permissionName = req.params.name
-    const permission = await PERMISSION.findOne({
-      where: {name: permissionName},
-    })
-    const {name, description} = req.body
-
-    try {
-      if (!permission) {
-        return res.status(404).json({
-          statusCode: 404,
-          message: `Permission with the name ${permissionName} does not exist`,
-        })
-      } else {
-        // Change everyone without a last name to "Doe"
-        await PERMISSION.update(
-          {name, description},
-          {
-            where: {
-              name: permissionName,
-            },
-          },
-        )
-        return res.status(201).json({statusCode: 201, message: 'Success'})
-      }
-    } catch (error) {
-      console.error(error)
-      return res.status(500).json({statusCode: 400, error: 'Server error'})
     }
   }
 }

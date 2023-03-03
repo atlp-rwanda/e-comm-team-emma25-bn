@@ -1,7 +1,8 @@
-import { sequelizedb } from "../db/database";
-import {DataTypes} from "sequelize";
-import bcrypt from "bcrypt"
-import Profile from "./profilemodels/profile";
+import {sequelizedb} from '../db/database'
+import {DataTypes, HasMany} from 'sequelize'
+import bcrypt from 'bcrypt'
+import Profile from './profilemodels/profile'
+import Role from '../db/models/Role'
 const USER = sequelizedb.define('user', {
   firstName: {
     type: DataTypes.STRING,
@@ -16,9 +17,14 @@ const USER = sequelizedb.define('user', {
     allowNull: false,
     unique: true,
   },
-  role: {
-    type: DataTypes.STRING,
-    defaultValue:"Buyer"
+  roleId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 2, // <-- the default value to 2(user)
+    references: {
+      model: 'roles',
+      key: 'id',
+    },
   },
   password: {
     type: DataTypes.STRING,
@@ -33,7 +39,9 @@ const USER = sequelizedb.define('user', {
   },
 })
 USER.sync()
+USER.belongsTo(Role, {foreignKey: 'roleId'})
+Role.hasMany(USER)
 
-USER.hasOne(Profile, { foreignKey: 'userId', as: 'profile' });
-Profile.belongsTo(Profile, { foreignKey: 'userId' });
-export default USER 
+USER.hasOne(Profile, {foreignKey: 'userId', as: 'profile'})
+Profile.belongsTo(Profile, {foreignKey: 'userId'})
+export default USER
