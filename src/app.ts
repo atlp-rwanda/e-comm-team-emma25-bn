@@ -6,8 +6,9 @@ import swaggerDocs from "./docs/swagger";
 import connectdb from "./db/database";
 import authRoutes from "./routes/authroutes";
 import profileRoutes from "./routes/profileroutes";
-import roleRoutes from "./routes/role.route";
-import permissionRoutes from "./routes/permission.route";
+import roleRoutes from "./routes/rolesPermissionsRoutes/role.route";
+import rolePermissionRoutes from "./routes/rolesPermissionsRoutes/rolePermission.route";
+import permissionRoutes from "./routes/rolesPermissionsRoutes/permission.route";
 import passport from "passport";
 import session from "express-session";
 
@@ -31,6 +32,7 @@ app.use(authRoutes);
 app.use(profileRoutes);
 app.use(roleRoutes);
 app.use(permissionRoutes);
+app.use(rolePermissionRoutes);
 console.log("Hello Team emma This backend API");
 
 const PORT = process.env.PORT || 3000;

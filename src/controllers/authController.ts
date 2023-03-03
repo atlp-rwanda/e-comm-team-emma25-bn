@@ -16,6 +16,7 @@ import { object } from "joi";
 import PROFILE from "../models/profilemodels/profile";
 import ADDRESS from "../models/profilemodels/Address";
 import BILLINGADDRESS from "../models/profilemodels/BillingAdress";
+import ROLE from "../db/models/Role.model";
 config();
 const account_sid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -72,11 +73,12 @@ class auth {
     static async signup(req: Request, res: Response) {
         try {
             // await USER.drop()
-            const { firstName, lastName, email, role, password } = req.body;
+            const { firstName, lastName, email, password } = req.body;
             //   const hash = await bcrypt.hashSync(password, 10)
             const checkUser = await USER.findOne({
                 where: { email: email },
             });
+
             if (checkUser) {
                 return res.status(400).json({
                     status: 400,
@@ -110,30 +112,23 @@ class auth {
                     };
                     await PROFILE.create({ ...profiledata });
                 }
-                const user = await USER.findOne({
-                    where: { email: email },
-                    attributes: [
-                        "id",
-                        "firstName",
-                        "lastName",
-                        "email",
-                        "role",
-                    ],
-                });
+                // GET ROLE FROM THE ROLEID FOREIGN KEY
+                const role = await createData.getRole();
                 res.status(200).json({
                     status: 200,
                     message: "account created successfully",
+                    createData,
                     token: encode({
                         id: createData.id,
                         email: createData.email,
-                        role: createData.role,
+                        role: role.name,
                     }), //changed the token to keep same fields as login
                 });
             }
-        } catch (error: any) {
+        } catch (error) {
             res.status(500).json({
                 status: 500,
-                message: "Server error :" + error.message,
+                message: { error },
             });
         }
     }
@@ -149,7 +144,7 @@ class auth {
                     "firstName",
                     "lastName",
                     "email",
-                    "role",
+                    "roleId",
                     "password",
                 ],
             });
@@ -162,6 +157,10 @@ class auth {
                     dbPassword
                 );
                 // console.log(decreptedPassword)
+
+                // GET ROLE FROM FOREIGN KEY
+                const logginUser: any = findUser;
+                const role = await logginUser.getRole();
                 if (decreptedPassword) {
                     res.status(200).json({
                         stastus: 200,
@@ -170,7 +169,7 @@ class auth {
                         token: encode({
                             id: findUser.dataValues.id,
                             email: findUser.dataValues.email,
-                            role: findUser.dataValues.role,
+                            role: role.name,
                         }),
                     });
                 } else {
@@ -192,6 +191,7 @@ class auth {
         try {
             const users: object = await USER.findAll({
                 attributes: { exclude: ["password"] },
+                include: ROLE,
             });
             res.status(200).json({
                 statuscode: 200,

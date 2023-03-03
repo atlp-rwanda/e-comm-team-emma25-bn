@@ -1,5 +1,5 @@
 import { Router } from "express";
-import permissionsController from "../controllers/permission.controller";
+import permissionsController from "../../controllers/rolesPermissionControllers/permission.controller";
 
 const router = Router();
 router.post("/permission", permissionsController.createNewPermission);

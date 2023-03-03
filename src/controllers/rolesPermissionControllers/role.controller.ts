@@ -1,7 +1,7 @@
 // import USER from '../models/User'
-import USER from "../models/User";
-import ROLE from "../db/models/Role";
-// import ROLE from ''
+import USER from "../../models/User";
+// import ROLE from "../../db/models/Role.model";
+import ROLE from "../../db/models/Role.model";
 
 import { Request, Response } from "express";
 
@@ -10,27 +10,29 @@ config();
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 class RolesController {
-    static async updateUseRole(req: Request, res: Response) {
+    static async updateUserRole(req: Request, res: Response) {
         const { email, roleName } = req.body;
         try {
             const user = await USER.findOne({ where: { email } });
             if (!user) {
-                return res
-                    .status(404)
-                    .json({ error: `User with email ${email} not found` });
+                return res.status(404).json({
+                    statusCode: 404,
+                    message: `User with email ${email} not found`,
+                });
             } else {
-                const roleID = await ROLE.findOne({
+                const role: any = await ROLE.findOne({
                     where: { name: roleName },
                 });
-                if (roleID) {
-                    await user.update({ roleID });
+                const newAssignedRoleID = role.dataValues.id;
+                if (role) {
+                    await user.update({ roleId: newAssignedRoleID });
                     return res.status(200).json({
                         message: `User with email ${email} is update to ${roleName} role`,
                     });
                 } else {
                     return res.status(404).json({
                         statusCode: 404,
-                        message: `Role with called ${roleName} does not exist`,
+                        message: `${roleName} role does not exist`,
                     });
                 }
             }

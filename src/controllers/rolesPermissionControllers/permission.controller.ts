@@ -1,6 +1,6 @@
 // import USER from '../models/User'
-import ROLE from "../db/models/Role";
-import PERMISSION from "../db/models/Permission";
+import ROLE from "../../db/models/Role.model";
+import PERMISSION from "../../db/models/Permission.model";
 // import ROLE from ''
 
 import { Request, Response } from "express";
@@ -60,16 +60,17 @@ class PermissionsControler {
 
     static async deleteOnePermission(req: Request, res: Response) {
         const permissionName = req.params.name;
-        const permission = await ROLE.findOne({
+        const permission = await PERMISSION.findOne({
             where: { name: permissionName },
         });
         try {
             if (permission) {
-                await PERMISSION.destroy({
-                    where: {
-                        name: permissionName,
-                    },
-                });
+                await permission.destroy();
+                // await PERMISSION.destroy({
+                //     where: {
+                //         name: permissionName,
+                //     },
+                // });
                 res.status(200).json({
                     statusCode: 200,
                     message: "Success",
