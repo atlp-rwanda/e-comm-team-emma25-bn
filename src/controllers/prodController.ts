@@ -7,10 +7,10 @@ import Images from "../models/Image"
 import Product from "../models/Product"
 
 const uids = new shortUniqueId({ length: 12 });
-const jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjEyLCJyb2xlIjoic2VsbGVyIn0.rD30uQ2cz38LKGzwBdMONp1GuVPIAl7ZaOXTahzwW2c"
+
 class ProductController {
     static async saveProduct(req: Request, res: Response) {
-        // const { jwt } = req.cookies;
+        const jwt = req.cookies.jwt || req.body.token || req.query.jwt;
         if (jwt) {
             const userData: any = decode(jwt);
             if (userData.role != "seller") {
