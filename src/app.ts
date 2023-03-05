@@ -11,6 +11,7 @@ import rolePermissionRoutes from "./routes/rolesPermissionsRoutes/rolePermission
 import permissionRoutes from "./routes/rolesPermissionsRoutes/permission.route";
 import passport from "passport";
 import session from "express-session";
+import productRoutes from "./routes/productRoutes"
 
 const app: Application = express();
 import "./config/googlePassport.config";
