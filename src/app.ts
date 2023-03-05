@@ -6,17 +6,20 @@ import swaggerDocs from "./docs/swagger";
 import connectdb from "./db/database";
 import authRoutes from "./routes/authroutes";
 import profileRoutes from "./routes/profileroutes";
+import roleRoutes from "./routes/rolesPermissionsRoutes/role.route";
+import rolePermissionRoutes from "./routes/rolesPermissionsRoutes/rolePermission.route";
+import permissionRoutes from "./routes/rolesPermissionsRoutes/permission.route";
 import passport from "passport";
 import session from "express-session";
 
 const app: Application = express();
 import "./config/googlePassport.config";
 app.use(
-  session({
-    secret: `process.env.SECRET`,
-    resave: false,
-    saveUninitialized: true,
-  })
+    session({
+        secret: `process.env.SECRET`,
+        resave: false,
+        saveUninitialized: true,
+    })
 );
 app.use(passport.initialize());
 app.use(passport.session());
@@ -27,17 +30,20 @@ app.use(express.json());
 
 app.use(authRoutes);
 app.use(profileRoutes);
+app.use(roleRoutes);
+app.use(permissionRoutes);
+app.use(rolePermissionRoutes);
 console.log("Hello Team emma This backend API");
 
 const PORT = process.env.PORT || 3000;
 app.get("/", (req, res) =>
-  res.send('Hello, use  "/docs" to view the swagger docs')
+    res.send('Hello, use  "/docs" to view the swagger docs')
 );
 /*called the database connection below */
 connectdb().then(() => {
-  app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
-  swaggerDocs(app);
-  // change this to just port in case someone is listening from 127.0.0.1 instead of localhost
+    app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+    swaggerDocs(app);
+    // change this to just port in case someone is listening from 127.0.0.1 instead of localhost
 });
 
 export default app;

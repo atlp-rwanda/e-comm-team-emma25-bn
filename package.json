@@ -14,7 +14,7 @@
   "homepage": "https://github.com/atlp-rwanda/team-emma-25-e-comm-backend#readme",
   "scripts": {
     "build": "rimraf ./dist && tsc",
-    "start": "node ./dist/app.js",
+    "start": "tsc && node ./dist/app.js",
     "lint": "npx eslint ./src",
      "lint-fix": "npx eslint --fix ./src",
     "dev": "tsnd --respawn ./src/app.ts",
