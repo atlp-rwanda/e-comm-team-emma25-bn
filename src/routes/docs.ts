@@ -1,5 +1,59 @@
 /**
  * @swagger
+ * tags:
+ *  name: Products
+ *  description: Endpoints that handles product actions
+ */
+
+/**
+ * @swagger
+ * /products/add:
+ *  post:
+ *      tags:
+ *          - Products
+ *      summary: Endpoint for a seller to add the product 
+ *      consumes:
+ *          - multipart/form-data
+ *      parameters:
+ *          - in: formData
+ *            name: pname
+ *            type: string
+ *            required: true
+ *            description: Product Name
+ *          - in: formData
+ *            name: p_price
+ *            type: string
+ *            required: true
+ *            description: Product Price
+ *          - in: formData
+ *            name: edate
+ *            type: date
+ *            required: true
+ *            description: Expiry Date
+ *          - in: formData
+ *            name: category
+ *            type: string
+ *            required: true
+ *            description: Product Category
+ *          - in: formData
+ *            name: imgs
+ *            type: file
+ *            required: true
+ *            description: Product Images
+ *      responses:
+ *          201: 
+ *              description: Product details are created and saved successfully
+ *          400:
+ *              description: Bad request
+ *          403: 
+ *              description: You do not have enough permission to add a product
+ *          404:
+ *              description: Missing token
+ *                
+ * */
+
+/**
+ * @swagger
  * /signup:
  *   post:
  *     tags:

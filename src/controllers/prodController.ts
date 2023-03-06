@@ -11,8 +11,10 @@ const uids = new shortUniqueId({ length: 12 });
 class ProductController {
     static async saveProduct(req: Request, res: Response) {
         const jwt = req.cookies.jwt || req.body.token || req.query.jwt;
-        if (jwt) {
-            const userData: any = decode(jwt);
+        const bToken = req.headers.authorization?req.headers.authorization.split(' ')[1]:'';
+        
+        if (jwt || bToken != '') {
+            const userData: any = decode(jwt || bToken);
             if (userData.role != "seller") {
                 return res.status(403).json({ status: 403, message: "You should login as a seller to add a product." })
             }
