@@ -1,5 +1,59 @@
 /**
  * @swagger
+ * tags:
+ *  name: Products
+ *  description: Endpoints that handles product actions
+ */
+
+/**
+ * @swagger
+ * /products/add:
+ *  post:
+ *      tags:
+ *          - Products
+ *      summary: Endpoint for adding product with its images
+ *      requestBody:
+ *          content:
+ *              multipart/form-data:
+ *                  schema:
+ *                     type: object
+ *                     properties:
+ *                          pname:
+ *                              type: string
+ *                              required: true
+ *                              example: "Computer" 
+ *                          p_price:
+ *                              type: number
+ *                              required: true
+ *                              example: "250000"
+ *                          edate:
+ *                              type: string
+ *                              example: "YYYY-MM-DD"
+ *                              required: true
+ *                              format: date
+ *                          category:
+ *                              type: string
+ *                              required: true
+ *                              example: "IT"
+ *                          imgs:
+ *                              type: array
+ *                              required: true
+ *                              items:
+ *                                  type: file
+ *      responses:
+ *          201:
+ *              description: Product details and images are saved
+ *          400:
+ *              description: Bad request
+ *          403:
+ *              description: You do not have permissions to add a product
+ *          404:
+ *              description: Invalid or missing security token
+ * 
+ */
+
+/**
+ * @swagger
  * /signup:
  *   post:
  *     tags:

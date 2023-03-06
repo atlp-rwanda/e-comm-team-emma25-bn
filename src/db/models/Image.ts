@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import { sequelizedb } from "../db/database"
+import { sequelizedb } from "../database"
 const ProductImages = sequelizedb.define('pro_images', {
     ImageID: {
         type: DataTypes.STRING,

@@ -3,16 +3,21 @@ import { MulterError } from "multer"
 import { decode } from "../helper/jwtTokenize"
 import shortUniqueId from "short-unique-id"
 import multipleUploader from "../middlewares/fileUploader"
-import Images from "../models/Image"
-import Product from "../models/Product"
+import Images from "../db/models/Image"
+import Product from "../db/models/Product"
+
+Product.hasMany(Images, { foreignKey: 'ProductID' })
+Images.belongsTo(Product, { foreignKey: 'ProductID' })
 
 const uids = new shortUniqueId({ length: 12 });
 
 class ProductController {
     static async saveProduct(req: Request, res: Response) {
         const jwt = req.cookies.jwt || req.body.token || req.query.jwt;
-        if (jwt) {
-            const userData: any = decode(jwt);
+        const bToken = req.headers.authorization ? req.headers.authorization.split(' ')[1] : '';
+
+        if (jwt || bToken != '') {
+            const userData: any = decode(jwt || bToken);
             if (userData.role != "seller") {
                 return res.status(403).json({ status: 403, message: "You should login as a seller to add a product." })
             }
@@ -52,7 +57,8 @@ class ProductController {
                             ExpiryDate,
                             ProductOwner
                         })
-                        res.status(201).json({ status: 201, message: "Product image and details are saved.", productData: prd })
+                        const imgs = await Images.findAll({where: {ProductID}})
+                        res.status(201).json({ status: 201, message: "Product image and details are saved.", productData: prd , ImageDetails: imgs})
                     } catch (error) {
                         res.status(400).json({ status: 400, message: error })
                     }

@@ -2,6 +2,7 @@
 
 import express, { Application } from "express";
 import { config } from "dotenv";
+import cookieParser from "cookie-parser"
 import swaggerDocs from "./docs/swagger";
 import connectdb from "./db/database";
 import authRoutes from "./routes/authroutes";
@@ -34,7 +35,8 @@ app.use(profileRoutes);
 app.use(roleRoutes);
 app.use(permissionRoutes);
 app.use(rolePermissionRoutes);
-console.log("Hello Team emma This backend API");
+app.use(cookieParser())
+app.use('/products', productRoutes)
 
 const PORT = process.env.PORT || 3000;
 app.get("/", (req, res) =>

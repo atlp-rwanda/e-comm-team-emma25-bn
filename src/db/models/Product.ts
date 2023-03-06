@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize"
-import { sequelizedb } from "../db/database"
+import { sequelizedb } from "../database"
 
 const Product = sequelizedb.define('Products', {
     ProductID: {
