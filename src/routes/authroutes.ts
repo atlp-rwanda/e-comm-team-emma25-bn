@@ -52,6 +52,7 @@ router.post("/logout", auth.logout);
 router.post("/authorize", auth.authorize);
 router.post("/resetpassword/link", resetpass.sendlink);
 router.patch("/changepassword/:useremail/:token", resetpass.changepassword);
+router.patch('/update-password', auth.updatePassword);
 router.get(
     "/auth/google",
     passports.authenticate("google", { scope: ["email", "profile"] })
@@ -64,6 +65,7 @@ router.get(
     })
 );
 router.get("/googleResponse", GoogleController.googleAuth);
+
 
 /* this delete user route is not protected it is just for testing and setting up the project*/
 

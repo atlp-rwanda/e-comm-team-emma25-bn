@@ -134,6 +134,54 @@
  *         description: The user's password has been changed successfully
  */
 
+//UPDATE PASSWORD
+
+/**
+ * @swagger
+ * /update-password:
+ *   patch:
+ *     tags:
+ *       - users
+ *     summary: Update user password
+ *     security: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: The user's email
+ *                 required: true
+ *               oldPassword:
+ *                 type: string
+ *                 description: The user's old password
+ *                 required: true
+ *               newPassword:
+ *                 type: string
+ *                 description: The user's new password
+ *                 required: true
+ *               confirmPassword:
+ *                 type: string
+ *                 description: The user's new password, confirmed
+ *                 required: true
+ *     responses:
+ *       '200':
+ *         description: The user's password has been changed successfully
+ *       '400':
+ *         description: Bad request
+ *       '401':
+ *         description: Unauthorized
+ *       '403':
+ *         description: Forbidden
+ *       '404':
+ *         description: Not found
+ *       '500':
+ *         description: Internal server error
+ */
+
 /**
  * @swagger
  * /profile/edit:

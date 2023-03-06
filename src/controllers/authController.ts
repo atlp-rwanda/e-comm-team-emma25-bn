@@ -17,6 +17,8 @@ import PROFILE from "../models/profilemodels/profile";
 import ADDRESS from "../models/profilemodels/Address";
 import BILLINGADDRESS from "../models/profilemodels/BillingAdress";
 import ROLE from "../db/models/Role.model";
+import { foundUser } from "../helper/authHelpers";
+import { comparePassword } from "../helper/passwordHelpers";
 config();
 const account_sid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -183,6 +185,66 @@ class auth {
             res.status(500).json({
                 stastus: 500,
                 message: "server problem" + error.message,
+            });
+        }
+    }
+    //UPDATE PASSWORD
+
+    static async updatePassword(req: Request, res: Response) {
+        try {
+            const { email, oldPassword, newPassword, confirmPassword } = req.body;
+
+            // Input validation
+            if (!email || !oldPassword || !newPassword || !confirmPassword) {
+                return res.status(400).json({
+                    status: 400,
+                    message: "Missing required fields",
+                });
+            }
+
+            const userFound = await foundUser(email);
+            if (!userFound) {
+                return res
+                    .status(404)
+                    .json({ status: 404, message: "User not found" });
+            }
+
+            if (newPassword !== confirmPassword) {
+                return res.status(400).json({
+                    status: 400,
+                    message: "New password and confirmation password do not match",
+                });
+            }
+
+            const databasePassword = (userFound as any).password;
+            console.log(`password fetched from database${databasePassword}`)
+            const id = (userFound as any).id;
+            const decryptedPassword = await comparePassword(oldPassword, databasePassword);
+            if (!decryptedPassword) {
+                return res.status(400).json({ status: 400, message: "Wrong password" });
+            }
+
+            const hash = bcrypt.hashSync(newPassword, 10);
+            const updatePassword = await USER.update(
+                { password: hash },
+                { where: { id: id } }
+            );
+
+            if (updatePassword) {
+                return res.status(200).json({
+                    status: 200,
+                    message: "Password changed successfully",
+                });
+            } else {
+                return res.status(500).json({
+                    status: 500,
+                    message: "Server error, password not updated",
+                });
+            }
+        } catch (error: any) {
+            return res.status(500).json({
+                status: 500,
+                message: "Server error: " + error.message,
             });
         }
     }
