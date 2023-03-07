@@ -1,16 +1,20 @@
 import nodemailer from "nodemailer"
 import { config } from "dotenv"
 config()
+/* eslint-disable @typescript-eslint/no-explicit-any */ 
 
 const sendEmail= async(email: string ,subject: string  ,text: string )=>{
     try {
-        const transporter = nodemailer.createTransport({            
+        const transporter = nodemailer.createTransport({    
             service: 'gmail',       
-            secure: true,
-            port: 587,
+            secure: true,           
             auth: {
+                type: 'OAuth2',
                 user: process.env.USER,
-                pass: process.env.PASS,      
+                clientId: process.env.NODEMAILER_CLIENT_ID,
+                clientSecret: process.env.MODEMAILER_CLIENT_SECRET,
+                refreshToken: process.env.MAILER_REFRESH_ACCESSTOKEN                   
+                
           },
           tls: {
             rejectUnauthorized: false
@@ -21,10 +25,9 @@ const sendEmail= async(email: string ,subject: string  ,text: string )=>{
             to: email,
             subject: subject,
             text: text,
-        })
-        console.log("email sent")        
-    } catch (error) {
-        console.log(error)        
+        })           
+    } catch (error: any ) {
+       throw new error(error.message)    
     }
 }
 
