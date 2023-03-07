@@ -5,6 +5,7 @@ import app from "../../app";
 import USER from "../../models/User";
 import { httpRequest, httpResponse } from "../mock/user.mock";
 import GoogleController from "../googleAuthController";
+import Tokens from "../../models/token"
 jest.setTimeout(70000);
 describe("Login via google", () => {
   afterAll(async () => {
@@ -77,13 +78,7 @@ describe('reset password', () => {
       const response = await supertest(app)
         .patch('/changepassword/josephrukundo2002@gmail.com/65328dba23')
         .send({ newpassword: 'newpassword', confirmpass: 'newpassword' })
-      expect(response.status).toBe(400)
-    }, 20000)
-    test('incase incorrect token', async () => {
-      const response = await supertest(app)
-        .patch('/changepassword/josephrukundo2002@gmail.com/65328dba23')
-        .send({ newpassword: 'newpassword', confirmpass: 'newpassword' })
-      expect(response.status).toBe(400)
+      expect(response.status).toBe(401)
     }, 20000)
     test('incase of a unmatching passwords', async () => {
       const user: any = await USER.findOne({

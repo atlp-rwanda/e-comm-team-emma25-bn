@@ -1,9 +1,3 @@
-import USER from '../models/User'
-import bcrypt from "bcrypt"
-import { Request, Response } from 'express'
-import { Twilio } from 'twilio'
-import { encode } from '../helper/jwtTokenize'
-
 import session from 'express-session'
 import connectRedis from 'connect-redis'
 import { createClient } from 'redis'
@@ -11,21 +5,8 @@ import Redis from 'ioredis'
 
 const RedisStore = connectRedis(session)
 import { object } from 'joi'
-import PROFILE from '../models/profilemodels/profile'
 import ADDRESS from '../models/profilemodels/Address'
 import BILLINGADDRESS from '../models/profilemodels/BillingAdress'
-
-const account_sid = process.env.TWILIO_ACCOUNT_SID
-const authToken = process.env.TWILIO_AUTH_TOKEN
-const service_sid = process.env.TWILIO_SERVICE_SID
-
-import { config } from 'dotenv'
-config()
-
-/* this class hold functions for authentication */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
-import USER from "../models/User";
 
 import { Request, Response } from "express";
 import { Twilio } from "twilio";
@@ -35,6 +16,7 @@ import { config } from "dotenv";
 import bcrypt from "bcrypt";
 import PROFILE from "../models/profilemodels/profile";
 import ROLE from "../db/models/Role.model";
+import USER from '../models/User'
 config();
 const account_sid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
