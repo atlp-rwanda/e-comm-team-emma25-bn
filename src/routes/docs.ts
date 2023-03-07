@@ -12,24 +12,24 @@
  *           application/json:
  *              schema:
  *                 type: object
- *                 required:                    
+ *                 required:
  *                    - email
  *                    - firstName
  *                    - lastName
- *                    - password                   
- *                 properties:                 
+ *                    - password
+ *                 properties:
  *                    email:
  *                      type: string
- *                    firstname:
+ *                    firstName:
  *                      type: string
  *                    lastName:
  *                       type: string
- *                    password: 
- *                       type : string                   
+ *                    password:
+ *                       type : string
  *     responses:
  *       201:
  *             description: successfully logged in;
- *       
+ *
  * */
 
 
@@ -70,7 +70,7 @@
  *       400:
  *             description: Bad request.
  * */
-   
+
 /**
  * @swagger
  * /resetpassword/link:
@@ -160,7 +160,7 @@
  *                   gender:
  *                     type: string
  *                     example: "Female"
- *                   birthday:
+ *                   birthdate:
  *                     type: string
  *                     format: date-time
  *                     example: "2023-02-19T11:55:10.439Z"
@@ -216,7 +216,6 @@
  *         description: Internal server error
  */
 
-
 /**
  * Get user profile by ID
  * @swagger
@@ -258,4 +257,282 @@
  *         description: An array of user profile objects
  *       '500':
  *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * tags:
+ *   name: Roles
+ *   description: API for managing roles
+ * /role:
+ *   post:
+ *     summary: Create a new role
+ *     tags: [Roles]
+ *     requestBody:
+ *        required: true
+ *        content:
+ *           application/json:
+ *              schema:
+ *                 type: object
+ *                 required:
+ *                    - name
+ *                    - description
+ *                 properties:
+ *                    name:
+ *                      type: string
+ *                      description: The name of the role
+ *                    description:
+ *                      type: string
+ *                      description: A description of the role
+ *     responses:
+ *       201:
+ *         description: Role created successfully
+ *       400:
+ *         description: Invalid request payload
+ *       500:
+ *         description: Internal server error
+ *
+ *
+ */
+
+/**
+ * @swagger
+ * /role/{name}:
+ *   patch:
+ *     summary: Update role by name
+ *     tags: [Roles]
+ *     parameters:
+ *       - in: path
+ *         name: name
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Name of the role to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - description
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: The updated name of the role
+ *               description:
+ *                 type: string
+ *                 description: A brief description of the updated role
+ *     security: []
+ *     responses:
+ *       '201':
+ *         description: Role successfully updated
+ */
+
+/**
+ * @swagger
+ * /role/{name}:
+ *   get:
+ *     summary: Get a role by name
+ *     tags: [Roles]
+ *     parameters:
+ *       - in: path
+ *         name: name
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Name of the role
+ *     security: []
+ *     responses:
+ *       '200':
+ *         description: Role successfully retrieved
+ */
+
+/**
+ * @swagger
+ * /role:
+ *   get:
+ *     summary: Retrieve all roles
+ *     tags: [Roles]
+ *     security: []
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       "200":
+ *         description: Successfully retrieved all roles.
+ */
+
+/**
+ * @swagger
+ * /role/{name}:
+ *   delete:
+ *     summary: Delete a role by name
+ *     tags:
+ *       - Roles
+ *     parameters:
+ *       - in: path
+ *         name: name
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Name of the role to delete
+ *     security: []
+ *     responses:
+ *       '200':
+ *         description: Role successfully deleted
+ */
+
+/**
+ * @swagger
+ * /authorize:
+ *   post:
+ *     summary: Update a role by user email
+ *     tags: [Roles]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - role
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: email of the user to update their role
+ *               role:
+ *                 type: string
+ *                 description: The update role name for the user
+ *     security: []
+ *     responses:
+ *       '201':
+ *         description: Role successfully updated
+ */
+
+// ////////////////////////////////////////
+
+/**
+ * @swagger
+ * tags:
+ *   name: Permissions
+ *   description: API for managing permissions
+ * /permission:
+ *   post:
+ *     summary: Create a new permission
+ *     tags: [Permissions]
+ *     requestBody:
+ *        required: true
+ *        content:
+ *           application/json:
+ *              schema:
+ *                 type: object
+ *                 required:
+ *                    - name
+ *                    - description
+ *                 properties:
+ *                    name:
+ *                      type: string
+ *                      description: The name of the permission
+ *                    description:
+ *                      type: string
+ *                      description: A description of the permission
+ *     responses:
+ *       201:
+ *         description: Permission created successfully
+ *       400:
+ *         description: Invalid request payload
+ *       500:
+ *         description: Internal server error
+ *
+ *
+ */
+
+/**
+ * @swagger
+ * /permission/{name}:
+ *   patch:
+ *     summary: Update permission by name
+ *     tags: [Permissions]
+ *     parameters:
+ *       - in: path
+ *         name: name
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Name of the permission to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - description
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: The updated name of the permission
+ *               description:
+ *                 type: string
+ *                 description: A brief description of the updated permission
+ *     security: []
+ *     responses:
+ *       '201':
+ *         description: Permission successfully updated
+ */
+
+/**
+ * @swagger
+ * /permission/{name}:
+ *   get:
+ *     summary: Get a permission by name
+ *     tags: [Permissions]
+ *     parameters:
+ *       - in: path
+ *         name: name
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Name of the permission
+ *     security: []
+ *     responses:
+ *       '200':
+ *         description: Permission successfully retrieved
+ */
+
+/**
+ * @swagger
+ * /permission:
+ *   get:
+ *     summary: Retrieve all permissions
+ *     tags: [Permissions]
+ *     security: []
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       "200":
+ *         description: Successfully retrieved all permissions.
+ */
+
+/**
+ * @swagger
+ * /permission/{name}:
+ *   delete:
+ *     summary: Delete a permission by name
+ *     tags:
+ *       - Permissions
+ *     parameters:
+ *       - in: path
+ *         name: name
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Name of the permission to delete
+ *     security: []
+ *     responses:
+ *       '200':
+ *         description: Permission successfully deleted
  */

@@ -1,8 +1,8 @@
-import PROFILE from "../models/profilemodels/profile";
-import ADDRESS from "../models/profilemodels/Address";
-import BILLINGADRESS from "../models/profilemodels/BillingAdress";
-import { Request , Response } from "express";
-import { CustomRequest } from "../middlewares/verifyToken";
+import PROFILE from '../models/profilemodels/profile'
+import ADDRESS from '../models/profilemodels/Address'
+import BILLINGADRESS from '../models/profilemodels/BillingAdress'
+import {Request, Response} from 'express'
+import {CustomRequest} from '../middlewares/verifyToken'
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 
@@ -13,20 +13,26 @@ static async getprofile(req: Request , res: Response){
          include: [{ model: BILLINGADRESS , as: 'billingAddress' },{ model: ADDRESS , as: 'Address' }]
          
     })       
+    if(!profilepage){   
+    throw new Error("profile not found")
+    }
+    
         res.status(200).json({
             statusCode: 200,
             message: "succesfully retrieved profile data",
             data: profilepage
-
         })
-    } catch (error) {
-        console.log()        
+    } catch (error: any) {
+        res.status(400).json({
+            statusCode: 400,
+            message: error.message
+
+        })     
     }
 }
     
 static async edit(req: CustomRequest , res: Response){      
-    const loggedinuser:any = req.user 
-    console.log(loggedinuser)    
+    const loggedinuser:any = req.user     
     const profile:any = await PROFILE.findOne({where: {userId : loggedinuser.id}})
     const profileId = profile.id    
    
@@ -41,21 +47,11 @@ if(foundProfile){
         await PROFILE.update(profileDetails,{where:{id: profileId}})
     }   
     if(bAddress){
-        const BA = await BILLINGADRESS.findOne({where: {id: profileId}})
-        if(BA){
-            await BILLINGADRESS.update(bAddress,{where: {profileId}})
-        }else {
-            await BILLINGADRESS.create({...bAddress, profileId})
-        }
+        await BILLINGADRESS.upsert({ ...bAddress, profileId });
     }
     if(Address){
-        const AD = await ADDRESS.findOne({where: {profileId}})
-        if(AD){
-            await ADDRESS.update(Address,{where: {profileId}})
-        }else{
-            await ADDRESS.create({...Address, profileId})
-        }
-    }    
+        await ADDRESS.upsert({ ...Address, profileId });
+            }    
     res.status(200).json({
         statusCode: 200,
         message: `updated profile for ${foundProfile.firstName}`,
@@ -65,32 +61,26 @@ if(foundProfile){
 } catch (error: any) {
     res.status(400).json({
         StatusCode: 400,
-        message: error.message
-    })
-    
-}
-    
-
-} 
-static async getall(req: Request , res: Response){
-    try { 
-        
-        const profiles = await PROFILE.findAll( {attributes: [ "id","email", "firstName" , "lastName", "userId"]} )
-        res.status(200).json({
-            statusCode: 200,
-            message: "sucessfully retreived the profiles",
-            data: profiles
-
-        })
-        
-    } catch (error: any ) {
-        res.status(200).json({
-            statusCode: 400,
-            message: error.message
-        })       
-
+        message: error.message,
+      })
     }
-
-}
+  }
+  static async getall(req: Request, res: Response) {
+    try {
+      const profiles = await PROFILE.findAll({
+        attributes: ['id', 'email', 'firstName', 'lastName', 'userId'],
+      })
+      res.status(200).json({
+        statusCode: 200,
+        message: 'sucessfully retreived the profiles',
+        data: profiles,
+      })
+    } catch (error: any) {
+      res.status(200).json({
+        statusCode: 400,
+        message: error.message,
+      })
+    }
+  }
 }
 export default Profiles

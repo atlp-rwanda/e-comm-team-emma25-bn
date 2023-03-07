@@ -24,6 +24,22 @@ config()
 
 /* this class hold functions for authentication */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
+import USER from "../models/User";
+
+import { Request, Response } from "express";
+import { Twilio } from "twilio";
+import { encode } from "../helper/jwtTokenize";
+
+import { config } from "dotenv";
+import bcrypt from "bcrypt";
+import PROFILE from "../models/profilemodels/profile";
+import ROLE from "../db/models/Role.model";
+config();
+const account_sid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const service_sid = process.env.TWILIO_SERVICE_SID;
+
 class auth {
   /* Start: 2FA Feature for sellers */
   // Sending an OTP to user provided phone number
@@ -66,152 +82,185 @@ class auth {
   }
   /* End: 2FA Feature for sellers */
 
-  static async logout(req: Request, res: Response) {
-    try {
-      res.cookie('jwt', '', { httpOnly: true, maxAge: 1000 })
-      res.status(200).json({ status: 200, message: 'Logged out' })
-    } catch (error: any) {
-      res.status(400).json({
-        statusCode: 400,
-        message: error.message,
-      })
-    }
-  }
-  static async signup(req: Request, res: Response) {
-    try {
-      // await USER.drop()
-      const { firstName, lastName, email, role, password } = req.body
-      //   const hash = await bcrypt.hashSync(password, 10)
-      const checkUser = await USER.findOne({
-        where: { email: email },
-      })
-      if (checkUser) {
-        return res.status(400).json({
-          status: 400,
-          message: 'User is already SignUp',
-        })
-      } else {
-        // type userType = {
-        //   id: string 
-        //   firstName: string
-        //   lastName: string
-        //   email: string
-        //   password: string
-        // }
-
-        const createData: any = await USER.create({
-          firstName,
-          lastName,
-          email,
-          role: 'User',
-          password,
-        })
-        const user = await USER.findOne({
-          where: { email: email },
-          attributes: ['id', 'firstName', 'lastName', 'email', 'role'],
-        })
-        res.status(200).json({
-          status: 200,
-          message: 'account created successfully',
-          token: encode({ id: createData.id, email: createData.email }),
-        })
-      }
-    } catch (error: any) {
-      res.status(500).json({
-        status: 500,
-        message: 'Server error :' + error.message,
-      })
-    }
-  }
-  // LOGIN
-
-  static async Login(req: Request, res: Response) {
-    try {
-      const { email, password } = req.body
-      const findUser = await USER.findOne({
-        where: { email: email },
-        attributes: ['id', 'firstName', 'lastName', 'email', 'role', 'password'],
-      })
-      if (!findUser) {
-        res.status(404).json({ message: "User not found" })
-      } else {
-        const dbPassword = findUser.dataValues.password
-        const decreptedPassword = await bcrypt.compare(password, dbPassword)
-        // console.log(decreptedPassword)
-        if (decreptedPassword) {
-          res.status(200).json({
-            stastus: 200,
-            message: 'Login succefull ',
-            data: findUser,
-            token: encode({ id: findUser.dataValues.id, email: findUser.dataValues.email, role: findUser.dataValues.role })
-          })
-        } else {
-          res.status(400).json({
-            stastus: 400,
-            message: 'Wrong password',
-          })
+    static async logout(req: Request, res: Response) {
+        try {
+            res.cookie("jwt", "", { httpOnly: true, maxAge: 1000 });
+            res.status(200).json({ status: 200, message: "Logged out" });
+        } catch (error: any) {
+            res.status(400).json({
+                statusCode: 400,
+                message: error.message,
+            });
         }
-      }
-
-    } catch (error: any) {
-      res.status(500).json({
-        stastus: 500,
-        message: 'server problem' + error.message,
-      })
     }
-  }
+    static async signup(req: Request, res: Response) {
+        try {
+            // await USER.drop()
+            const { firstName, lastName, email, password } = req.body;
+            //   const hash = await bcrypt.hashSync(password, 10)
+            const checkUser = await USER.findOne({
+                where: { email: email },
+            });
 
+            if (checkUser) {
+                return res.status(400).json({
+                    status: 400,
+                    message: "User is already SignUp",
+                });
+            } else {
+                // type userType = {
+                //   id: string
+                //   firstName: string
+                //   lastName: string
+                //   email: string
+                //   password: string
+                // }
 
-  static async getAlluser(req: Request, res: Response) {
-    try {
-      const users: object = await USER.findAll({
-        attributes: { exclude: ['password'] },
-      })
-      res.status(200).json({
-        statuscode: 200,
-        users,
-      })
-    } catch (error: any) {
-      res.status(400).json({
-        statusCode: 400,
-        message: error.message,
-      })
-    }
-  }
-  /*this delete user function is not protected it is created just for the project setup and testing*/
-  static async deleteUser(req: Request, res: Response) {
-    const userid: string = req.params.id
-    try {
-      await USER.destroy({ where: { id: userid } })
-      res.status(200).json({
-        statusCode: 200,
-        message: `deleted user with id ${userid}`,
-      })
-    } catch (error: any) {
-      res.status(400).json({
-        statusCode: 400,
-        message: error.message,
-      })
-    }
-  }
+                const createData: any = await USER.create({
+                    firstName,
+                    lastName,
+                    email,
+                    password,
+                });
+                //create profile
+                // BILLINGADDRESS.drop()
+                // ADDRESS.drop()
 
-  static async authorize(req: Request, res: Response) {
-    const { email, role } = req.body
-    try {
-      const user = await USER.findOne({ where: { email } })
-      if (!user) {
-        return res
-          .status(404)
-          .json({ error: `User with email ${email} not found` })
-      }
-      await user.update({ role })
-      return res
-        .status(200)
-        .json({ message: `User with email ${email} is update to ${role} role` })
-    } catch (error) {
-      console.error(error)
-      return res.status(500).json({ error: 'Server error' })
+                if (createData) {
+                    const profiledata = {
+                        firstName: createData.firstName,
+                        lastName: createData.lastName,
+                        email: createData.email,
+                        userId: createData.id,
+                    };
+                    await PROFILE.create({ ...profiledata });
+                }
+                // GET ROLE FROM THE ROLEID FOREIGN KEY
+                const role = await createData.getRole();
+                res.status(200).json({
+                    status: 200,
+                    message: "account created successfully",
+                    createData,
+                    token: encode({
+                        id: createData.id,
+                        email: createData.email,
+                        role: role.name,
+                    }), //changed the token to keep same fields as login
+                });
+            }
+        } catch (error) {
+            res.status(500).json({
+                status: 500,
+                message: { error },
+            });
+        }
     }
-  }
+    // LOGIN
+
+    static async Login(req: Request, res: Response) {
+        try {
+            const { email, password } = req.body;
+            const findUser = await USER.findOne({
+                where: { email: email },
+                attributes: [
+                    "id",
+                    "firstName",
+                    "lastName",
+                    "email",
+                    "roleId",
+                    "password",
+                ],
+            });
+            if (!findUser) {
+                res.status(404).json({ message: "User not found" });
+            } else {
+                const dbPassword = findUser.dataValues.password;
+                const decreptedPassword = await bcrypt.compare(
+                    password,
+                    dbPassword
+                );
+                // console.log(decreptedPassword)
+
+                // GET ROLE FROM FOREIGN KEY
+                const logginUser: any = findUser;
+                const role = await logginUser.getRole();
+                if (decreptedPassword) {
+                    res.status(200).json({
+                        stastus: 200,
+                        message: "Login succefull ",
+                        data: findUser,
+                        token: encode({
+                            id: findUser.dataValues.id,
+                            email: findUser.dataValues.email,
+                            role: role.name,
+                        }),
+                    });
+                } else {
+                    res.status(400).json({
+                        stastus: 400,
+                        message: "Wrong password",
+                    });
+                }
+            }
+        } catch (error: any) {
+            res.status(500).json({
+                stastus: 500,
+                message: "server problem" + error.message,
+            });
+        }
+    }
+
+    static async getAlluser(req: Request, res: Response) {
+        try {
+            const users: object = await USER.findAll({
+                attributes: { exclude: ["password"] },
+                include: ROLE,
+            });
+            res.status(200).json({
+                statuscode: 200,
+                users,
+            });
+        } catch (error: any) {
+            res.status(400).json({
+                statusCode: 400,
+                message: error.message,
+            });
+        }
+    }
+    /*this delete user function is not protected it is created just for the project setup and testing*/
+    static async deleteUser(req: Request, res: Response) {
+        const userid: string = req.params.id;
+        try {
+            await USER.destroy({ where: { id: userid } });
+            res.status(200).json({
+                statusCode: 200,
+                message: `deleted user with id ${userid}`,
+            });
+        } catch (error: any) {
+            res.status(400).json({
+                statusCode: 400,
+                message: error.message,
+            });
+        }
+    }
+
+    static async authorize(req: Request, res: Response) {
+        const { email, role } = req.body;
+        try {
+            const user = await USER.findOne({ where: { email } });
+            if (!user) {
+                return res
+                    .status(404)
+                    .json({ error: `User with email ${email} not found` });
+            }
+            await user.update({ role });
+            return res.status(200).json({
+                message: `User with email ${email} is update to ${role} role`,
+            });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ error: "Server error" });
+        }
+    }
 }
-export default auth
+export default auth;
