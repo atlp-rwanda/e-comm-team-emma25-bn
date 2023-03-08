@@ -20,7 +20,7 @@
  *                 properties:
  *                    email:
  *                      type: string
- *                    firstName:
+ *                    firstname:
  *                      type: string
  *                    lastName:
  *                       type: string
@@ -30,6 +30,25 @@
  *       201:
  *             description: successfully logged in;
  *
+ * */
+
+/**
+ * @swagger
+ * /verify-email/{token}:
+ *   post:
+ *     tags:
+ *       - users
+ *     summary: Verify email
+ *     security: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: token
+ *         in: path
+ *         required: true
+ *     responses:
+ *       200:
+ *             description: Email verified successfully, Please Sign In.
  * */
 
 /**

@@ -17,6 +17,11 @@ const USER = sequelizedb.define("user", {
         allowNull: false,
         unique: true,
     },
+    emailVerified: {
+        type: DataTypes.BOOLEAN,
+        allowNull:false,
+        defaultValue: false,
+    },
     password: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -29,11 +34,12 @@ const USER = sequelizedb.define("user", {
         },
     },
 });
-USER.sync();
 Role.hasMany(USER, {
     foreignKey: "roleId",
 });
 USER.belongsTo(Role);
+
+USER.sync({alter:true});
 
 USER.hasOne(Profile, { foreignKey: "userId", as: "profile" });
 Profile.belongsTo(Profile, { foreignKey: "userId" });

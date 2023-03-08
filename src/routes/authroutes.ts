@@ -64,6 +64,8 @@ router.get(
     })
 );
 router.get("/googleResponse", GoogleController.googleAuth);
+router.post('/verify-email/:token', auth.verifyEmail);
+
 
 /* this delete user route is not protected it is just for testing and setting up the project*/
 
