@@ -34,6 +34,37 @@
 
 /**
  * @swagger
+ * /login:
+ *   post:
+ *     summary: Log in  into your account to get more prevalleges
+ *     tags: 
+ *       - users
+ *     requestBody:
+ *       description: Please fill all required fields
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *                 type: object
+ *                 required:                    
+ *                    - email
+ *                    - password                   
+ *                 properties:                 
+ *                    email:
+ *                      type: string
+ *                    password: 
+ *                       type : string 
+ *     responses:
+ *       '200':
+ *         description: user log in succesfully
+ *       400:
+ *         description: Bad request
+ */
+
+//user login
+
+/**
+ * @swagger
  * /users:
  *   get:
  *     tags:

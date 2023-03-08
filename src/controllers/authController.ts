@@ -18,7 +18,8 @@ import ADDRESS from "../models/profilemodels/Address";
 import BILLINGADDRESS from "../models/profilemodels/BillingAdress";
 import ROLE from "../db/models/Role.model";
 import { foundUser } from "../helper/authHelpers";
-import { comparePassword } from "../helper/passwordHelpers";
+// import { hashPassword, comparePassword } from "../helper/passwordHelpers";
+
 config();
 const account_sid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -76,7 +77,6 @@ class auth {
         try {
             // await USER.drop()
             const { firstName, lastName, email, password } = req.body;
-            //   const hash = await bcrypt.hashSync(password, 10)
             const checkUser = await USER.findOne({
                 where: { email: email },
             });
@@ -87,24 +87,13 @@ class auth {
                     message: "User is already SignUp",
                 });
             } else {
-                // type userType = {
-                //   id: string
-                //   firstName: string
-                //   lastName: string
-                //   email: string
-                //   password: string
-                // }
-
                 const createData: any = await USER.create({
                     firstName,
                     lastName,
                     email,
                     password,
+                    roleId: 2,
                 });
-                //create profile
-                // BILLINGADDRESS.drop()
-                // ADDRESS.drop()
-
                 if (createData) {
                     const profiledata = {
                         firstName: createData.firstName,
@@ -158,8 +147,7 @@ class auth {
                     password,
                     dbPassword
                 );
-                // console.log(decreptedPassword)
-
+                console.log(`from Login ${dbPassword}, ${password}`)
                 // GET ROLE FROM FOREIGN KEY
                 const logginUser: any = findUser;
                 const role = await logginUser.getRole();
@@ -184,7 +172,7 @@ class auth {
         } catch (error: any) {
             res.status(500).json({
                 stastus: 500,
-                message: "server problem" + error.message,
+                message: "server problem " + error.message,
             });
         }
     }
@@ -192,6 +180,13 @@ class auth {
 
     static async updatePassword(req: Request, res: Response) {
         try {
+            // Check if user is authenticated and retrieve user ID from token
+            // if (!req.user || !req.user.id) {
+            //     return res.status(401).json({
+            //         status: 401,
+            //         message: "User not authenticated.",
+            //     });
+            // }
             const { email, oldPassword, newPassword, confirmPassword } = req.body;
 
             // Input validation
@@ -209,26 +204,32 @@ class auth {
                     .json({ status: 404, message: "User not found" });
             }
 
+            // Check if current password is correct
+            const databasePassword = (userFound as any).password;
+            console.log(`oldPassword ${oldPassword}`)
+            console.log(`updatePassword from db ${databasePassword}`)
+            const isValidPassword = await bcrypt.compare(oldPassword, databasePassword);
+            if (!isValidPassword) {
+                return res.status(400).json({
+                    status: 400,
+                    message: "Incorrect current password.",
+                });
+            }
+            // Check if new password matches confirmation
             if (newPassword !== confirmPassword) {
                 return res.status(400).json({
                     status: 400,
-                    message: "New password and confirmation password do not match",
+                    message: "New password does not match confirmation.",
                 });
             }
-
-            const databasePassword = (userFound as any).password;
-            console.log(`password fetched from database${databasePassword}`)
             const id = (userFound as any).id;
-            const decryptedPassword = await comparePassword(oldPassword, databasePassword);
-            if (!decryptedPassword) {
-                return res.status(400).json({ status: 400, message: "Wrong password" });
-            }
-
-            const hash = bcrypt.hashSync(newPassword, 10);
-            const updatePassword = await USER.update(
-                { password: hash },
-                { where: { id: id } }
-            );
+            const saltRounds = 10;
+            const salt = bcrypt.genSaltSync(saltRounds);
+            // Hash and save new password
+            const hashedPassword = bcrypt.hashSync(newPassword, salt);
+            // const hashedPassword = bcrypt.hashSync(newPassword, bcrypt.genSaltSync());
+            console.log(`hashedPassword in updatePass ${hashedPassword}`)
+            const updatePassword = await USER.update({ password: hashedPassword }, { where: { id: id } });
 
             if (updatePassword) {
                 return res.status(200).json({

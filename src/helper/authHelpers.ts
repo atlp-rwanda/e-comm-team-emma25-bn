@@ -17,16 +17,5 @@ export const foundUser = async (email: string) => {
     } else {
         return findUser
     }
-    // const findUser = await USER.findOne({
-    //     where: { email: email },
-    //     attributes: ['id', 'firstName', 'lastName', 'email', 'role', 'password'],
-    // })
-    // if(!findUser){
-    //     return {error: 'User not found'}
-    // } else {
-    //     return findUser
-    // }
-    
-
 }
 
