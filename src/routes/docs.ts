@@ -212,7 +212,7 @@
  *                   gender:
  *                     type: string
  *                     example: "Female"
- *                   birthday:
+ *                   birthdate:
  *                     type: string
  *                     format: date-time
  *                     example: "2023-02-19T11:55:10.439Z"

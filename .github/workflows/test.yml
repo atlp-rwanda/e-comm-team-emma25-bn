@@ -6,6 +6,20 @@ on:
   pull_request:
     branches: ['develop']
 
+env:
+  DBLINK: ${{ secrets.DBLINK }}
+  JWT_SECRET: ${{ secrets.JWT_SECRET }}
+  TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+  TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+  TWILIO_SERVICE_SID: ${{ secrets.TWILIO_SERVICE_SID }}
+  TWILIO_PHONE_NUMBER: ${{ secrets.TWILIO_PHONE_NUMBER }}
+  NODEMAILER_CLIENT_ID: ${{ secrets.NODEMAILER_CLIENT_ID }}
+  MODEMAILER_CLIENT_SECRET: ${{ secrets.MODEMAILER_CLIENT_SECRET }}
+  MAILER_REFRESH_ACCESSTOKEN: ${{ secrets.MAILER_REFRESH_ACCESSTOKEN }}
+  MAILER_ACCESS_TOKEN: ${{ secrets.MAILER_ACCESS_TOKEN }}
+  CLIENT_ID: ${{ secrets.CLIENT_ID }}
+  CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+
 jobs:
   build:
     name: Build
@@ -21,15 +35,12 @@ jobs:
       - name: npm install
         run: |
           npm install
-
       - name: Test with Jest
         run: |
           npm run test
-
       - name: Generate coverage information
         run: |
           npm run test:coverage
-
       - name: Coveralls
         uses: coverallsapp/github-action@master
         with:
