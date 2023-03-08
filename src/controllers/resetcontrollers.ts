@@ -92,9 +92,9 @@ class resetpass {
           });
         }
       } else {
-        res.status(400).json({
-          statusCode: 200,
-          message: "token not found",
+        res.status(401).json({
+          statusCode: 401,
+          message: "Unauthorized",
         });
       }
     } catch (error: any) {

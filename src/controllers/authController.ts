@@ -9,13 +9,8 @@ import { Twilio } from "twilio";
 import { encode } from "../helper/jwtTokenize";
 
 import { config } from "dotenv";
-import session from "express-session";
-import connectRedis from "connect-redis";
 import bcrypt from "bcrypt";
-import { object } from "joi";
 import PROFILE from "../models/profilemodels/profile";
-import ADDRESS from "../models/profilemodels/Address";
-import BILLINGADDRESS from "../models/profilemodels/BillingAdress";
 import ROLE from "../db/models/Role.model";
 import { decode } from "jsonwebtoken";
 import sendEmail from '../helper/sendMail';
