@@ -11,20 +11,20 @@ const sendEmail = async (email: string, subject: string, text: string) => {
       port: 587,
       auth: {
         user: process.env.USER,
-        pass: process.env.PASS,
+        pass: process.env.APPS_PASSWORD,
       },
       tls: {
         rejectUnauthorized: false,
       },
-    })
-    await transporter.sendMail({
+    });
+   return await transporter.sendMail({
       from: process.env.USER,
       to: email,
       subject: subject,
       text: text,
     })
   } catch (error) {
-    return false;
+    return error;
   }
 
 }

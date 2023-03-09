@@ -1,3 +1,4 @@
+import { any } from 'joi';
 /* this class hold functions f
 or authentication */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -111,18 +112,20 @@ class auth {
                     expiresIn: '1d',
                   },
                 );
-                await sendEmail(
+                const result = await sendEmail(
+                   
                   createData.email as string,
                   'E-commerce email verification, Please verify your email',
                   `to verify your Email click on the link below ${process.env.BASE_URL}/verify-email/${token}`,
                 );
+                console.log(result)
 
         // GET ROLE FROM THE ROLEID FOREIGN KEY
         const role = await createData.getRole();
         res.status(200).json({
           status: 200,
           message: 'account created successfully',
-          createData,
+          user,
           token: encode({
             id: createData.id,
             email: createData.email,
@@ -140,17 +143,26 @@ class auth {
   // VERIFICATION EMAIL
 
   static async verifyEmail(req: Request, res: Response) {
-    const token = req.params.token;
-    const result: any = decode(token);
-    const updatedata = await USER.update(
-      {
-        emailVerified: true,
-      },
-      { where: { id: result.id }, returning: true },
-    );
-    res.status(200).json({
-      message: 'Email verified successfully, Please Sign In.',
-    });
+    try{
+
+      const token = req.params.token;
+      const result: any = decode(token);
+      const updatedata = await USER.update(
+        {
+          emailVerified: true,
+        },
+        { where: { id: result.id }, returning: true },
+      );
+      res.status(200).json({
+        message: 'Email verified successfully, Please Sign In.',
+      });
+    }catch(error: any){
+      res.status(500).json({
+        status: 500,
+        message: 'server problem' + error.message,
+      });
+    }
+
   }
 
   // LOGIN
