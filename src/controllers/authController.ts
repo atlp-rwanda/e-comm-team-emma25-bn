@@ -18,7 +18,6 @@ import ADDRESS from "../models/profilemodels/Address";
 import BILLINGADDRESS from "../models/profilemodels/BillingAdress";
 import ROLE from "../db/models/Role.model";
 import { foundUser } from "../helper/authHelpers";
-// import { hashPassword, comparePassword } from "../helper/passwordHelpers";
 
 config();
 const account_sid = process.env.TWILIO_ACCOUNT_SID;
@@ -143,24 +142,25 @@ class auth {
                 res.status(404).json({ message: "User not found" });
             } else {
                 const dbPassword = findUser.dataValues.password;
-                const decreptedPassword = await bcrypt.compare(
-                    password,
-                    dbPassword
-                );
-                console.log(`from Login ${dbPassword}, ${password}`)
+                const decreptedPassword = await bcrypt.compare(password, dbPassword);
                 // GET ROLE FROM FOREIGN KEY
                 const logginUser: any = findUser;
                 const role = await logginUser.getRole();
                 if (decreptedPassword) {
+                    const token = encode({
+                        id: findUser.dataValues.id,
+                        email: findUser.dataValues.email,
+                        role: role.name,
+                    });
+                    res.cookie("token", token, {
+                        httpOnly: true,
+                        secure: true,
+                        sameSite: "none",
+                    });
                     res.status(200).json({
                         stastus: 200,
                         message: "Login succefull ",
                         data: findUser,
-                        token: encode({
-                            id: findUser.dataValues.id,
-                            email: findUser.dataValues.email,
-                            role: role.name,
-                        }),
                     });
                 } else {
                     res.status(400).json({
@@ -176,6 +176,7 @@ class auth {
             });
         }
     }
+    
     //UPDATE PASSWORD
 
     static async updatePassword(req: Request, res: Response) {
@@ -206,8 +207,6 @@ class auth {
 
             // Check if current password is correct
             const databasePassword = (userFound as any).password;
-            console.log(`oldPassword ${oldPassword}`)
-            console.log(`updatePassword from db ${databasePassword}`)
             const isValidPassword = await bcrypt.compare(oldPassword, databasePassword);
             if (!isValidPassword) {
                 return res.status(400).json({
@@ -223,13 +222,7 @@ class auth {
                 });
             }
             const id = (userFound as any).id;
-            const saltRounds = 10;
-            const salt = bcrypt.genSaltSync(saltRounds);
-            // Hash and save new password
-            const hashedPassword = bcrypt.hashSync(newPassword, salt);
-            // const hashedPassword = bcrypt.hashSync(newPassword, bcrypt.genSaltSync());
-            console.log(`hashedPassword in updatePass ${hashedPassword}`)
-            const updatePassword = await USER.update({ password: hashedPassword }, { where: { id: id } });
+            const updatePassword = await USER.update({ password: newPassword }, { where: { id: id } });
 
             if (updatePassword) {
                 return res.status(200).json({
