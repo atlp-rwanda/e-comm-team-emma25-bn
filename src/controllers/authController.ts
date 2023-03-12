@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import session from 'express-session'
 import connectRedis from 'connect-redis'
 import { createClient } from 'redis'
@@ -7,6 +8,9 @@ const RedisStore = connectRedis(session)
 import { object } from 'joi'
 import ADDRESS from '../models/profilemodels/Address'
 import BILLINGADDRESS from '../models/profilemodels/BillingAdress'
+=======
+import USER from "../models/User";
+>>>>>>> 928d75f (feat: Adding a product)
 
 import { Request, Response } from "express";
 import { Twilio } from "twilio";
