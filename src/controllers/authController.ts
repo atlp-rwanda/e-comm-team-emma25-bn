@@ -3,10 +3,10 @@ import connectRedis from "connect-redis";
 import { createClient } from "redis";
 import Redis from "ioredis";
 
-const RedisStore = connectRedis(session);
-import { object } from "joi";
-import ADDRESS from "../models/profilemodels/Address";
-import BILLINGADDRESS from "../models/profilemodels/BillingAdress";
+const RedisStore = connectRedis(session)
+import { object } from 'joi'
+import ADDRESS from '../models/profilemodels/Address'
+import BILLINGADDRESS from '../models/profilemodels/BillingAdress'
 
 import { Request, Response } from "express";
 import { Twilio } from "twilio";
