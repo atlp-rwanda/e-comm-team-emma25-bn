@@ -1,5 +1,56 @@
 /**
  * @swagger
+ * tags:
+ *  name: Products
+ *  description: Endpoints that handles product actions
+ */
+
+/**
+ * @swagger
+ * /products/add:
+ *  post:
+ *      tags:
+ *          - Products
+ *      summary: Endpoint for adding product with its images
+ *      requestBody:
+ *          content:
+ *              multipart/form-data:
+ *                  schema:
+ *                     type: object
+ *                     properties:
+ *                          pname:
+ *                              type: string
+ *                              required: true
+ *                              example: "Computer" 
+ *                          p_price:
+ *                              type: number
+ *                              required: true
+ *                              example: "250000"
+ *                          desc:
+ *                              type: string
+ *                              required: true
+ *                              example: "HP computer with 1TB SSD 16GB RAM"
+ *                          imgs:
+ *                              type: array
+ *                              required: true
+ *                              items:
+ *                                  type: file
+ *      responses:
+ *          200:
+ *              description: May be product is added with no images or other error
+ *          201:
+ *              description: Product details and images are saved
+ *          400:
+ *              description: Bad request
+ *          403:
+ *              description: You do not have permissions to add a product
+ *          404:
+ *              description: Invalid or missing security token
+ * 
+ */
+
+/**
+ * @swagger
  * /signup:
  *   post:
  *     tags:
@@ -31,6 +82,52 @@
  *             description: successfully logged in;
  *
  * */
+
+
+
+/**
+ * @swagger
+ * /login:
+ *   post:
+ *     summary: Log in  into your account to get more prevalleges
+ *     tags: 
+ *       - users
+ *     requestBody:
+ *       description: Please fill all required fields
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *                 type: object
+ *                 required:                    
+ *                    - email
+ *                    - password                   
+ *                 properties:                 
+ *                    email:
+ *                      type: string
+ *                    password: 
+ *                       type : string 
+ *     responses:
+ *       '200':
+ *         description: user log in succesfully
+ *       400:
+ *         description: Bad request
+ */
+
+/**
+ * @swagger
+ * /logout:
+ *   post:
+ *     summary: Log out of the current user session
+ *     tags:
+ *       - users
+ *     responses:
+ *       '200':
+ *         description: User logged out successfully
+ *       '401':
+ *         description: Unauthorized request
+ */
+
 
 /**
  * @swagger
@@ -132,6 +229,54 @@
  *     responses:
  *       200:
  *         description: The user's password has been changed successfully
+ */
+
+//UPDATE PASSWORD
+
+/**
+ * @swagger
+ * /update-password:
+ *   patch:
+ *     tags:
+ *       - users
+ *     summary: Update user password
+ *     security: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: The user's email
+ *                 required: true
+ *               oldPassword:
+ *                 type: string
+ *                 description: The user's old password
+ *                 required: true
+ *               newPassword:
+ *                 type: string
+ *                 description: The user's new password
+ *                 required: true
+ *               confirmPassword:
+ *                 type: string
+ *                 description: The user's new password, confirmed
+ *                 required: true
+ *     responses:
+ *       '200':
+ *         description: The user's password has been changed successfully
+ *       '400':
+ *         description: Bad request
+ *       '401':
+ *         description: Unauthorized
+ *       '403':
+ *         description: Forbidden
+ *       '404':
+ *         description: Not found
+ *       '500':
+ *         description: Internal server error
  */
 
 /**
@@ -533,4 +678,57 @@
  *     responses:
  *       '200':
  *         description: Permission successfully deleted
+ */
+
+/**
+ * @swagger
+ * /sendcode/{phone}:
+ *  get:
+ *      tags:
+ *          - users
+ *      summary: Send code (OTP) to user-provided phone number
+ *      security: []
+ *      parameters: 
+ *          - in: path
+ *            name: phone
+ *            schema:
+ *                  type: string
+ *            description: Phone Number
+ *            required: true
+ *      responses:
+ *          200:
+ *              description: OTP is successfully sent
+ *          400:    
+ *              description: Invalid phone number 
+ */
+
+/**
+ * @swagger
+ * /verify/{phone}/{code}:
+ *  get:
+ *      tags: 
+ *          - users
+ *      summary: Verify user-provided OTP
+ *      security: []
+ *      parameters:
+ *          - in: path
+ *            name: phone
+ *            schema:
+ *                  type: string
+ *            description: Phone number
+ *            required: true
+ * 
+ *          - in: path
+ *            name: code
+ *            schema:
+ *                  type: string
+ *            description: Code sent on Phone
+ *            required: true
+ *      responses:
+ *          200: 
+ *             description: Verification successfully
+ *          400:
+ *             description: Invalid phone or code
+ *          404: 
+ *             description: Incorrect OTP
  */
