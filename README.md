@@ -1,6 +1,5 @@
-[![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com) [![Coverage Status](https://coveralls.io/repos/github/atlp-rwanda/e-comm-team-emma25-bn/badge.svg?branch=ch-test-code-coverage-%23184359063)](https://coveralls.io/github/atlp-rwanda/e-comm-team-emma25-bn?branch=ch-test-code-coverage-%23184359063)
+[![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com) [![Coverage Status](https://coveralls.io/repos/github/atlp-rwanda/e-comm-team-emma25-bn/badge.svg?branch=develop)](https://coveralls.io/github/atlp-rwanda/e-comm-team-emma25-bn?branch=develop)
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/atlp-rwanda/e-comm-team-emma25-bn/tree/develop.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/atlp-rwanda/e-comm-team-emma25-bn/tree/develop) <br>
-
 ## This is back-end API for e-commerce in Team emma
 
 ### Table of Content
@@ -34,21 +33,6 @@ You can clone this repo and start to add/change some features
   - NodeJs
   - PostgreSQL
   - Text Editor or IDE
-- Dependencies
-  - express
-  - dotenv
-  - sequelize ORM
-  - pg
-  - pg-hstore
-- devDependencies
-  - nodemon
-  - @types/bcrypt
-  - @types/express
-  - @typescript-eslint/eslint-plugin
-  - @typescript-eslint/parser
-  - eslint
-  - ts-node-dev
-  - jest
 - Stack to use
   **PERN:** PostgreSQL Express React NodeJS
 

@@ -1,7 +1,3 @@
-/* this class hold functions f
-or authentication */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import USER from "../models/User";
 
 import { Request, Response } from "express";
@@ -93,6 +89,7 @@ class auth {
                     lastName,
                     email,
                     password,
+                    roleId: 2,
                 });
                 //create profile
                 // BILLINGADDRESS.drop()
