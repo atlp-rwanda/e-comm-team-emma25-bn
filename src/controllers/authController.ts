@@ -1,23 +1,23 @@
-/* this class hold functions f
-or authentication */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import session from 'express-session'
+import connectRedis from 'connect-redis'
+import { createClient } from 'redis'
+import Redis from 'ioredis'
 
-import USER from "../models/User";
+const RedisStore = connectRedis(session)
+import { object } from 'joi'
+import ADDRESS from '../models/profilemodels/Address'
+import BILLINGADDRESS from '../models/profilemodels/BillingAdress'
 
 import { Request, Response } from "express";
 import { Twilio } from "twilio";
 import { encode } from "../helper/jwtTokenize";
 
 import { config } from "dotenv";
-import session from "express-session";
-import connectRedis from "connect-redis";
 import bcrypt from "bcrypt";
-import { object } from "joi";
 import PROFILE from "../models/profilemodels/profile";
-import ADDRESS from "../models/profilemodels/Address";
-import BILLINGADDRESS from "../models/profilemodels/BillingAdress";
 import ROLE from "../db/models/Role.model";
 import { foundUser } from "../helper/authHelpers";
+import USER from '../models/User'
 
 config();
 const account_sid = process.env.TWILIO_ACCOUNT_SID;
@@ -25,41 +25,46 @@ const authToken = process.env.TWILIO_AUTH_TOKEN;
 const service_sid = process.env.TWILIO_SERVICE_SID;
 
 class auth {
-    static sendCode(req: Request, res: Response) {
-        const userPhone: string = req.params.phone;
-        if (account_sid && authToken && service_sid) {
-            const Client = new Twilio(account_sid, authToken);
-            Client.verify.v2
-                .services(service_sid)
-                .verifications.create({ to: userPhone, channel: "sms" })
-                .then((resp) => {
-                    res.status(200).json({ message: "Success sent", resp });
-                })
-                .catch((err) => {
-                    res.status(400).json(err);
-                });
-        } else {
-            console.log("Please fill all vals");
-        }
+  /* Start: 2FA Feature for sellers */
+  // Sending an OTP to user provided phone number
+  static sendCode(req: Request, res: Response) {
+    const userPhone: string = req.params.phone
+    if (account_sid && authToken && service_sid) {
+      const Client = new Twilio(account_sid, authToken)
+      Client.verify.v2
+        .services(service_sid)
+        .verifications.create({ to: userPhone, channel: 'sms' })
+        .then((resp) => {
+          res.status(200).json({ status: 200, message: 'Verification sent successfully!', codeSentTo: resp.to, verificationStatus: resp.status })
+        })
+        .catch((err) => {
+          res.status(400).json(err)
+        })
+    } else {
+      res.status(400).json({ status: 400, message: "Twilio Credentials are not found!" })
     }
-    static verify2FA(req: Request, res: Response) {
-        const userPhone: string = req.params.phone;
-        const userCode: string = req.params.code;
-        if (account_sid && authToken && service_sid) {
-            const Client = new Twilio(account_sid, authToken);
-            Client.verify.v2
-                .services(service_sid)
-                .verificationChecks.create({ to: userPhone, code: userCode })
-                .then((resp) => {
-                    res.status(200).json({ message: "Success sent", resp });
-                })
-                .catch((err) => {
-                    res.status(400).json(err);
-                });
-        } else {
-            console.log("Please fill all vals");
-        }
+  }
+
+  // Verify user provided OTP if its the one we sent to him/her
+  static verify2FA(req: Request, res: Response) {
+    const userPhone: string = req.params.phone
+    const userCode: string = req.params.code
+    if (account_sid && authToken && service_sid) {
+      const Client = new Twilio(account_sid, authToken)
+      Client.verify.v2
+        .services(service_sid)
+        .verificationChecks.create({ to: userPhone, code: userCode })
+        .then((resp) => {
+          res.status(200).json({ status: 200, message: 'You are verified!', verificationStatus: resp.status, codeValidity: resp.valid })
+        })
+        .catch((err) => {
+          res.status(400).json(err)
+        })
+    } else {
+      res.status(400).json({ status: 400, message: "Twilio Credentials are not found!" })
     }
+  }
+  /* End: 2FA Feature for sellers */
 
     static async logout(req: Request, res: Response) {
         try {
