@@ -16,7 +16,9 @@ import { config } from "dotenv";
 import bcrypt from "bcrypt";
 import PROFILE from "../models/profilemodels/profile";
 import ROLE from "../db/models/Role.model";
+import { foundUser } from "../helper/authHelpers";
 import USER from '../models/User'
+
 config();
 const account_sid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -79,7 +81,6 @@ class auth {
         try {
             // await USER.drop()
             const { firstName, lastName, email, password } = req.body;
-            //   const hash = await bcrypt.hashSync(password, 10)
             const checkUser = await USER.findOne({
                 where: { email: email },
             });
@@ -90,24 +91,13 @@ class auth {
                     message: "User is already SignUp",
                 });
             } else {
-                // type userType = {
-                //   id: string
-                //   firstName: string
-                //   lastName: string
-                //   email: string
-                //   password: string
-                // }
-
                 const createData: any = await USER.create({
                     firstName,
                     lastName,
                     email,
                     password,
+                    roleId: 2,
                 });
-                //create profile
-                // BILLINGADDRESS.drop()
-                // ADDRESS.drop()
-
                 if (createData) {
                     const profiledata = {
                         firstName: createData.firstName,
@@ -157,25 +147,25 @@ class auth {
                 res.status(404).json({ message: "User not found" });
             } else {
                 const dbPassword = findUser.dataValues.password;
-                const decreptedPassword = await bcrypt.compare(
-                    password,
-                    dbPassword
-                );
-                // console.log(decreptedPassword)
-
+                const decreptedPassword = await bcrypt.compare(password, dbPassword);
                 // GET ROLE FROM FOREIGN KEY
                 const logginUser: any = findUser;
                 const role = await logginUser.getRole();
                 if (decreptedPassword) {
+                    const token = encode({
+                        id: findUser.dataValues.id,
+                        email: findUser.dataValues.email,
+                        role: role.name,
+                    });
+                    res.cookie("token", token, {
+                        httpOnly: true,
+                        secure: true,
+                        sameSite: "none",
+                    });
                     res.status(200).json({
                         stastus: 200,
                         message: "Login succefull ",
                         data: findUser,
-                        token: encode({
-                            id: findUser.dataValues.id,
-                            email: findUser.dataValues.email,
-                            role: role.name,
-                        }),
                     });
                 } else {
                     res.status(400).json({
@@ -187,7 +177,73 @@ class auth {
         } catch (error: any) {
             res.status(500).json({
                 stastus: 500,
-                message: "server problem" + error.message,
+                message: "server problem " + error.message,
+            });
+        }
+    }
+    
+    //UPDATE PASSWORD
+
+    static async updatePassword(req: Request, res: Response) {
+        try {
+            // Check if user is authenticated and retrieve user ID from token
+            // if (!req.user || !req.user.id) {
+            //     return res.status(401).json({
+            //         status: 401,
+            //         message: "User not authenticated.",
+            //     });
+            // }
+            const { email, oldPassword, newPassword, confirmPassword } = req.body;
+
+            // Input validation
+            if (!email || !oldPassword || !newPassword || !confirmPassword) {
+                return res.status(400).json({
+                    status: 400,
+                    message: "Missing required fields",
+                });
+            }
+
+            const userFound = await foundUser(email);
+            if (!userFound) {
+                return res
+                    .status(404)
+                    .json({ status: 404, message: "User not found" });
+            }
+
+            // Check if current password is correct
+            const databasePassword = (userFound as any).password;
+            const isValidPassword = await bcrypt.compare(oldPassword, databasePassword);
+            if (!isValidPassword) {
+                return res.status(400).json({
+                    status: 400,
+                    message: "Incorrect current password.",
+                });
+            }
+            // Check if new password matches confirmation
+            if (newPassword !== confirmPassword) {
+                return res.status(400).json({
+                    status: 400,
+                    message: "New password does not match confirmation.",
+                });
+            }
+            const id = (userFound as any).id;
+            const updatePassword = await USER.update({ password: newPassword }, { where: { id: id } });
+
+            if (updatePassword) {
+                return res.status(200).json({
+                    status: 200,
+                    message: "Password changed successfully",
+                });
+            } else {
+                return res.status(500).json({
+                    status: 500,
+                    message: "Server error, password not updated",
+                });
+            }
+        } catch (error: any) {
+            return res.status(500).json({
+                status: 500,
+                message: "Server error: " + error.message,
             });
         }
     }
