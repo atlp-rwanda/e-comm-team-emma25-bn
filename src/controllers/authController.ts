@@ -165,7 +165,7 @@ class auth {
                     res.status(200).json({
                         stastus: 200,
                         message: "Login succefull ",
-                        data: findUser,
+                        token: token,
                     });
                 } else {
                     res.status(400).json({
