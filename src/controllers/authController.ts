@@ -14,8 +14,6 @@ import BILLINGADDRESS from '../models/profilemodels/BillingAdress'
 
 import { Request, Response } from "express";
 import { Twilio } from "twilio";
-import { encode } from "../helper/jwtTokenize";
-
 import { config } from "dotenv";
 import bcrypt from "bcrypt";
 import PROFILE from "../models/profilemodels/profile";
@@ -24,6 +22,7 @@ import { decode } from "jsonwebtoken";
 import sendEmail from '../helper/sendMail';
 import jwt from 'jsonwebtoken';
 import USER from '../models/User'
+import { encode } from '../helper/jwtTokenize';
 config();
 const account_sid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
