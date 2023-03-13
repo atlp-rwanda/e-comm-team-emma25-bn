@@ -61,7 +61,20 @@
  *         description: Bad request
  */
 
-//user login
+/**
+ * @swagger
+ * /logout:
+ *   post:
+ *     summary: Log out of the current user session
+ *     tags:
+ *       - users
+ *     responses:
+ *       '200':
+ *         description: User logged out successfully
+ *       '401':
+ *         description: Unauthorized request
+ */
+
 
 /**
  * @swagger
@@ -612,4 +625,57 @@
  *     responses:
  *       '200':
  *         description: Permission successfully deleted
+ */
+
+/**
+ * @swagger
+ * /sendcode/{phone}:
+ *  get:
+ *      tags:
+ *          - users
+ *      summary: Send code (OTP) to user-provided phone number
+ *      security: []
+ *      parameters: 
+ *          - in: path
+ *            name: phone
+ *            schema:
+ *                  type: string
+ *            description: Phone Number
+ *            required: true
+ *      responses:
+ *          200:
+ *              description: OTP is successfully sent
+ *          400:    
+ *              description: Invalid phone number 
+ */
+
+/**
+ * @swagger
+ * /verify/{phone}/{code}:
+ *  get:
+ *      tags: 
+ *          - users
+ *      summary: Verify user-provided OTP
+ *      security: []
+ *      parameters:
+ *          - in: path
+ *            name: phone
+ *            schema:
+ *                  type: string
+ *            description: Phone number
+ *            required: true
+ * 
+ *          - in: path
+ *            name: code
+ *            schema:
+ *                  type: string
+ *            description: Code sent on Phone
+ *            required: true
+ *      responses:
+ *          200: 
+ *             description: Verification successfully
+ *          400:
+ *             description: Invalid phone or code
+ *          404: 
+ *             description: Incorrect OTP
  */
