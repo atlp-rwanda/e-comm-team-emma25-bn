@@ -20,7 +20,7 @@
  *                 properties:
  *                    email:
  *                      type: string
- *                    firstname:
+ *                    firstName:
  *                      type: string
  *                    lastName:
  *                       type: string
@@ -52,6 +52,52 @@
  *       200:
  *             description: Email verified successfully, Please Sign In.
  * */
+
+
+
+/**
+ * @swagger
+ * /login:
+ *   post:
+ *     summary: Log in  into your account to get more prevalleges
+ *     tags: 
+ *       - users
+ *     requestBody:
+ *       description: Please fill all required fields
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *                 type: object
+ *                 required:                    
+ *                    - email
+ *                    - password                   
+ *                 properties:                 
+ *                    email:
+ *                      type: string
+ *                    password: 
+ *                       type : string 
+ *     responses:
+ *       '200':
+ *         description: user log in succesfully
+ *       400:
+ *         description: Bad request
+ */
+
+/**
+ * @swagger
+ * /logout:
+ *   post:
+ *     summary: Log out of the current user session
+ *     tags:
+ *       - users
+ *     responses:
+ *       '200':
+ *         description: User logged out successfully
+ *       '401':
+ *         description: Unauthorized request
+ */
+
 
 /**
  * @swagger

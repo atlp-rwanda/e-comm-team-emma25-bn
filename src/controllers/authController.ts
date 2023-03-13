@@ -1,28 +1,27 @@
 import { any } from 'joi';
-/* this class hold functions f
-or authentication */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import session from 'express-session'
-import connectRedis from 'connect-redis'
-import { createClient } from 'redis'
-import Redis from 'ioredis'
 
-const RedisStore = connectRedis(session)
-import { object } from 'joi'
-import ADDRESS from '../models/profilemodels/Address'
-import BILLINGADDRESS from '../models/profilemodels/BillingAdress'
+import session from 'express-session';
+import connectRedis from 'connect-redis';
+import { createClient } from 'redis';
+import Redis from 'ioredis';
 
-import { Request, Response } from "express";
-import { Twilio } from "twilio";
-import { config } from "dotenv";
-import bcrypt from "bcrypt";
-import PROFILE from "../models/profilemodels/profile";
-import ROLE from "../db/models/Role.model";
-import { decode } from "jsonwebtoken";
+const RedisStore = connectRedis(session);
+import { object } from 'joi';
+import ADDRESS from '../models/profilemodels/Address';
+import BILLINGADDRESS from '../models/profilemodels/BillingAdress';
+
+import { Request, Response } from 'express';
+import { Twilio } from 'twilio';
+import { config } from 'dotenv';
+import bcrypt from 'bcrypt';
+import PROFILE from '../models/profilemodels/profile';
+import ROLE from '../db/models/Role.model';
+import { decode } from 'jsonwebtoken';
 import sendEmail from '../helper/sendMail';
 import jwt from 'jsonwebtoken';
-import USER from '../models/User'
+import USER from '../models/User';
 import { encode } from '../helper/jwtTokenize';
+import { foundUser } from '../helper/authHelpers';
 config();
 const account_sid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -32,40 +31,54 @@ class auth {
   /* Start: 2FA Feature for sellers */
   // Sending an OTP to user provided phone number
   static sendCode(req: Request, res: Response) {
-    const userPhone: string = req.params.phone
+    const userPhone: string = req.params.phone;
     if (account_sid && authToken && service_sid) {
-      const Client = new Twilio(account_sid, authToken)
+      const Client = new Twilio(account_sid, authToken);
       Client.verify.v2
         .services(service_sid)
         .verifications.create({ to: userPhone, channel: 'sms' })
         .then((resp) => {
-          res.status(200).json({ status: 200, message: 'Verification sent successfully!', codeSentTo: resp.to, verificationStatus: resp.status })
+          res.status(200).json({
+            status: 200,
+            message: 'Verification sent successfully!',
+            codeSentTo: resp.to,
+            verificationStatus: resp.status,
+          });
         })
         .catch((err) => {
-          res.status(400).json(err)
-        })
+          res.status(400).json(err);
+        });
     } else {
-      res.status(400).json({ status: 400, message: "Twilio Credentials are not found!" })
+      res
+        .status(400)
+        .json({ status: 400, message: 'Twilio Credentials are not found!' });
     }
   }
 
   // Verify user provided OTP if its the one we sent to him/her
   static verify2FA(req: Request, res: Response) {
-    const userPhone: string = req.params.phone
-    const userCode: string = req.params.code
+    const userPhone: string = req.params.phone;
+    const userCode: string = req.params.code;
     if (account_sid && authToken && service_sid) {
-      const Client = new Twilio(account_sid, authToken)
+      const Client = new Twilio(account_sid, authToken);
       Client.verify.v2
         .services(service_sid)
         .verificationChecks.create({ to: userPhone, code: userCode })
         .then((resp) => {
-          res.status(200).json({ status: 200, message: 'You are verified!', verificationStatus: resp.status, codeValidity: resp.valid })
+          res.status(200).json({
+            status: 200,
+            message: 'You are verified!',
+            verificationStatus: resp.status,
+            codeValidity: resp.valid,
+          });
         })
         .catch((err) => {
-          res.status(400).json(err)
-        })
+          res.status(400).json(err);
+        });
     } else {
-      res.status(400).json({ status: 400, message: "Twilio Credentials are not found!" })
+      res
+        .status(400)
+        .json({ status: 400, message: 'Twilio Credentials are not found!' });
     }
   }
   /* End: 2FA Feature for sellers */
@@ -81,7 +94,7 @@ class auth {
       });
     }
   }
-  
+
   static async signup(req: Request, res: Response) {
     try {
       const { firstName, lastName, email, password } = req.body;
@@ -95,7 +108,6 @@ class auth {
           message: 'User is already SignUp',
         });
       } else {
-
         const createData: any = await USER.create({
           firstName,
           lastName,
@@ -114,24 +126,23 @@ class auth {
           await PROFILE.create({ ...profiledata });
         }
 
-                const user = await USER.findOne({
-                  where: { email: email },
-                  attributes: ['id', 'firstName', 'lastName', 'email', 'roleId']
-                });
-                const token = jwt.sign(
-                  { id: createData.id },
-                  process.env.JWT_SECRET as string,
-                  {
-                    expiresIn: '1d',
-                  },
-                );
-                const result = await sendEmail(
-                   
-                  createData.email as string,
-                  'E-commerce email verification, Please verify your email',
-                  `to verify your Email click on the link below ${process.env.BASE_URL}/verify-email/${token}`,
-                );
-                console.log(result)
+        const user = await USER.findOne({
+          where: { email: email },
+          attributes: ['id', 'firstName', 'lastName', 'email', 'roleId'],
+        });
+        const token = jwt.sign(
+          { id: createData.id },
+          process.env.JWT_SECRET as string,
+          {
+            expiresIn: '1d',
+          },
+        );
+        const result = await sendEmail(
+          createData.email as string,
+          'E-commerce email verification, Please verify your email',
+          `to verify your Email click on the link below ${process.env.BASE_URL}/verify-email/${token}`,
+        );
+        console.log(result);
 
         // GET ROLE FROM THE ROLEID FOREIGN KEY
         const role = await createData.getRole();
@@ -156,8 +167,7 @@ class auth {
   // VERIFICATION EMAIL
 
   static async verifyEmail(req: Request, res: Response) {
-    try{
-
+    try {
       const token = req.params.token;
       const result: any = decode(token);
       const updatedata = await USER.update(
@@ -169,13 +179,12 @@ class auth {
       res.status(200).json({
         message: 'Email verified successfully, Please Sign In.',
       });
-    }catch(error: any){
+    } catch (error: any) {
       res.status(500).json({
         status: 500,
         message: 'server problem' + error.message,
       });
     }
-
   }
 
   // LOGIN
@@ -226,6 +235,76 @@ class auth {
       res.status(500).json({
         stastus: 500,
         message: 'server problem' + error.message,
+      });
+    }
+  }
+
+  //UPDATE PASSWORD
+
+  static async updatePassword(req: Request, res: Response) {
+    try {
+      // Check if user is authenticated and retrieve user ID from token
+      // if (!req.user || !req.user.id) {
+      //     return res.status(401).json({
+      //         status: 401,
+      //         message: "User not authenticated.",
+      //     });
+      // }
+      const { email, oldPassword, newPassword, confirmPassword } = req.body;
+
+      // Input validation
+      if (!email || !oldPassword || !newPassword || !confirmPassword) {
+        return res.status(400).json({
+          status: 400,
+          message: 'Missing required fields',
+        });
+      }
+
+      const userFound = await foundUser(email);
+      if (!userFound) {
+        return res.status(404).json({ status: 404, message: 'User not found' });
+      }
+
+      // Check if current password is correct
+      const databasePassword = (userFound as any).password;
+      const isValidPassword = await bcrypt.compare(
+        oldPassword,
+        databasePassword,
+      );
+      if (!isValidPassword) {
+        return res.status(400).json({
+          status: 400,
+          message: 'Incorrect current password.',
+        });
+      }
+      // Check if new password matches confirmation
+      if (newPassword !== confirmPassword) {
+        return res.status(400).json({
+          status: 400,
+          message: 'New password does not match confirmation.',
+        });
+      }
+      const id = (userFound as any).id;
+      const updatePassword = await USER.update(
+        { password: newPassword },
+        { where: { id: id } },
+      );
+
+      if (updatePassword) {
+        return res.status(200).json({
+          status: 200,
+          message: 'Password changed successfully',
+        });
+      } else {
+        return res.status(500).json({
+          status: 500,
+          message: 'Server error, password not updated',
+        });
+      }
+    } catch (error: any) {
+      return res.status(500).json({
+        status: 500,
+        message: 'Server error: ' + error.message,
       });
     }
   }
