@@ -81,6 +81,7 @@ class auth {
       });
     }
   }
+  
   static async signup(req: Request, res: Response) {
     try {
       const { firstName, lastName, email, password } = req.body;

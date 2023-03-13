@@ -27,13 +27,16 @@ const USER = sequelizedb.define("user", {
         allowNull: false,
         set(value: string) {
             // this function is to hash the password before saving it.
+            const salt = bcrypt.genSaltSync(10); // generate a salt with 10 rounds
             this.setDataValue(
                 "password",
-                bcrypt.hashSync(value, bcrypt.genSaltSync())
+                bcrypt.hashSync(value, salt) // hash the password with the salt
             );
         },
     },
 });
+
+USER.sync();
 Role.hasMany(USER, {
     foreignKey: "roleId",
 });

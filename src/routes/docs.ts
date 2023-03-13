@@ -155,6 +155,54 @@
  *         description: The user's password has been changed successfully
  */
 
+//UPDATE PASSWORD
+
+/**
+ * @swagger
+ * /update-password:
+ *   patch:
+ *     tags:
+ *       - users
+ *     summary: Update user password
+ *     security: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: The user's email
+ *                 required: true
+ *               oldPassword:
+ *                 type: string
+ *                 description: The user's old password
+ *                 required: true
+ *               newPassword:
+ *                 type: string
+ *                 description: The user's new password
+ *                 required: true
+ *               confirmPassword:
+ *                 type: string
+ *                 description: The user's new password, confirmed
+ *                 required: true
+ *     responses:
+ *       '200':
+ *         description: The user's password has been changed successfully
+ *       '400':
+ *         description: Bad request
+ *       '401':
+ *         description: Unauthorized
+ *       '403':
+ *         description: Forbidden
+ *       '404':
+ *         description: Not found
+ *       '500':
+ *         description: Internal server error
+ */
+
 /**
  * @swagger
  * /profile/edit:
@@ -554,4 +602,57 @@
  *     responses:
  *       '200':
  *         description: Permission successfully deleted
+ */
+
+/**
+ * @swagger
+ * /sendcode/{phone}:
+ *  get:
+ *      tags:
+ *          - users
+ *      summary: Send code (OTP) to user-provided phone number
+ *      security: []
+ *      parameters: 
+ *          - in: path
+ *            name: phone
+ *            schema:
+ *                  type: string
+ *            description: Phone Number
+ *            required: true
+ *      responses:
+ *          200:
+ *              description: OTP is successfully sent
+ *          400:    
+ *              description: Invalid phone number 
+ */
+
+/**
+ * @swagger
+ * /verify/{phone}/{code}:
+ *  get:
+ *      tags: 
+ *          - users
+ *      summary: Verify user-provided OTP
+ *      security: []
+ *      parameters:
+ *          - in: path
+ *            name: phone
+ *            schema:
+ *                  type: string
+ *            description: Phone number
+ *            required: true
+ * 
+ *          - in: path
+ *            name: code
+ *            schema:
+ *                  type: string
+ *            description: Code sent on Phone
+ *            required: true
+ *      responses:
+ *          200: 
+ *             description: Verification successfully
+ *          400:
+ *             description: Invalid phone or code
+ *          404: 
+ *             description: Incorrect OTP
  */
