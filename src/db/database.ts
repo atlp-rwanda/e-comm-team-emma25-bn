@@ -12,7 +12,7 @@ export const sequelizedb = new Sequelize(process.env.DBLINK as string, {
         ssl: true,
         native: true,
     },
-    logging: true,
+    logging: false,
 });
 
 // the code below will connect to the database

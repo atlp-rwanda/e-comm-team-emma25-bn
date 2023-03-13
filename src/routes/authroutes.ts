@@ -41,12 +41,66 @@ const router = Router();
  *             description: successfully logged in;
  *
  * */
-router.post("/signup", signupValidation, auth.signup);
-router.post("/login", loginValidation, auth.Login);
-router.get("/users", auth.getAlluser);
-router.delete("/delete/:id", auth.deleteUser);
-router.get("/sendcode/:phone", auth.sendCode);
-router.get("/verify/:phone/:code", auth.verify2FA);
+
+/**
+ * @swagger
+ * /sendcode/{phone}:
+ *  get:
+ *      tags:
+ *          - users
+ *      summary: Send code (OTP) to user-provided phone number
+ *      security: []
+ *      parameters: 
+ *          - in: path
+ *            name: phone
+ *            schema:
+ *                  type: string
+ *            description: Phone Number
+ *            required: true
+ *      responses:
+ *          200:
+ *              description: OTP is successfully sent
+ *          400:    
+ *              description: Invalid phone number 
+ */
+
+/**
+ * @swagger
+ * /verify/{phone}/{code}:
+ *  get:
+ *      tags: 
+ *          - users
+ *      summary: Verify user-provided OTP
+ *      security: []
+ *      parameters:
+ *          - in: path
+ *            name: phone
+ *            schema:
+ *                  type: string
+ *            description: Phone number
+ *            required: true
+ * 
+ *          - in: path
+ *            name: code
+ *            schema:
+ *                  type: string
+ *            description: Code sent on Phone
+ *            required: true
+ *      responses:
+ *          200: 
+ *             description: Verification successfully
+ *          400:
+ *             description: Invalid phone or code
+ *          404: 
+ *             description: Incorrect OTP
+ */
+
+router.post('/signup', signupValidation, auth.signup)
+router.post('/login', loginValidation, auth.Login)
+router.get('/users', auth.getAlluser)
+router.delete('/delete/:id', auth.deleteUser)
+router.get('/sendcode/:phone', auth.sendCode)
+router.get('/verify/:phone/:code', auth.verify2FA)
 // router.post('/logout', auth.logout)
 router.post("/logout", auth.logout);
 router.post("/authorize", auth.authorize);
