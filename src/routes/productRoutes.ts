@@ -10,4 +10,6 @@ prod.patch(
     ProductController.updateProductAvailability
 );
 
-export default prod;
+
+
+export default prod

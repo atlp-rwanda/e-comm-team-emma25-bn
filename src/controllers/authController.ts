@@ -1,12 +1,3 @@
-import session from "express-session";
-import connectRedis from "connect-redis";
-import { createClient } from "redis";
-import Redis from "ioredis";
-
-const RedisStore = connectRedis(session)
-import { object } from 'joi'
-import ADDRESS from '../models/profilemodels/Address'
-import BILLINGADDRESS from '../models/profilemodels/BillingAdress'
 
 import { Request, Response } from "express";
 import { Twilio } from "twilio";
@@ -17,7 +8,8 @@ import bcrypt from "bcrypt";
 import PROFILE from "../models/profilemodels/profile";
 import ROLE from "../db/models/Role.model";
 import { foundUser } from "../helper/authHelpers";
-import USER from "../models/User";
+import USER from '../models/User'
+import Cart from '../db/models/cart'
 
 config();
 const account_sid = process.env.TWILIO_ACCOUNT_SID;
@@ -102,6 +94,7 @@ class auth {
     }
 
     static async signup(req: Request, res: Response) {
+        
         try {
             // await USER.drop()
             const { firstName, lastName, email, password } = req.body;
@@ -130,6 +123,7 @@ class auth {
                         userId: createData.id,
                     };
                     await PROFILE.create({ ...profiledata });
+                   await Cart.create({buyerId: createData.id, total: 0})
                 }
                 // GET ROLE FROM THE ROLEID FOREIGN KEY
                 const role = await createData.getRole();
@@ -316,23 +310,6 @@ class auth {
         }
     }
 
-    static async authorize(req: Request, res: Response) {
-        const { email, role } = req.body;
-        try {
-            const user = await USER.findOne({ where: { email } });
-            if (!user) {
-                return res
-                    .status(404)
-                    .json({ error: `User with email ${email} not found` });
-            }
-            await user.update({ role });
-            return res.status(200).json({
-                message: `User with email ${email} is update to ${role} role`,
-            });
-        } catch (error) {
-            console.error(error);
-            return res.status(500).json({ error: "Server error" });
-        }
-    }
+
 }
 export default auth;
