@@ -18,6 +18,7 @@ import PROFILE from "../models/profilemodels/profile";
 import ROLE from "../db/models/Role.model";
 import { foundUser } from "../helper/authHelpers";
 import USER from '../models/User'
+import Cart from '../db/models/cart'
 
 config();
 const account_sid = process.env.TWILIO_ACCOUNT_SID;
@@ -106,6 +107,7 @@ class auth {
                         userId: createData.id,
                     };
                     await PROFILE.create({ ...profiledata });
+                 //   await Cart.create({})
                 }
                 // GET ROLE FROM THE ROLEID FOREIGN KEY
                 const role = await createData.getRole();

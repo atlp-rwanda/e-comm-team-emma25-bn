@@ -1,38 +1,24 @@
 import { sequelizedb } from "../database"
 import { DataTypes } from "sequelize"
 import USER from "../../models/User";
+import cartItem from "./cartItems";
 
-const Cart = sequelizedb.define('Cart', {
-    buyerId:{
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    productID: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    price: {
+const Cart = sequelizedb.define('Cart', {   
+    Total: {
         type: DataTypes.DOUBLE,
-        allowNull: false
-    },
-    ProductName: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    images : {
-        type: DataTypes.STRING
-    }    
+        allowNull: false,        
+        },
+ 
 })
-USER.hasOne( Cart , { foreignKey: 'buyerId', as: 'user' });
-Cart.belongsTo(USER, {onDelete: "cascade", foreignKey: 'buyerId'})
+USER.hasOne( Cart,{ foreignKey: 'buyerId'});
+Cart.belongsTo(USER, {onDelete: "cascade"})
+
+Cart.hasMany(cartItem, {foreignKey: 'cartId'})
 
 
 Cart.sync().then(()=>{
     console.log("");
     
 })
-
-
-
 
 export default Cart
