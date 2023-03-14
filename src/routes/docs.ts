@@ -51,57 +51,6 @@
 
 /**
  * @swagger
- * tags:
- *  name: Products
- *  description: Endpoints that handles product actions
- */
-
-/**
- * @swagger
- * /products/add:
- *  post:
- *      tags:
- *          - Products
- *      summary: Endpoint for adding product with its images
- *      requestBody:
- *          content:
- *              multipart/form-data:
- *                  schema:
- *                     type: object
- *                     properties:
- *                          pname:
- *                              type: string
- *                              required: true
- *                              example: "Computer" 
- *                          p_price:
- *                              type: number
- *                              required: true
- *                              example: "250000"
- *                          desc:
- *                              type: string
- *                              required: true
- *                              example: "HP computer with 1TB SSD 16GB RAM"
- *                          imgs:
- *                              type: array
- *                              required: true
- *                              items:
- *                                  type: file
- *      responses:
- *          200:
- *              description: May be product is added with no images or other error
- *          201:
- *              description: Product details and images are saved
- *          400:
- *              description: Bad request
- *          403:
- *              description: You do not have permissions to add a product
- *          404:
- *              description: Invalid or missing security token
- * 
- */
-
-/**
- * @swagger
  * /signup:
  *   post:
  *     tags:
@@ -154,52 +103,6 @@
  *       200:
  *             description: Email verified successfully, Please Sign In.
  * */
-
-
-
-/**
- * @swagger
- * /login:
- *   post:
- *     summary: Log in  into your account to get more prevalleges
- *     tags: 
- *       - users
- *     requestBody:
- *       description: Please fill all required fields
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *                 type: object
- *                 required:                    
- *                    - email
- *                    - password                   
- *                 properties:                 
- *                    email:
- *                      type: string
- *                    password: 
- *                       type : string 
- *     responses:
- *       '200':
- *         description: user log in succesfully
- *       400:
- *         description: Bad request
- */
-
-/**
- * @swagger
- * /logout:
- *   post:
- *     summary: Log out of the current user session
- *     tags:
- *       - users
- *     responses:
- *       '200':
- *         description: User logged out successfully
- *       '401':
- *         description: Unauthorized request
- */
-
 
 
 
