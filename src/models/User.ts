@@ -29,6 +29,10 @@ const USER = sequelizedb.define("user", {
             );
         },
     },
+    passwordLastChanged: {
+        type: DataTypes.DATE,
+        allowNull: true,
+    },
 });
 
 USER.sync();

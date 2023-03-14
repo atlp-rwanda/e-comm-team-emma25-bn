@@ -34,6 +34,8 @@ app.use(permissionRoutes);
 app.use(rolePermissionRoutes);
 app.use(cookieParser())
 app.use('/products', productRoutes)
+// const passwordExpirationTime = process.env.PASSWORD_EXPIRATION_TIME || "90 days";
+
 
 const PORT = process.env.PORT || 3000;
 app.get("/", (req, res) =>
