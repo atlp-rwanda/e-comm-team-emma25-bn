@@ -2,7 +2,7 @@ import { sequelizedb } from "../database"
 import { DataTypes } from "sequelize"
 import Cart from "./cart"
 
-const cartItem = sequelizedb.define('Cartitem',{
+const cartItem = sequelizedb.define('CartItem',{
     cartId:{
         type: DataTypes.STRING,
         allowNull: false,
@@ -23,10 +23,7 @@ const cartItem = sequelizedb.define('Cartitem',{
         type: DataTypes.STRING
     }    
 })
-
 cartItem.belongsTo(Cart, {onDelete: "cascade"})
-
-
 cartItem.sync().then(()=>{
     console.log("")
 })
