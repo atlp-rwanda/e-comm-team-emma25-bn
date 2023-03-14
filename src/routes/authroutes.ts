@@ -1,9 +1,15 @@
-import { Router } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import passports from "passport";
 import auth from "../controllers/authController";
 import signupValidation from "../middlewares/signupValidation";
 import GoogleController from "../controllers/googleAuthController";
 import resetpass from "../controllers/resetcontrollers";
+import Stripe from 'stripe'
+
+
+const stripe = new Stripe (process.env.STRIPE_SECRET as string, {
+    apiVersion: "2022-11-15",
+});
 
 const router = Router();
 
@@ -37,6 +43,9 @@ router.get(
     })
 );
 router.get("/googleResponse", GoogleController.googleAuth);
+
+
+// don't add anything. hold on!
 
 
 /* this delete user route is not protected it is just for testing and setting up the project*/

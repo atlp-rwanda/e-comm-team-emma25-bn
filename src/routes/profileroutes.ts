@@ -9,4 +9,5 @@ router.get("/profile/:userId", Profiles.getprofile)
 router.patch("/profile/edit",verifyToken, profileValidator, Profiles.edit)
 router.get("/profiles", Profiles.getall)
 
+
 export default router;
