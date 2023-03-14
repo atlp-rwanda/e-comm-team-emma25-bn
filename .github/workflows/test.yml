@@ -20,6 +20,8 @@ env:
   CLIENT_ID: ${{ secrets.CLIENT_ID }}
   CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
   USER: ${{ secrets.USER }}
+  FAKE_TOKEN: ${{ secrets.FAKE_TOKEN }}
+  SELLER_TOKEN: ${{ secrets.SELLER_TOKEN }}
 
 jobs:
   build:
