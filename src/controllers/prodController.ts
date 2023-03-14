@@ -67,6 +67,48 @@ class ProductController {
             return res.status(404).json({ status: 404, message: "User token not found! try logging in." })
         }
     }
+    static async getAllproducts(req: Request,res: Response){
+        try {            
+            const allProducts = await  Product.findAll({include: [{model: Images}]})
+            res.status(200).json({
+                statusCode: 200,
+                message: "all products retrieved succesfully",
+                data: allProducts
+
+            })
+        } catch (error:any) {
+            res.status(400).json({
+                statusCode: 400,
+                message: error.message
+            })
+        }
+        
+
+    }
+    static async getsingleproducts(req: Request,res: Response){
+        try {            
+            const singleproduct = await  Product.findOne({where: {ProductID: req.params.id},include: [{model: Images}]})
+            if(!singleproduct){
+                res.status(404).json({
+                    statusCode: 404,
+                    message: "product not found"
+                })
+            }
+            res.status(200).json({
+                statusCode: 200,
+                message: "all products retrieved succesfully",
+                data: singleproduct
+            })
+        } catch (error:any) {
+              res.status(400).json({
+                statusCode: 400,
+                message: error.message
+            })
+            
+        }
+        
+
+    }
 }
 
 export default ProductController

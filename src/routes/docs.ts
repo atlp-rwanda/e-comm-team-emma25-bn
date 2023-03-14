@@ -7,6 +7,52 @@
 
 /**
  * @swagger
+ * /products/all:
+ *   get:
+ *     summary: Retrieve all products
+ *     tags: [Products]
+ *     responses:
+ *       200:
+ *         description: A list of products
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Product'
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /products/{id}:
+ *   get:
+ *     summary: Retrieve a single product by ID
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         description: ID of the product to retrieve
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: The product with the specified ID
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Product'
+ *       404:
+ *         description: Product not found
+ *       500:
+ *         description: Internal server error
+ */
+
+
+/**
+ * @swagger
  * /products/add:
  *  post:
  *      tags:
@@ -548,7 +594,6 @@
  *               role:
  *                 type: string
  *                 description: The update role name for the user
- *     security: []
  *     responses:
  *       '201':
  *         description: Role successfully updated

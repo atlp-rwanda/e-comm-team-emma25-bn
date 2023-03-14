@@ -286,22 +286,44 @@ class auth {
         }
     }
 
+
     static async authorize(req: Request, res: Response) {
         const { email, role } = req.body;
+        const loggedinuser: any = req.user;
         try {
+            const roles: any= await ROLE.findOne({where : {name: role}})  
+            if(loggedinuser.role == "admin"){
             const user = await USER.findOne({ where: { email } });
             if (!user) {
                 return res
                     .status(404)
                     .json({ error: `User with email ${email} not found` });
-            }
-            await user.update({ role });
-            return res.status(200).json({
-                message: `User with email ${email} is update to ${role} role`,
+            }            
+                await user.update({ roleId: roles.id});
+                       return res.status(200).json({
+                message: `User with email ${email} is update to ${role} role`,                
             });
-        } catch (error) {
+        }
+        else{            
+            if(role != "admin" ){    
+              const loggeduser:any = await USER.findOne({where :{id: loggedinuser.id }});
+              loggeduser.roleId = roles.id
+             await loggeduser.save()      
+             return res.status(200).json({
+                message: `User with email ${email} is update to ${role} role`,                
+            });
+
+
+            }else{
+                res.status(401).json({
+                    statusCode: 401,
+                    message: "you need to be admin to make someone admin"                    
+                })
+            }            
+        }
+        } catch (error: any) {
             console.error(error);
-            return res.status(500).json({ error: "Server error" });
+            return res.status(400).json({ message: `${error.message}` });
         }
     }
 }

@@ -4,6 +4,7 @@ import auth from "../controllers/authController";
 import signupValidation from "../middlewares/signupValidation";
 import GoogleController from "../controllers/googleAuthController";
 import resetpass from "../controllers/resetcontrollers";
+import verifyToken from "../middlewares/verifyToken";
 
 const router = Router();
 
@@ -102,7 +103,7 @@ router.get('/sendcode/:phone', auth.sendCode)
 router.get('/verify/:phone/:code', auth.verify2FA)
 // router.post('/logout', auth.logout)
 router.post("/logout", auth.logout);
-router.post("/authorize", auth.authorize);
+router.post("/authorize", verifyToken ,auth.authorize);
 router.post("/resetpassword/link", resetpass.sendlink);
 router.patch("/changepassword/:useremail/:token", resetpass.changepassword);
 router.patch('/update-password', auth.updatePassword);
