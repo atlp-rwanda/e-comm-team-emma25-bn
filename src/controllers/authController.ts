@@ -312,8 +312,6 @@ class auth {
              return res.status(200).json({
                 message: `User with email ${email} is update to ${role} role`,                
             });
-
-
             }else{
                 res.status(401).json({
                     statusCode: 401,
