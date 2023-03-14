@@ -115,45 +115,59 @@ class ProductController {
         }
     }
 
+    // PRODUCT AVAILABILITY
     static async updateProductAvailability(req: Request, res: Response) {
-        const ProductID = req.params.product_id;
-        const available: boolean = req.body.isAvailable;
-        const bToken = req.headers.authorization
-            ? req.headers.authorization.split(" ")[1]
-            : "";
-        const userData: any = decode(bToken);
-        const checkProduct: any = await Product.findOne({
-            where: { ProductID },
-        });
-        if (checkProduct && userData) {
-            console.log(checkProduct);
-            console.log(userData);
-            if (checkProduct.ProductOwner == userData.id) {
-                console.log("YOU OWN THIS PRODUCT");
-                const updatedProduct = await Product.update(
-                    { available },
-                    {
-                        where: {
-                            ProductID,
-                        },
-                    }
-                );
-                return res.status(201).json({
-                    statusCode: 201,
-                    message: "product updated successfully",
-                    data: updatedProduct,
-                });
-            } else {
-                return res.status(403).json({
-                    statusCode: 403,
-                    message:
-                        "you can not authorised to update other people's products",
+        try {
+            const ProductID = req.params.product_id;
+            const available = req.body.isAvailable;
+            if (typeof available === "boolean") {
+                res.status(400).json({
+                    statusCode: 400,
+                    message: "Use true or false for avalilable",
                 });
             }
-        } else {
-            return res.status(404).json({
-                statusCode: 404,
-                message: `product with id ${ProductID} does not exist`,
+            const bToken = req.headers.authorization
+                ? req.headers.authorization.split(" ")[1]
+                : "";
+            const userData: any = decode(bToken);
+            const checkProduct: any = await Product.findOne({
+                where: { ProductID },
+            });
+            if (checkProduct && userData) {
+                console.log(checkProduct);
+                console.log(userData);
+                if (checkProduct.ProductOwner == userData.id) {
+                    console.log("YOU OWN THIS PRODUCT");
+                    const updatedProduct = await Product.update(
+                        { available },
+                        {
+                            where: {
+                                ProductID,
+                            },
+                        }
+                    );
+                    return res.status(201).json({
+                        statusCode: 201,
+                        message: "product updated successfully",
+                        data: updatedProduct,
+                    });
+                } else {
+                    return res.status(403).json({
+                        statusCode: 403,
+                        message:
+                            "you can not authorised to update other people's products",
+                    });
+                }
+            } else {
+                return res.status(404).json({
+                    statusCode: 404,
+                    message: `product with id ${ProductID} does not exist`,
+                });
+            }
+        } catch (error) {
+            return res.json({
+                statusCode: 400,
+                message: error,
             });
         }
     }
