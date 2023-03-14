@@ -5,8 +5,8 @@ coverage/
 .vscode/
 package-lock.json
 .DS_Store
-*.jpeg
 *.png
+*.jpg
+*.jpeg
 *.webp
 *.gif
-*.jpg

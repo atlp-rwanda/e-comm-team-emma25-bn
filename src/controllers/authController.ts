@@ -16,8 +16,8 @@ import { config } from "dotenv";
 import bcrypt from "bcrypt";
 import PROFILE from "../models/profilemodels/profile";
 import ROLE from "../db/models/Role.model";
-import USER from '../models/User'
 import { foundUser } from "../helper/authHelpers";
+import USER from '../models/User'
 
 config();
 const account_sid = process.env.TWILIO_ACCOUNT_SID;
