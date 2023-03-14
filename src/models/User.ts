@@ -6,6 +6,13 @@ import Role from "../db/models/Role.model";
 const USER = sequelizedb.define("user", {
     firstName: {
         type: DataTypes.STRING,
+import { DataTypes } from "sequelize";
+import bcrypt from "bcrypt";
+import Profile from "./profilemodels/profile";
+import Role from "../db/models/Role.model";
+const USER = sequelizedb.define("user", {
+    firstName: {
+        type: DataTypes.STRING,
         allowNull: false,
     },
     lastName: {
