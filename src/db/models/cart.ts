@@ -11,7 +11,8 @@ const Cart = sequelizedb.define('carts',{
         type: DataTypes.DOUBLE,
         allowNull: false,        
         defaultValue: 0
-    }
+    },
+  
 })
 
 

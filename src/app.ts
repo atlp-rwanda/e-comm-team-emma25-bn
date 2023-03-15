@@ -18,6 +18,10 @@ import { Server } from "socket.io"
 const server = http.createServer(app);
 const io = new Server(server)
 
+
+
+
+
 app.use(
     session({
         secret: `process.env.SECRET`,
@@ -34,8 +38,7 @@ app.use(roleRoutes);
 app.use(permissionRoutes);
 app.use(rolePermissionRoutes);
 
-
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 app.get("/", (req, res) =>
     res.send('Hello, use  "/docs" to view the swagger docs. <br> use <code>/chat</code> to open up a chat.')
 );
