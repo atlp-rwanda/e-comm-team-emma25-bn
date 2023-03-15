@@ -14,20 +14,18 @@ class RolesController {
         const { email, roleName } = req.body;
         try {
             const user = await USER.findOne({ where: { email } });
-            if (!user) {
-                return res.status(404).json({
-                    statusCode: 404,
-                    message: `User with email ${email} not found`,
-                });
-            } else {
-                const role: any = await ROLE.findOne({
-                    where: { name: roleName },
-                });
-                const newAssignedRoleID = role.dataValues.id;
+            const role: any = await ROLE.findOne({
+                where: { name: roleName },
+            });
+            if (user) {
                 if (role) {
-                    await user.update({ roleId: newAssignedRoleID });
+                    const newAssignedRoleID = role.dataValues.id;
+                    const updatedUser = await user.update({
+                        roleId: newAssignedRoleID,
+                    });
                     return res.status(200).json({
                         message: `User with email ${email} is update to ${roleName} role`,
+                        data: updatedUser,
                     });
                 } else {
                     return res.status(404).json({
@@ -35,6 +33,11 @@ class RolesController {
                         message: `${roleName} role does not exist`,
                     });
                 }
+            } else {
+                return res.status(404).json({
+                    statusCode: 404,
+                    message: `User with email ${email} not found`,
+                });
             }
         } catch (error) {
             console.error(error);

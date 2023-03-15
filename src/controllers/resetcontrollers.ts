@@ -82,7 +82,7 @@ class resetpass {
             await Tokens.destroy({ where: { id: findtoken.id } });
             res.status(200).json({
               statusCode: 200,
-              message: "passsword has been reset succesfully",
+              message: "passsword has been reset successfully",
             });
           }
         } else {
