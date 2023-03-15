@@ -1,26 +1,31 @@
-import { DataTypes } from "sequelize"
-import { sequelizedb } from "../database"
+import { DataTypes } from "sequelize";
+import { sequelizedb } from "../database";
 
-const Product = sequelizedb.define('Products', {
+const Product = sequelizedb.define("Products", {
     ProductID: {
         type: DataTypes.STRING,
-        primaryKey: true
+        primaryKey: true,
     },
     ProductName: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
     },
     ProductPrice: {
         type: DataTypes.DOUBLE,
-        allowNull: false
+        allowNull: false,
     },
-    ProductDesc: DataTypes.TEXT('long'),
+    available: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true, // Product is available by default
+    },
+    ProductDesc: DataTypes.TEXT("long"),
     ProductOwner: {
         type: DataTypes.STRING,
-        allowNull: false
-    }
-})
+        allowNull: false,
+    },
+});
 
-Product.sync();
+Product.sync({ alter: true });
 
-export default Product
+export default Product;

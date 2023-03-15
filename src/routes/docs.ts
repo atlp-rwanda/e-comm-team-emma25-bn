@@ -7,6 +7,31 @@
 
 /**
  * @swagger
+ * /cart/add/{productID}:
+ *   post:
+ *     summary: Add a product to the cart
+ *     tags: [Cart]
+ *     description: Adds a product to the user's cart based on the provided product ID
+ *     parameters:
+ *       - in: path
+ *         name: productID
+ *         description: ID of the product to be added to the cart
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Product added successfully
+ *       400:
+ *         description: Invalid product ID provided
+ *       404:
+ *         description: Product not found
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
  * /products/add:
  *  post:
  *      tags:
@@ -21,7 +46,7 @@
  *                          pname:
  *                              type: string
  *                              required: true
- *                              example: "Computer" 
+ *                              example: "Computer"
  *                          p_price:
  *                              type: number
  *                              required: true
@@ -46,7 +71,46 @@
  *              description: You do not have permissions to add a product
  *          404:
  *              description: Invalid or missing security token
- * 
+ *
+ */
+
+/**
+ * @swagger
+ * /products/available/{productId}:
+ *   patch:
+ *     tags:
+ *       - Products
+ *     summary: Update the availability of a product
+ *     security:
+ *       - authsecurity: []
+ *     parameters:
+ *       - in: path
+ *         name: productId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the product to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - isAvailable
+ *             properties:
+ *               isAvailable:
+ *                 type: boolean
+ *                 description: The new availability status of the product
+ *     responses:
+ *       '201':
+ *         description: Product details updated
+ *       '400':
+ *         description: The request was malformed or missing required data
+ *       '403':
+ *         description: The user does not have permission to update the product
+ *       '404':
+ *         description: The specified product ID does not exist
  */
 
 /**
@@ -83,14 +147,12 @@
  *
  * */
 
-
-
 /**
  * @swagger
  * /login:
  *   post:
  *     summary: Log in  into your account to get more prevalleges
- *     tags: 
+ *     tags:
  *       - users
  *     requestBody:
  *       description: Please fill all required fields
@@ -99,14 +161,14 @@
  *         application/json:
  *           schema:
  *                 type: object
- *                 required:                    
+ *                 required:
  *                    - email
- *                    - password                   
- *                 properties:                 
+ *                    - password
+ *                 properties:
  *                    email:
  *                      type: string
- *                    password: 
- *                       type : string 
+ *                    password:
+ *                       type : string
  *     responses:
  *       '200':
  *         description: user log in succesfully
@@ -128,7 +190,6 @@
  *         description: Unauthorized request
  */
 
-
 /**
  * @swagger
  * /users:
@@ -137,7 +198,8 @@
  *       - users
  *     name: users
  *     summary: Retrieve all users
- *     security: []
+ *     security:
+ *       - authsecurity: []
  *     consumes:
  *        - application/json
  *     responses:
@@ -410,6 +472,8 @@
  * /role:
  *   post:
  *     summary: Create a new role
+ *     security:
+ *       - authsecurity: []
  *     tags: [Roles]
  *     requestBody:
  *        required: true
@@ -443,6 +507,8 @@
  * /role/{name}:
  *   patch:
  *     summary: Update role by name
+ *     security:
+ *       - authsecurity: []
  *     tags: [Roles]
  *     parameters:
  *       - in: path
@@ -467,7 +533,6 @@
  *               description:
  *                 type: string
  *                 description: A brief description of the updated role
- *     security: []
  *     responses:
  *       '201':
  *         description: Role successfully updated
@@ -478,6 +543,8 @@
  * /role/{name}:
  *   get:
  *     summary: Get a role by name
+ *     security:
+ *       - authsecurity: []
  *     tags: [Roles]
  *     parameters:
  *       - in: path
@@ -486,7 +553,6 @@
  *           type: string
  *         required: true
  *         description: Name of the role
- *     security: []
  *     responses:
  *       '200':
  *         description: Role successfully retrieved
@@ -498,7 +564,8 @@
  *   get:
  *     summary: Retrieve all roles
  *     tags: [Roles]
- *     security: []
+ *     security:
+ *       - authsecurity: []
  *     produces:
  *       - application/json
  *     responses:
@@ -511,6 +578,8 @@
  * /role/{name}:
  *   delete:
  *     summary: Delete a role by name
+ *     security:
+ *       - authsecurity: []
  *     tags:
  *       - Roles
  *     parameters:
@@ -520,7 +589,6 @@
  *           type: string
  *         required: true
  *         description: Name of the role to delete
- *     security: []
  *     responses:
  *       '200':
  *         description: Role successfully deleted
@@ -529,8 +597,10 @@
 /**
  * @swagger
  * /authorize:
- *   post:
+ *   patch:
  *     summary: Update a role by user email
+ *     security:
+ *       - authsecurity: []
  *     tags: [Roles]
  *     requestBody:
  *       required: true
@@ -540,15 +610,14 @@
  *             type: object
  *             required:
  *               - email
- *               - role
+ *               - roleName
  *             properties:
  *               email:
  *                 type: string
  *                 description: email of the user to update their role
- *               role:
+ *               roleName:
  *                 type: string
  *                 description: The update role name for the user
- *     security: []
  *     responses:
  *       '201':
  *         description: Role successfully updated
@@ -564,6 +633,8 @@
  * /permission:
  *   post:
  *     summary: Create a new permission
+ *     security:
+ *       - authsecurity: []
  *     tags: [Permissions]
  *     requestBody:
  *        required: true
@@ -597,6 +668,8 @@
  * /permission/{name}:
  *   patch:
  *     summary: Update permission by name
+ *     security:
+ *       - authsecurity: []
  *     tags: [Permissions]
  *     parameters:
  *       - in: path
@@ -621,7 +694,6 @@
  *               description:
  *                 type: string
  *                 description: A brief description of the updated permission
- *     security: []
  *     responses:
  *       '201':
  *         description: Permission successfully updated
@@ -632,6 +704,8 @@
  * /permission/{name}:
  *   get:
  *     summary: Get a permission by name
+ *     security:
+ *       - authsecurity: []
  *     tags: [Permissions]
  *     parameters:
  *       - in: path
@@ -640,7 +714,6 @@
  *           type: string
  *         required: true
  *         description: Name of the permission
- *     security: []
  *     responses:
  *       '200':
  *         description: Permission successfully retrieved
@@ -651,8 +724,9 @@
  * /permission:
  *   get:
  *     summary: Retrieve all permissions
+ *     security:
+ *       - authsecurity: []
  *     tags: [Permissions]
- *     security: []
  *     produces:
  *       - application/json
  *     responses:
@@ -665,6 +739,8 @@
  * /permission/{name}:
  *   delete:
  *     summary: Delete a permission by name
+ *     security:
+ *       - authsecurity: []
  *     tags:
  *       - Permissions
  *     parameters:
@@ -674,7 +750,6 @@
  *           type: string
  *         required: true
  *         description: Name of the permission to delete
- *     security: []
  *     responses:
  *       '200':
  *         description: Permission successfully deleted
@@ -688,7 +763,7 @@
  *          - users
  *      summary: Send code (OTP) to user-provided phone number
  *      security: []
- *      parameters: 
+ *      parameters:
  *          - in: path
  *            name: phone
  *            schema:
@@ -698,15 +773,15 @@
  *      responses:
  *          200:
  *              description: OTP is successfully sent
- *          400:    
- *              description: Invalid phone number 
+ *          400:
+ *              description: Invalid phone number
  */
 
 /**
  * @swagger
  * /verify/{phone}/{code}:
  *  get:
- *      tags: 
+ *      tags:
  *          - users
  *      summary: Verify user-provided OTP
  *      security: []
@@ -717,7 +792,7 @@
  *                  type: string
  *            description: Phone number
  *            required: true
- * 
+ *
  *          - in: path
  *            name: code
  *            schema:
@@ -725,10 +800,10 @@
  *            description: Code sent on Phone
  *            required: true
  *      responses:
- *          200: 
+ *          200:
  *             description: Verification successfully
  *          400:
  *             description: Invalid phone or code
- *          404: 
+ *          404:
  *             description: Incorrect OTP
  */
