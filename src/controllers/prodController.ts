@@ -171,6 +171,111 @@ class ProductController {
             });
         }
     } 
+
+    // UPDATE PRODUCT
+
+    static async updateProduct(req: Request, res: Response) {
+        const jwt =
+            req.cookies.jwt ||
+            req.body.token ||
+            req.query.jwt ||
+            req.cookies.token;
+        const bToken = req.headers.authorization
+            ? req.headers.authorization.split(" ")[1]
+            : "";
+
+        if (jwt || bToken != "") {
+            const userData: any = decode(jwt || bToken);
+            if (userData.role != "seller") {
+                return res.status(403).json({
+                    status: 403,
+                    message: "You should login as a seller to update a product.",
+                });
+            }
+
+            const productId = req.params.productId;
+            const product = await Product.findOne({
+                where: { ProductID: productId, ProductOwner: userData.id },
+                include: [Images],
+            });
+            if (!product) {
+                return res.status(404).json({
+                    status: 404,
+                    error: "Product not found for the given seller.",
+                });
+            }
+
+            multipleUploader(req, res, async function (err) {
+                if (err instanceof MulterError) {
+                    res.status(400).json({ status: 400, message: err.message });
+                } else if (err) {
+                    return res.status(400).json({
+                        status: 400,
+                        error: "File conflicts",
+                        message:
+                            "Please upload only jpg, jpeg, png, webp image files.",
+                    });
+                }
+                if (req.files) {
+                    const ProductName: string = req.body.pname.replace(
+                        req.body.pname[0],
+                        req.body.pname[0].toUpperCase()
+                    );
+                    const ProductPrice: string = req.body.p_price;
+                    const ProductDesc: string = req.body.desc;
+                    try {
+                        const updatedProduct = await product.update({
+                            ProductName,
+                            ProductPrice,
+                            ProductDesc,
+                        });
+                        const files = req.files;
+                        const { imgs }: any = files;
+                        const totalFiles = imgs.length;
+                        for (let i = 0; i < totalFiles; i++) {
+                            const img = imgs[i];
+                            const fileType = img.mimetype;
+                            const fullPath =
+                                req.protocol +
+                                "://" +
+                                req.hostname +
+                                "/" +
+                                img.destination +
+                                "/" +
+                                img.filename;
+                            await Images.create({
+                                ImageID: uids(),
+                                ImagePath: fullPath,
+                                ImageType: fileType,
+                                ProductID: productId,
+                            });
+                        }
+                        const updatedImages = await Images.findAll({
+                            where: { ProductID: productId },
+                        });
+                        res.status(200).json({
+                            status: 200,
+                            message: "Product image and details are updated.",
+                            productData: updatedProduct,
+                            ImageDetails: updatedImages,
+                        });
+                    } catch (error) {
+                        res.status(500).json({
+                            status: 500,
+                            message: "Product update failed due to server error.",
+                            error,
+                        });
+                    }
+                }
+            });
+        } else {
+            return res.status(404).json({
+                status: 404,
+                message: "User token not found! try logging in.",
+            });
+        }
+    }
 }
+
 
 export default ProductController;
