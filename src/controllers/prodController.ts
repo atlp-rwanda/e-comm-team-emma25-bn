@@ -47,6 +47,7 @@ class ProductController {
                     const ProductPrice: string = req.body.p_price;
                     const ProductOwner: string = userData.id;
                     const ProductDesc: string = req.body.desc;
+                    const quantity: number = req.body.quantity
                     const checkProduct = await Product.findOne({
                         where: { ProductName },
                         include: [Images],
@@ -59,6 +60,7 @@ class ProductController {
                                 ProductPrice,
                                 ProductDesc,
                                 ProductOwner,
+                                quantity
                             });
                             const files = req.files;
                             const { imgs }: any = files;

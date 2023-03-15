@@ -34,6 +34,7 @@ app.use(permissionRoutes);
 app.use(rolePermissionRoutes);
 app.use(cookieParser())
 app.use('/cart', Cartrouter)
+app.use('/products', productRoutes)
 
 const PORT = process.env.PORT || 3000;
 app.get("/", (req, res) =>
