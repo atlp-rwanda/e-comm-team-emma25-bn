@@ -2,18 +2,19 @@
 
 import express, { Application } from "express";
 import { config } from "dotenv";
-import cookieParser from "cookie-parser"
+import cookieParser from "cookie-parser";
 import swaggerDocs from "./docs/swagger";
 import connectdb from "./db/database";
 import roleRoutes from "./routes/rolesPermissionsRoutes/role.route";
 import rolePermissionRoutes from "./routes/rolesPermissionsRoutes/rolePermission.route";
 import permissionRoutes from "./routes/rolesPermissionsRoutes/permission.route";
-import createServer from './utils/server'
+import createServer from "./utils/server";
 import passport from "passport";
 import session from "express-session";
-import productRoutes from "./routes/productRoutes"
+import productRoutes from "./routes/productRoutes";
 
 import "./config/googlePassport.config";
+import Cartrouter from "./routes/cart.routes";
 const app: Application = createServer()
 
 app.use(
@@ -34,6 +35,7 @@ app.use(permissionRoutes);
 app.use(rolePermissionRoutes);
 app.use(cookieParser())
 app.use('/products', productRoutes)
+app.use('/cart', Cartrouter)
 
 const PORT = process.env.PORT || 3000;
 app.get("/", (req, res) =>
