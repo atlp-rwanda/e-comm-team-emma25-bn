@@ -1,9 +1,6 @@
-import Supertest from "supertest";
+import supertest from "supertest";
 import createServer from "../../utils/server";
 const app = createServer();
-
-import supertest from "supertest";
-import App from "../../app";
 
 const phone = "+250783006902";
 describe("Two-Factor Authentication", () => {

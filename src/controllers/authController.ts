@@ -153,7 +153,7 @@ class auth {
           'E-commerce email verification, Please verify your email',
           `to verify your Email click on the link below ${process.env.BASE_URL}/verify-email/${token}`,
         );
-        console.log(result);
+        
 
         // GET ROLE FROM THE ROLEID FOREIGN KEY
         const role = await createData.getRole();
@@ -342,7 +342,8 @@ class auth {
         statusCode: 400,
         message: error.message,
       });
-      // console.log(res)
+      
+      
     }
   }
   /*this delete user function is not protected it is created just for the project setup and testing*/

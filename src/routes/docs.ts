@@ -166,8 +166,6 @@
  *             description: Email verified successfully, Please Sign In.
  * */
 
-
-
 /**
  * @swagger
  * /login:
