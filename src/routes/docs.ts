@@ -572,7 +572,7 @@
 /**
  * @swagger
  * /authorize:
- *   post:
+ *   patch:
  *     summary: Update a role by user email
  *     security:
  *       - authsecurity: []
@@ -585,12 +585,12 @@
  *             type: object
  *             required:
  *               - email
- *               - role
+ *               - roleName
  *             properties:
  *               email:
  *                 type: string
  *                 description: email of the user to update their role
- *               role:
+ *               roleName:
  *                 type: string
  *                 description: The update role name for the user
  *     responses:

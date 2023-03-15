@@ -3,7 +3,7 @@ import { Router } from "express";
 import { roleAuthorization } from "../../middlewares/role.middleware";
 const router = Router();
 router.patch(
-    "/userrole",
+    "/authorize",
     roleAuthorization(["admin"]),
     RolesController.updateUserRole
 );
