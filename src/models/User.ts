@@ -3,6 +3,7 @@ import { DataTypes } from "sequelize";
 import bcrypt from "bcrypt";
 import Profile from "./profilemodels/profile";
 import Role from "../db/models/Role.model";
+
 const USER = sequelizedb.define("user", {
     firstName: {
         type: DataTypes.STRING,
@@ -21,11 +22,10 @@ const USER = sequelizedb.define("user", {
         type: DataTypes.STRING,
         allowNull: false,
         set(value: string) {
-            // this function is to hash the password before saving it.
-            const salt = bcrypt.genSaltSync(10); // generate a salt with 10 rounds
+            const salt = bcrypt.genSaltSync(10);
             this.setDataValue(
                 "password",
-                bcrypt.hashSync(value, salt) // hash the password with the salt
+                bcrypt.hashSync(value, salt)
             );
         },
     },
@@ -33,7 +33,11 @@ const USER = sequelizedb.define("user", {
         type: DataTypes.DATE,
         allowNull: true,
     },
+}, {
+    timestamps: true, // This will add createdAt and updatedAt fields to the model
+    updatedAt: 'passwordLastChanged' // This will make sure that the updatedAt field is stored in the passwordLastChanged field
 });
+
 
 USER.sync();
 Role.hasMany(USER, {

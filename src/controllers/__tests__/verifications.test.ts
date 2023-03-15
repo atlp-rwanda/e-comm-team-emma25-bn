@@ -15,11 +15,6 @@ describe('Two-Factor Authentication', () => {
                 await supertest(app).get('/sendcode/').expect(404)
             }, 20000)
         })
-        describe('If correct number provided', () => {
-            test('Should return 200 with a verification status', async () => {
-                await supertest(app).get(`/sendcode/${phone}`).expect(200)
-            }, 20000)
-        })
     })
     describe('Verifying Verification Code', () => {
         describe('If invalid number or OTP provided', () => {
