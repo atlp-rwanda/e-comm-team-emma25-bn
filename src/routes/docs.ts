@@ -115,6 +115,33 @@
 
 /**
  * @swagger
+ * /products/delete/{productId}:
+ *   delete:
+ *     tags:
+ *       - Products
+ *     summary: Seller delete the product in their collection
+ *     security:
+ *       - authsecurity: []
+ *     parameters:
+ *       - in: path
+ *         name: productId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the product to delete
+ *     responses:
+ *       '200':
+ *         description: Product deleted successfuly
+ *       '400':
+ *         description: The request was malformed or missing required data
+ *       '403':
+ *         description: The user does not have permission to update the product
+ *       '404':
+ *         description: The specified product ID does not exist
+ */
+
+/**
+ * @swagger
  * /signup:
  *   post:
  *     tags:

@@ -13,7 +13,7 @@ prod.patch(
 
 // seller delete their product
 prod.delete(
-    "/delete/:ProductID",
+    "/delete/:product_id",
     roleAuthorization(["seller"]),
     ProductController.deleteOneProduct
 );

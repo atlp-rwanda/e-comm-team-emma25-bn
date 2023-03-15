@@ -120,12 +120,15 @@ class ProductController {
         try {
             const ProductID = req.params.product_id;
             const available = req.body.isAvailable;
-            if (typeof available === "boolean") {
+            console.log(typeof available);
+            if (typeof available !== "boolean") {
                 res.status(400).json({
                     statusCode: 400,
-                    message: "Use true or false for avalilable",
+                    message:
+                        "The 'isAvailable' field must be a boolean value (true or false)",
                 });
             }
+
             const bToken = req.headers.authorization
                 ? req.headers.authorization.split(" ")[1]
                 : "";
@@ -134,10 +137,7 @@ class ProductController {
                 where: { ProductID },
             });
             if (checkProduct && userData) {
-                console.log(checkProduct);
-                console.log(userData);
                 if (checkProduct.ProductOwner == userData.id) {
-                    console.log("YOU OWN THIS PRODUCT");
                     const updatedProduct = await Product.update(
                         { available },
                         {
@@ -182,20 +182,18 @@ class ProductController {
                 where: { ProductID },
             });
             if (checkProduct && userData) {
-                console.log(checkProduct);
-                console.log(userData);
                 if (checkProduct.ProductOwner == userData.id) {
                     console.log("YOU OWN THIS PRODUCT");
-                    const deletedProduct = await checkProduct.desctroy();
-                    // const deletedProduct = await Product.destroy({
-                    //     where: {
-                    //         ProductID,
-                    //     },
-                    // });
+                    // const deletedProduct = await checkProduct.desctroy();
+                    await Product.destroy({
+                        where: {
+                            ProductID,
+                        },
+                    });
                     return res.status(201).json({
                         statusCode: 201,
                         message: "product deleted successfully",
-                        data: deletedProduct,
+                        data: checkProduct,
                     });
                 } else {
                     return res.status(403).json({
