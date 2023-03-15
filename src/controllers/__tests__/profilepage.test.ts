@@ -2,8 +2,11 @@ import supertest from 'supertest'
 import createServer from '../../utils/server'
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const app = createServer()
+
+
+describe('profile page i', ()=>{
 let token 
-beforeAll(async () => {
+  beforeAll(async () => {
     const res = await supertest(app)
       .post('/login')
       .send({
@@ -13,8 +16,6 @@ beforeAll(async () => {
     token = res.body.token;
   }, 40000);
 
-
-describe('profile page i', ()=>{
     test("get all profiles", async ()=>{
         const response = await supertest(app).get("/profiles")
         expect(response.status).toBe(200)},60000)

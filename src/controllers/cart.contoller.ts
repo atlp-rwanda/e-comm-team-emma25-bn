@@ -66,6 +66,7 @@ class CART {
                 data: newcart,
                })  
             }else{
+               
                 throw new Error("not enough product in stoke")
             }
             }
@@ -154,6 +155,9 @@ class CART {
             if(!itemproduct){
                 throw new Error("no product found")
             }
+            if(quantity > itemproduct.quantity + cartitem.quantity){
+                throw new Error("the quantity is not enough");                
+            }
             if(quantity <= itemproduct.quantity + cartitem.quantity){
                 if(quantity > cartitem.quantity){
                 itemproduct.quantity = itemproduct.quantity - (quantity - cartitem.quantity)
@@ -197,6 +201,29 @@ class CART {
             })
             
         }
-      }
+      }        
+      static async viewCart(req: Request, res: Response){
+            try {
+                const buyer:any = req.user                 
+                const cart:any = await Cart.findOne({where: {buyerId: buyer.id }, include:[{model: cartItem}]}) 
+                if(cart){
+                    res.status(200).json({
+                        statusCode: 200,
+                        message : "cart data",
+                        cart
+                    })
+                }                
+            } catch (error:any) {
+                res.status(400).json({
+                    statusCode: 400,
+                    message : error.message
+
+                })
+                
+                
+            }
+
+        }
+    
     } 
 export default CART

@@ -23,8 +23,7 @@ describe("Login via google", () => {
     const data = await GoogleController.googleAuth(
       httpRequest("example@example.com"),
       httpResponse()
-    );
-    console.log(data);
+    );    
     expect(data.body).toHaveProperty("user");
   });
 
@@ -32,8 +31,7 @@ describe("Login via google", () => {
     const data: any = await GoogleController.googleAuth(
       httpRequest("example@example.com"),
       httpResponse()
-    );
-    console.log(data);
+    );    
     expect(data.body).toHaveProperty("user");
   });
   test("testing 500", async () => {
@@ -108,3 +106,5 @@ describe('reset password', () => {
     })
   })
 })
+
+

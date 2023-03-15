@@ -73,6 +73,22 @@
  *          500:
  *              description: Something went wrong while fetching products
  */
+/**
+ * @swagger
+ * /cart/view:
+ *   get:
+ *     tags:
+ *       - Cart
+ *     name: cart
+ *     summary: Retrieve cart
+ *     consumes:
+ *        - application/json
+ *     responses:
+ *       200:
+ *             description:  successfully Retrieved.
+ *       400:
+ *             description: you are not a buyer 
+ * */
 
 /**
  * @swagger
