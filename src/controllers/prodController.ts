@@ -170,7 +170,53 @@ class ProductController {
                 message: error,
             });
         }
-    } 
+    }
+    static async deleteOneProduct(req: Request, res: Response) {
+        try {
+            const ProductID = req.params.product_id;
+            const bToken = req.headers.authorization
+                ? req.headers.authorization.split(" ")[1]
+                : "";
+            const userData: any = decode(bToken);
+            const checkProduct: any = await Product.findOne({
+                where: { ProductID },
+            });
+            if (checkProduct && userData) {
+                console.log(checkProduct);
+                console.log(userData);
+                if (checkProduct.ProductOwner == userData.id) {
+                    console.log("YOU OWN THIS PRODUCT");
+                    const deletedProduct = await checkProduct.desctroy();
+                    // const deletedProduct = await Product.destroy({
+                    //     where: {
+                    //         ProductID,
+                    //     },
+                    // });
+                    return res.status(201).json({
+                        statusCode: 201,
+                        message: "product deleted successfully",
+                        data: deletedProduct,
+                    });
+                } else {
+                    return res.status(403).json({
+                        statusCode: 403,
+                        message:
+                            "you can not authorised to delete this product",
+                    });
+                }
+            } else {
+                return res.status(404).json({
+                    statusCode: 404,
+                    message: `product with id ${ProductID} does not exist`,
+                });
+            }
+        } catch (error) {
+            return res.json({
+                statusCode: 400,
+                message: error,
+            });
+        }
+    }
 }
 
 export default ProductController;
