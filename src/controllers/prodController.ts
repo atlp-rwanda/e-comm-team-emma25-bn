@@ -170,7 +170,7 @@ class ProductController {
                 message: error,
             });
         }
-    }
+    } 
 }
 
 export default ProductController;

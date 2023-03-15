@@ -7,6 +7,31 @@
 
 /**
  * @swagger
+ * /cart/add/{productID}:
+ *   post:
+ *     summary: Add a product to the cart
+ *     tags: [Cart]
+ *     description: Adds a product to the user's cart based on the provided product ID
+ *     parameters:
+ *       - in: path
+ *         name: productID
+ *         description: ID of the product to be added to the cart
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Product added successfully
+ *       400:
+ *         description: Invalid product ID provided
+ *       404:
+ *         description: Product not found
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
  * /products/add:
  *  post:
  *      tags:
