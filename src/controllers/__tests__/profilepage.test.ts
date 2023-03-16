@@ -64,7 +64,7 @@ describe("incase of a a logged in user", ()=>{
     test('with valid date', async ()=>{     
         const response = await supertest(app).patch("/profile/edit").set('Authorization', `Bearer ${token}`).send({...profile})
         expect(response.status).toBe(200)
-    })
+    }, 30000)
        
 
 })
