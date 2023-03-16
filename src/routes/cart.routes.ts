@@ -10,4 +10,8 @@ Cartrouter.patch("/:cartItemid", verifyToken, CART.updateCart)
 Cartrouter.delete("/remove/:cartitemid",verifyToken, CART.removeitem)
 Cartrouter.get("/view", verifyToken, CART.viewCart)
 
+Cartrouter.delete("/clear", verifyToken, CART.clearcart)
+
+
+
 export default Cartrouter 

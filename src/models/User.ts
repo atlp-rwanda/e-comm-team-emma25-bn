@@ -36,7 +36,6 @@ const USER = sequelizedb.define('user', {
   },
 });
 
-
 Role.hasMany(USER, {
   foreignKey: 'roleId',
 });
