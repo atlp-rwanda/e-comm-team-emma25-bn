@@ -12,6 +12,9 @@ module.exports = {
       name: {
         type: Sequelize.STRING,
       },
+      emailVerified: {
+        type: Sequelize.BOOLEAN,
+      },
       description: {
         type: Sequelize.STRING,
       },
@@ -23,7 +26,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
-    })
+    });
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('roles')

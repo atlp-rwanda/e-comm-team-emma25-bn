@@ -180,6 +180,25 @@
 
 /**
  * @swagger
+ * /verify-email/{token}:
+ *   post:
+ *     tags:
+ *       - users
+ *     summary: Verify email
+ *     security: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: token
+ *         in: path
+ *         required: true
+ *     responses:
+ *       200:
+ *             description: Email verified successfully, Please Sign In.
+ * */
+
+/**
+ * @swagger
  * /login:
  *   post:
  *     summary: Log in  into your account to get more prevalleges
