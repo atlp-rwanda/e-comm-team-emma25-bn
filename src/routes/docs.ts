@@ -115,6 +115,37 @@
 
 /**
  * @swagger
+ * /products/wishlist/add/{id}:
+ *  post:
+ *      tags: 
+ *          - Products
+ *      summary: Endpoint for a buyer to add product on his/her wishlist
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Product ID
+ *            required: true
+ *            schema:
+ *              type: string
+ *      responses:
+ *          202:
+ *              description: Your wish has been added.
+ *          400:
+ *              description: Invalid request
+ *          401:
+ *              description: You're not logged in
+ *          403:
+ *              description: No token provided
+ *          404:
+ *              description: Product not found
+ *          406:
+ *              description: Invalid signature/token
+ *          409:
+ *              description: Product is already on your wishlist
+ */
+
+/**
+ * @swagger
  * /signup:
  *   post:
  *     tags:
@@ -145,6 +176,25 @@
  *       201:
  *             description: successfully logged in;
  *
+ * */
+
+/**
+ * @swagger
+ * /verify-email/{token}:
+ *   post:
+ *     tags:
+ *       - users
+ *     summary: Verify email
+ *     security: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: token
+ *         in: path
+ *         required: true
+ *     responses:
+ *       200:
+ *             description: Email verified successfully, Please Sign In.
  * */
 
 /**
