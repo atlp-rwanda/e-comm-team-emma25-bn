@@ -11,9 +11,8 @@ import permissionRoutes from "./routes/rolesPermissionsRoutes/permission.route";
 import createServer from "./utils/server";
 import passport from "passport";
 import session from "express-session";
-
 import "./config/googlePassport.config";
-import Cartrouter from "./routes/cart.routes";
+
 const app: Application = createServer()
 
 app.use(
@@ -33,8 +32,7 @@ app.use(roleRoutes);
 app.use(permissionRoutes);
 app.use(rolePermissionRoutes);
 app.use(cookieParser())
-app.use('/cart', Cartrouter)
-app.use('/products', productRoutes)
+
 
 const PORT = process.env.PORT || 3000;
 app.get("/", (req, res) =>
