@@ -242,6 +242,7 @@ class auth {
                     res.status(200).json({
                         stastus: 200,
                         message: "Login succefull ",
+                        role: role.name,
                         token: token,
                     });
                 } else {

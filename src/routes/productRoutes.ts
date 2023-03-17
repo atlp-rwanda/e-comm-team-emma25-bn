@@ -6,6 +6,8 @@ import verifyToken from "../middlewares/verifyToken"
 
 const prod = Router();
 prod.post("/add", ProductController.saveProduct);
+prod.patch("/update/:id", ProductController.updateProduct);
+prod.get("/allSellerCollection", ProductController.getAllSellerProducts);
 prod.patch(
     "/available/:product_id",
     roleAuthorization(["admin", "seller"]),

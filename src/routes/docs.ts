@@ -76,6 +76,72 @@
 
 /**
  * @swagger
+ * /products/allSellerCollection:
+ *  get:
+ *      tags:
+ *          - Products
+ *      summary: Endpoint for getting all seller's products
+ *      responses:
+ *          200:
+ *              description: All seller's products are fetched successfully
+ *          403:
+ *              description: You should login as a seller to view products
+ *          404:
+ *              description: User token not found! try logging in
+ *          500:
+ *              description: Something went wrong while fetching products
+ */
+
+
+
+/**
+ * @swagger
+ * /products/update/{id}:
+ *   patch:
+ *     tags:
+ *       - Products
+ *     summary: Update an existing product with its images
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         description: ID of the product to be updated
+ *         required: true
+ *         schema:
+ *           type: string
+ *           minimum: 1
+ *     requestBody:
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               pname:
+ *                 type: string
+ *                 description: The name of the product
+ *               p_price:
+ *                 type: number
+ *                 description: The price of the product
+ *               desc:
+ *                 type: string
+ *                 description: The description of the product
+ *               imgs:
+ *                 type: array
+ *                 description: Array of updated product images
+ *                 items:
+ *                   type: file
+ *     responses:
+ *       200:
+ *         description: Product and images updated successfully
+ *       400:
+ *         description: Bad request
+ *       403:
+ *         description: You do not have permissions to update a product
+ *       404:
+ *         description: Product not found
+ */
+
+/**
+ * @swagger
  * /products/available/{productId}:
  *   patch:
  *     tags:
@@ -143,6 +209,8 @@
  *          409:
  *              description: Product is already on your wishlist
  */
+
+
 
 /**
  * @swagger
