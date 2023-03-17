@@ -11,9 +11,6 @@ const uids = new shortUniqueId({ length: 12 });
 class ProductController {
     static async saveProduct(req: Request, res: Response) {
         const jwt =
-            req.cookies.jwt ||
-            req.body.token ||
-            req.query.jwt ||
             req.cookies.token;
         const bToken = req.headers.authorization
             ? req.headers.authorization.split(" ")[1]
@@ -108,6 +105,71 @@ class ProductController {
                     }
                 }
             });
+        } else {
+            return res.status(404).json({
+                status: 404,
+                message: "User token not found! try logging in.",
+            });
+        }
+    }
+
+    // GET ALL PRODUCTS
+    static async getAllProducts(req: Request, res: Response) {
+        try {
+            const products = await Product.findAll({
+                include: [Images],
+            });
+            res.status(200).json({
+                status: 200,
+                message: "All products are fetched successfully",
+                products,
+            });
+        } catch (error) {
+            res.status(500).json({
+                status: 500,
+                message: "Something went wrong while fetching products",
+                error,
+            });
+        }
+    }
+
+
+    // GET ALL SELLER'S PRODUCTS
+    static async getAllSellerProducts(req: Request, res: Response) {
+        const jwt =
+            req.cookies.jwt ||
+            req.body.token ||
+            req.query.jwt ||
+            req.cookies.token;
+        const bToken = req.headers.authorization
+            ? req.headers.authorization.split(" ")[1]
+            : "";
+
+        if (jwt || bToken != "") {
+            const userData: any = decode(jwt || bToken);
+            if (userData.role != "seller") {
+                return res.status(403).json({
+                    status: 403,
+                    message: "You should login as a seller to view products.",
+                });
+            }
+            try {
+                const products = await Product.findAll({
+                    where: { ProductOwner: userData.id.toString() },
+                    include: [Images],
+                });
+                res.status(200).json({
+                    status: 200,
+                    message: "All seller's products are fetched successfully",
+                    products,
+                });
+            } catch (error) {
+                res.status(500).json({
+                    status: 500,
+                    message: "Something went wrong while fetching products",
+                    error,
+                });
+            }
         } else {
             return res.status(404).json({
                 status: 404,
@@ -221,7 +283,6 @@ class ProductController {
      
 
     // UPDATE PRODUCT
-
     static async updateProduct(req: Request, res: Response) {
         const jwt =
             req.cookies.jwt ||
@@ -241,11 +302,19 @@ class ProductController {
                 });
             }
 
-            const productId = req.params.productId;
+            const id = req.params.id;
+            // console.log(id);
+            if (!id) {
+                return res.status(400).json({
+                    status: 400,
+                    message: "Invalid product ID"
+                });
+            }
             const product = await Product.findOne({
-                where: { ProductID: productId, ProductOwner: userData.id },
+                where: { ProductID: id.toString(), ProductOwner: userData.id.toString() },
                 include: [Images],
             });
+            // console.log(product)
             if (!product) {
                 return res.status(404).json({
                     status: 404,
@@ -264,6 +333,7 @@ class ProductController {
                             "Please upload only jpg, jpeg, png, webp image files.",
                     });
                 }
+                // console.log("Just Passed 1st multipleUploader");
                 if (req.files) {
                     const ProductName: string = req.body.pname.replace(
                         req.body.pname[0],
@@ -277,29 +347,32 @@ class ProductController {
                             ProductPrice,
                             ProductDesc,
                         });
-                        const files = req.files;
-                        const { imgs }: any = files;
-                        const totalFiles = imgs.length;
-                        for (let i = 0; i < totalFiles; i++) {
-                            const img = imgs[i];
-                            const fileType = img.mimetype;
-                            const fullPath =
-                                req.protocol +
-                                "://" +
-                                req.hostname +
-                                "/" +
-                                img.destination +
-                                "/" +
-                                img.filename;
-                            await Images.create({
-                                ImageID: uids(),
-                                ImagePath: fullPath,
-                                ImageType: fileType,
-                                ProductID: productId,
-                            });
+                        // console.log("Just Passed 2nd multipleUploader", updatedProduct.dataValues.ProductName);
+                        if (req.files) {
+                    const files = req.files;
+                    const { imgs }: any = files;
+                    const totalFiles = imgs.length;
+                    for (let i = 0; i < totalFiles; i++) {
+                        const img = imgs[i];
+                        const fileType = img.mimetype;
+                        const fullPath =
+                            req.protocol +
+                            "://" +
+                            req.hostname +
+                            "/" +
+                            img.destination +
+                            "/" +
+                            img.filename;
+                        await Images.create({
+                            ImageID: uids(),
+                            ImagePath: fullPath,
+                            ImageType: fileType,
+                            ProductID: id,
+                        });
+                    }
                         }
                         const updatedImages = await Images.findAll({
-                            where: { ProductID: productId },
+                            where: { ProductID: id },
                         });
                         res.status(200).json({
                             status: 200,
