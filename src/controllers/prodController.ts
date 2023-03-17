@@ -113,50 +113,6 @@ class ProductController {
         }
     }
 
-    // GET ALL SELLER'S PRODUCTS
-    static async getAllSellerProducts(req: Request, res: Response) {
-        const jwt =
-            req.cookies.jwt ||
-            req.body.token ||
-            req.query.jwt ||
-            req.cookies.token;
-        const bToken = req.headers.authorization
-            ? req.headers.authorization.split(" ")[1]
-            : "";
-
-        if (jwt || bToken != "") {
-            const userData: any = decode(jwt || bToken);
-            if (userData.role != "seller") {
-                return res.status(403).json({
-                    status: 403,
-                    message: "You should login as a seller to view products.",
-                });
-            }
-            try {
-                const products = await Product.findAll({
-                    where: { ProductOwner: userData.id.toString() },
-                    include: [Images],
-                });
-                res.status(200).json({
-                    status: 200,
-                    message: "All seller's products are fetched successfully",
-                    products,
-                });
-            } catch (error) {
-                res.status(500).json({
-                    status: 500,
-                    message: "Something went wrong while fetching products",
-                    error,
-                });
-            }
-        } else {
-            return res.status(404).json({
-                status: 404,
-                message: "User token not found! try logging in.",
-            });
-        }
-    }
-
     // PRODUCT AVAILABILITY
     static async updateProductAvailability(req: Request, res: Response) {
         try {
