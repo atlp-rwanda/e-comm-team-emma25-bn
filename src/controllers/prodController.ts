@@ -5,6 +5,7 @@ import shortUniqueId from "short-unique-id";
 import multipleUploader from "../middlewares/fileUploader";
 import Images from "../db/models/Image";
 import Product from "../db/models/Product";
+import Wishlist from "../db/models/Wishlist";
 
 const uids = new shortUniqueId({ length: 12 });
 class ProductController {
@@ -171,6 +172,53 @@ class ProductController {
             });
         }
     }
+
+    // Adding to cart
+    static async addToWishlist(req: Request, res: Response) {
+        const id: string = req.params.id;
+        const loggedUser = req.user;
+        const user_id = (loggedUser as any).id;
+        // Check product existence
+        const checkProduct = await Product.findOne({
+            where: { ProductID: id },
+            include: [Images],
+        });
+        if (checkProduct == null) {
+            return res.status(404).json({
+                status: 404,
+                message: "Product provided does not match with any products.",
+            });
+        } else {
+            // Check if the logged in user have already added this product to his/her wishlist
+            const checkWish = await Wishlist.findOne({
+                where: { ProductID: id, userId: user_id },
+            });
+            if (checkWish != null) {
+                return res.status(409).json({
+                    status: 409,
+                    message:
+                        "The product you chose is already on your wishlist.",
+                    product_details: checkProduct,
+                });
+            } else {
+                try {
+                    const product_name = (checkProduct as any).ProductName;
+                    const addProduct = await Wishlist.create({
+                        ProductID: id,
+                        userId: user_id,
+                    });
+                    res.status(202).json({
+                        status: 202,
+                        message: `${product_name} added to your wish list`,
+                        recently_added: checkProduct,
+                    });
+                } catch (err: any) {
+                    res.status(400).json({ status: 400, message: err.message });
+                }
+            }
+        }
+    }
+
     static async deleteOneProduct(req: Request, res: Response) {
         try {
             const ProductID = req.params.product_id;
@@ -216,5 +264,4 @@ class ProductController {
         }
     }
 }
-
 export default ProductController;

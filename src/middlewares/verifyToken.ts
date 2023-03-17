@@ -34,17 +34,14 @@ const verifyToken: RequestHandler<CustomRequest> = async (
           email: decoded.email,
           role: decoded.role,
         };
-      next()
-      
-        ;
-    } catch (err: any) {
-      res.status(406).json({
-        statusCode: 406,
-        message: err.message
-      })
-     
-       
-    }}else{
+        next();
+      } catch (err: any) {
+        res.status(406).json({
+          statusCode: 406,
+          message: err.message,
+        });
+      }
+    } else {
       res.status(401).json({
         statusCode: 401,
         message: "you are not logged",
