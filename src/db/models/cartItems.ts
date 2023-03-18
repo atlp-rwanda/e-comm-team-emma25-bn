@@ -20,9 +20,14 @@ const cartItem = sequelizedb.define('CartItems',{
     },
     image : {
         type: DataTypes.STRING
-    }    
+    } ,
+    quantity:{
+        type: DataTypes.INTEGER,  
+        allowNull: false,      
+        defaultValue: 1        
+    }   
 })
-cartItem.sync();
+cartItem.sync({alter: true});
 
 export default cartItem
 

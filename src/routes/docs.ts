@@ -29,6 +29,30 @@
  *       500:
  *         description: Internal server error
  */
+/**
+ * @swagger
+ * /cart/remove/{cartitemid}:
+ *   delete:
+ *     summary: remove a productfrom the cart
+ *     tags: [Cart]
+ *     description: Adds a product to the user's cart based on the provided product ID
+ *     parameters:
+ *       - in: path
+ *         name: cartitemid
+ *         description: ID of the cartitem to be removed from the cart
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: item removed successfully
+ *       401:
+ *         description: unauthorized
+ *       404:
+ *         description: item not found
+ *       500:
+ *         description: Internal server error
+ */
 
 /**
  * @swagger
@@ -75,6 +99,10 @@
  *                              type: string
  *                              required: true
  *                              example: "HP computer with 1TB SSD 16GB RAM"
+ *                          quantity:
+ *                              type: number
+ *                              required: false
+ *                              example: "4"
  *                          imgs:
  *                              type: array
  *                              required: true

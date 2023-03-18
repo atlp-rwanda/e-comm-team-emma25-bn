@@ -3,6 +3,7 @@ import authRoutes from '../routes/authroutes'
 import profileRoutes from '../routes/profileroutes'
 import productRoutes from "../routes/productRoutes";
 import cookieParser from "cookie-parser";
+import Cartrouter from '../routes/cart.routes'
 function createServer () {
     const app: Application = express()
 
@@ -11,6 +12,8 @@ function createServer () {
     app.use('/products', productRoutes)
     app.use(authRoutes)
     app.use(profileRoutes)
+    app.use('/cart', Cartrouter)
+
 
     return app
 }
