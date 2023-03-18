@@ -6,6 +6,7 @@ import multipleUploader from "../middlewares/fileUploader";
 import Images from "../db/models/Image";
 import Product from "../db/models/Product";
 import Wishlist from "../db/models/Wishlist";
+import { Op } from "sequelize";
 
 const uids = new shortUniqueId({ length: 12 });
 class ProductController {
@@ -372,6 +373,40 @@ class ProductController {
             return res.status(404).json({
                 status: 404,
                 message: "User token not found! try logging in.",
+            });
+        }
+    }
+
+    // SEARCH PRODUCT
+    static async searchProducts(req: Request, res: Response) {
+        const query = req.query.q;
+        try {
+            const products = await Product.findAll({
+                where: {
+                    [Op.or]: [
+                        {
+                            ProductName: {
+                                [Op.iLike]: `%${query}%`,
+                            },
+                        },
+                        {
+                            ProductDesc: {
+                                [Op.iLike]: `%${query}%`,
+                            },
+                        },
+                    ],
+                },
+            });
+            res.status(200).json({
+                status: 200,
+                message: "Products matching the search query are fetched successfully",
+                products,
+            });
+        } catch (error) {
+            res.status(500).json({
+                status: 500,
+                message: "Something went wrong while fetching products",
+                error,
             });
         }
     }

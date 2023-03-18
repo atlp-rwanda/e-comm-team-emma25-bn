@@ -32,6 +32,26 @@
 
 /**
  * @swagger
+ * /products/search:
+ *  get:
+ *      tags:
+ *          - Products
+ *      summary: Endpoint for searching products based on the product name or description
+ *      parameters:
+ *        - in: query
+ *          name: q
+ *          schema:
+ *            type: string
+ *          description: The query string to search for products
+ *      responses:
+ *          200:
+ *              description: Products matching the search query are fetched successfully
+ *          500:
+ *              description: Something went wrong while fetching products
+ */
+
+/**
+ * @swagger
  * /products/add:
  *  post:
  *      tags:
