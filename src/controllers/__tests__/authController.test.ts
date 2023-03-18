@@ -1,11 +1,17 @@
 // TODO replace the test below with your tests
 import { add, multiply } from "../../totest";
 import supertest from "supertest";
-import app from "../../app";
+// import app from "../../app";
 import USER from "../../models/User";
 import { httpRequest, httpResponse } from "../mock/user.mock";
 import GoogleController from "../googleAuthController";
 import Tokens from "../../models/token"
+import createServer from '../../utils/server'
+
+const app = createServer();
+
+
+
 jest.setTimeout(70000);
 describe("Login via google", () => {
   afterAll(async () => {
