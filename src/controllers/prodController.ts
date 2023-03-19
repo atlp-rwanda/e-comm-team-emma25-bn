@@ -178,10 +178,7 @@ class ProductController {
                 where: { ProductID },
             });
             if (checkProduct && userData) {
-                console.log(checkProduct);
-                console.log(userData);
                 if (checkProduct.ProductOwner == userData.id) {
-                    console.log("YOU OWN THIS PRODUCT");
                     const updatedProduct = await Product.update(
                         { available },
                         {
@@ -444,6 +441,45 @@ class ProductController {
             }
         } catch (error) {
             res.status(500).json({ status: 500, message: error });
+        }
+    }
+
+    static async getOneProduct(req: Request, res: Response) {
+        const ProductID = req.params.productId;
+        const bToken = req.headers.authorization
+            ? req.headers.authorization.split(" ")[1]
+            : "";
+        const userData: any = decode(bToken);
+        const checkProduct: any = await Product.findOne({
+            include: Images,
+            where: { ProductID },
+        });
+        if (checkProduct) {
+            if (userData.role == "user" || userData.role == "admin") {
+                return res
+                    .status(200)
+                    .json({ status: 200, data: checkProduct });
+            } else if (userData.role == "seller") {
+                if (checkProduct.ProductOwner == userData.id) {
+                    return res.status(200).json({
+                        status: 200,
+                        message: "THIS PRODUCT IS FROM YOUR SELLER COLLECTION",
+                        data: checkProduct,
+                    });
+                } else {
+                    return res.status(200).json({
+                        status: 200,
+                        message:
+                            "THIS PRODUCT IS NOT FROM YOUR SELLER COLLECTION",
+                        data: checkProduct,
+                    });
+                }
+            }
+        } else {
+            return res.status(404).json({
+                status: 404,
+                Message: `product ${ProductID} not found`,
+            });
         }
     }
 }
