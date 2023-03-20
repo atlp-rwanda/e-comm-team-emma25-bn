@@ -11,8 +11,7 @@ import { Op } from "sequelize";
 const uids = new shortUniqueId({ length: 12 });
 class ProductController {
     static async saveProduct(req: Request, res: Response) {
-        const jwt =
-            req.cookies.token;
+        const jwt = req.cookies.token;
         const bToken = req.headers.authorization
             ? req.headers.authorization.split(" ")[1]
             : "";
@@ -45,7 +44,7 @@ class ProductController {
                     const ProductPrice: string = req.body.p_price;
                     const ProductOwner: string = userData.id;
                     const ProductDesc: string = req.body.desc;
-                    const quantity: number = req.body.quantity
+                    const quantity: number = req.body.quantity;
                     const checkProduct = await Product.findOne({
                         where: { ProductName },
                         include: [Images],
@@ -58,7 +57,7 @@ class ProductController {
                                 ProductPrice,
                                 ProductDesc,
                                 ProductOwner,
-                                quantity
+                                quantity,
                             });
                             const files = req.files;
                             const { imgs }: any = files;
@@ -240,7 +239,8 @@ class ProductController {
             if (checkWish != null) {
                 return res.status(409).json({
                     status: 409,
-                    message: "The product you chose is already on your wishlist.",
+                    message:
+                        "The product you chose is already on your wishlist.",
                     product_details: checkProduct,
                 });
             } else {
@@ -250,19 +250,17 @@ class ProductController {
                         ProductID: id,
                         userId: user_id,
                     });
-                    res.status(202)
-                        .json({
-                            status: 202,
-                            message: `${product_name} added to your wish list`,
-                            recently_added: checkProduct,
-                        });
+                    res.status(202).json({
+                        status: 202,
+                        message: `${product_name} added to your wish list`,
+                        recently_added: checkProduct,
+                    });
                 } catch (err: any) {
                     res.status(400).json({ status: 400, message: err.message });
                 }
             }
         }
     }
-     
 
     // UPDATE PRODUCT
     static async updateProduct(req: Request, res: Response) {
@@ -280,7 +278,8 @@ class ProductController {
             if (userData.role != "seller") {
                 return res.status(403).json({
                     status: 403,
-                    message: "You should login as a seller to update a product.",
+                    message:
+                        "You should login as a seller to update a product.",
                 });
             }
 
@@ -289,11 +288,14 @@ class ProductController {
             if (!id) {
                 return res.status(400).json({
                     status: 400,
-                    message: "Invalid product ID"
+                    message: "Invalid product ID",
                 });
             }
             const product = await Product.findOne({
-                where: { ProductID: id.toString(), ProductOwner: userData.id.toString() },
+                where: {
+                    ProductID: id.toString(),
+                    ProductOwner: userData.id.toString(),
+                },
                 include: [Images],
             });
             // console.log(product)
@@ -331,27 +333,27 @@ class ProductController {
                         });
                         // console.log("Just Passed 2nd multipleUploader", updatedProduct.dataValues.ProductName);
                         if (req.files) {
-                    const files = req.files;
-                    const { imgs }: any = files;
-                    const totalFiles = imgs.length;
-                    for (let i = 0; i < totalFiles; i++) {
-                        const img = imgs[i];
-                        const fileType = img.mimetype;
-                        const fullPath =
-                            req.protocol +
-                            "://" +
-                            req.hostname +
-                            "/" +
-                            img.destination +
-                            "/" +
-                            img.filename;
-                        await Images.create({
-                            ImageID: uids(),
-                            ImagePath: fullPath,
-                            ImageType: fileType,
-                            ProductID: id,
-                        });
-                    }
+                            const files = req.files;
+                            const { imgs }: any = files;
+                            const totalFiles = imgs.length;
+                            for (let i = 0; i < totalFiles; i++) {
+                                const img = imgs[i];
+                                const fileType = img.mimetype;
+                                const fullPath =
+                                    req.protocol +
+                                    "://" +
+                                    req.hostname +
+                                    "/" +
+                                    img.destination +
+                                    "/" +
+                                    img.filename;
+                                await Images.create({
+                                    ImageID: uids(),
+                                    ImagePath: fullPath,
+                                    ImageType: fileType,
+                                    ProductID: id,
+                                });
+                            }
                         }
                         const updatedImages = await Images.findAll({
                             where: { ProductID: id },
@@ -365,7 +367,8 @@ class ProductController {
                     } catch (error) {
                         res.status(500).json({
                             status: 500,
-                            message: "Product update failed due to server error.",
+                            message:
+                                "Product update failed due to server error.",
                             error,
                         });
                     }
@@ -401,7 +404,8 @@ class ProductController {
             });
             res.status(200).json({
                 status: 200,
-                message: "Products matching the search query are fetched successfully",
+                message:
+                    "Products matching the search query are fetched successfully",
                 products,
             });
         } catch (error) {
@@ -412,7 +416,36 @@ class ProductController {
             });
         }
     }
-}
 
+    static async getAllProducts(req: Request, res: Response) {
+        const bToken = req.headers.authorization
+            ? req.headers.authorization.split(" ")[1]
+            : "";
+        const userData: any = decode(bToken);
+        const userId = userData.id;
+        try {
+            if (userData.role == "user" || userData.role == "admin") {
+                const allProducts: any = await Product.findAll({
+                    include: Images,
+                });
+                return res.status(200).json({ status: 200, data: allProducts });
+            } else if (userData.role == "seller") {
+                const sellerProducts: any = await Product.findAll({
+                    where: {
+                        ProductOwner: String(userId),
+                    },
+                    include: Images,
+                });
+                return res.status(200).json({
+                    status: 200,
+                    message: "PRODUCTS IN YOUR SELLER ACCOUNT COLLECTION",
+                    data: sellerProducts,
+                });
+            }
+        } catch (error) {
+            res.status(500).json({ status: 500, message: error });
+        }
+    }
+}
 
 export default ProductController;

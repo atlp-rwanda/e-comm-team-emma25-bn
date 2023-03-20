@@ -140,8 +140,6 @@
  *              description: Something went wrong while fetching products
  */
 
-
-
 /**
  * @swagger
  * /products/update/{id}:
@@ -190,6 +188,22 @@
 
 /**
  * @swagger
+ * /products:
+ *   get:
+ *     summary: Retrieve all products for users || seller collection
+ *     tags:
+ *       - Products
+ *     security:
+ *       - authsecurity: []
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       "200":
+ *         description: Successfully retrieved all products.
+ */
+
+/**
+ * @swagger
  * /products/available/{productId}:
  *   patch:
  *     tags:
@@ -231,7 +245,7 @@
  * @swagger
  * /products/wishlist/add/{id}:
  *  post:
- *      tags: 
+ *      tags:
  *          - Products
  *      summary: Endpoint for a buyer to add product on his/her wishlist
  *      parameters:
@@ -257,8 +271,6 @@
  *          409:
  *              description: Product is already on your wishlist
  */
-
-
 
 /**
  * @swagger
