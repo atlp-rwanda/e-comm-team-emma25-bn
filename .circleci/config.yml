@@ -13,10 +13,6 @@ jobs:
           name: Run Unit Tests
           command: |
             npm run test
-      - run:
-          name: Saving the coveralls
-          command: |
-            npm run test:coverage
   assign_env_vars:
     docker:
       - image: circleci/node

@@ -2,7 +2,7 @@
 
 import express, { Application } from "express";
 import { config } from "dotenv";
-import cookieParser from "cookie-parser";
+
 import swaggerDocs from "./docs/swagger";
 import connectdb from "./db/database";
 import roleRoutes from "./routes/rolesPermissionsRoutes/role.route";
@@ -31,7 +31,6 @@ app.use(express.json());
 app.use(roleRoutes);
 app.use(permissionRoutes);
 app.use(rolePermissionRoutes);
-app.use(cookieParser())
 
 
 const PORT = process.env.PORT || 3000;
