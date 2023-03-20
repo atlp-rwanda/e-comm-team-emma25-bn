@@ -243,6 +243,31 @@
 
 /**
  * @swagger
+ * /products/{productId}:
+ *   get:
+ *     summary: Get one product by product ID
+ *     security:
+ *       - authsecurity: []
+ *     tags:
+ *       - Products
+ *     parameters:
+ *       - in: path
+ *         name: productId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Product ID of the product to return
+ *     responses:
+ *       '201':
+ *         description: Product returned successfully
+ *       '400':
+ *         description: Server Error
+ *       '404':
+ *         description: Product Not found
+ */
+
+/**
+ * @swagger
  * /products/wishlist/add/{id}:
  *  post:
  *      tags:
