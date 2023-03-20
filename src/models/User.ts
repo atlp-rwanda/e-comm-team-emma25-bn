@@ -1,9 +1,9 @@
-import { sequelizedb } from '../db/database';
-import { DataTypes } from 'sequelize';
-import bcrypt from 'bcrypt';
-import Profile from './profilemodels/profile';
-import Role from '../db/models/Role.model';
-const USER = sequelizedb.define('user', {
+import { sequelizedb } from "../db/database";
+import { DataTypes } from "sequelize";
+import bcrypt from "bcrypt";
+import Profile from "./profilemodels/profile";
+import Role from "../db/models/Role.model";
+const USER = sequelizedb.define("user", {
   firstName: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -22,6 +22,7 @@ const USER = sequelizedb.define('user', {
     allowNull: false,
     defaultValue: false,
   },
+  status: { type: DataTypes.STRING, defaultValue: "active" },
   password: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -29,8 +30,8 @@ const USER = sequelizedb.define('user', {
       // this function is to hash the password before saving it.
       const salt = bcrypt.genSaltSync(10); // generate a salt with 10 rounds
       this.setDataValue(
-        'password',
-        bcrypt.hashSync(value, salt), // hash the password with the salt
+        "password",
+        bcrypt.hashSync(value, salt) // hash the password with the salt
       );
     },
   },
@@ -38,13 +39,12 @@ const USER = sequelizedb.define('user', {
 
 USER.sync();
 Role.hasMany(USER, {
-  foreignKey: 'roleId',
+  foreignKey: "roleId",
 });
 USER.belongsTo(Role);
 
 USER.sync({ alter: true });
-
-USER.hasOne(Profile, { foreignKey: 'userId', as: 'profile' });
-Profile.belongsTo(Profile, { foreignKey: 'userId' });
+USER.hasOne(Profile, { foreignKey: "userId", as: "profile" });
+Profile.belongsTo(Profile, { foreignKey: "userId" });
 
 export default USER;

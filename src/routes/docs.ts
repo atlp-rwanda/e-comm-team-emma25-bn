@@ -1,3 +1,7 @@
+import auth from "../controllers/authController";
+import signupValidation from "../middlewares/signupValidation";
+import router from "./authroutes";
+
 /**
  * @swagger
  * tags:
@@ -1009,4 +1013,27 @@
  *             description: Invalid phone or code
  *          404:
  *             description: Incorrect OTP
+ */
+
+/**
+ * @swagger
+ * /users/{id}/disable-account:
+ *   post:
+ *     summary: Disables or enables a user account
+ *     tags: [users]
+ *     description: Disables or enables the account of the user with the provided ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the user whose account is to be disabled/enabled
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Account disabled or enabled successfully
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Internal server error
  */

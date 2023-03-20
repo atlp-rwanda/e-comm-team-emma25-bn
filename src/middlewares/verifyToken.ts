@@ -51,5 +51,4 @@ const verifyToken: RequestHandler<CustomRequest> = async (
     return res.status(403).send("Token not provided");
   }
 };
-
 export default verifyToken;
