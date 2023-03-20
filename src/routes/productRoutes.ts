@@ -28,4 +28,9 @@ prod.get(
     ProductController.getAllProducts
 );
 
+prod.get(
+    "/:productId",
+    roleAuthorization(["user", "seller", "admin"]),
+    ProductController.getOneProduct
+);
 export default prod;
