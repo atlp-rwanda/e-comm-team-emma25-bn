@@ -2,8 +2,24 @@ import { decode } from "../helper/jwtTokenize";
 import Messages from "../db/models/Messages";
 import USER from "../models/User";
 
-export const chat = (skt) => {
+export const chat = async(skt) => {
     const users = {};
+    const chats = await Messages.findAll({ attributes: ["msg_content", "userId"] });
+    const ds: object[] = []
+    const getOwners = async (userId:number, msg_content:string) => {
+        const messaging: any = [];
+        await USER.findOne({ where: { id: userId }, attributes: ["firstName", "lastName"] })
+            .then(data => {
+                const { firstName, lastName } = data?.dataValues
+                messaging.push({ sender: `${firstName} ${lastName}`, message: msg_content })
+            })
+        return messaging;
+    }
+    for(let i= 0; i < chats.length; i++) {
+        const chat = chats[i];
+        const { userId, msg_content } = chat.dataValues;
+        ds.push(await getOwners(userId, msg_content))
+    }
     skt.on('connection', async socket => {
         function getCookie(name: string, str: string): any {
             function escape(s) { return s.replace(/([.*+?\^$(){}|\[\]\/\\])/g, '\\$1'); }
@@ -15,6 +31,7 @@ export const chat = (skt) => {
         try {
             const userData = decode(token);
             socket.emit('new-user', userData);
+            socket.emit('recents', ds)
             socket.on('connected', person => {
                 users[socket.id] = person;
                 socket.broadcast.emit('welcome', { person, message: "Joined the chat" })

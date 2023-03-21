@@ -177,6 +177,14 @@
         })
         let person;
         let userData;
+        let datas;
+        socket.on('recents', data => {
+            data.map((chArr, inx) => {
+                let message = chArr[0];
+                displayMessage(message.sender, message.message)
+            })
+        })
+        console.log(datas)
         socket.on('new-user', user => {
             person = user.name;
             userData = user;
