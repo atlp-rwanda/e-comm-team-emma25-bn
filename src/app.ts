@@ -2,6 +2,7 @@
 
 import express, { Application } from "express";
 import { config } from "dotenv";
+
 import swaggerDocs from "./docs/swagger";
 import connectdb from "./db/database";
 import roleRoutes from "./routes/rolesPermissionsRoutes/role.route";
@@ -35,7 +36,7 @@ app.use(express.json());
 app.use(roleRoutes);
 app.use(permissionRoutes);
 app.use(rolePermissionRoutes);
-app.use(chatRoutes);
+
 
 const PORT = process.env.PORT || 3000;
 app.get("/", (req, res) =>

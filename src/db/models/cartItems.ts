@@ -27,7 +27,7 @@ const cartItem = sequelizedb.define('CartItems',{
         defaultValue: 1        
     }   
 })
-cartItem.sync({alter: true});
+cartItem.sync();
 
 export default cartItem
 
