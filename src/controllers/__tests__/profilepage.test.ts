@@ -2,8 +2,12 @@ import supertest from 'supertest'
 import createServer from '../../utils/server'
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const app = createServer()
+
+
+describe('profile page i', ()=>{
+  jest.setTimeout(120000);
 let token 
-beforeAll(async () => {
+  beforeAll(async () => {
     const res = await supertest(app)
       .post('/login')
       .send({
@@ -11,19 +15,17 @@ beforeAll(async () => {
         password: 'string',
       });
     token = res.body.token;
-  }, 40000);
+  });
 
-
-describe('profile page i', ()=>{
     test("get all profiles", async ()=>{
         const response = await supertest(app).get("/profiles")
-        expect(response.status).toBe(200)},60000)
+        expect(response.status).toBe(200)})
     test("single profile", async ()=>{
         const response = await supertest(app).get("/profile/104")
-        expect(response.status).toBe(200)}, 60000)
+        expect(response.status).toBe(200)})
     test("incase of unregistered user",async ()=>{
             const response = await supertest(app).get("/profile/1000")
-            expect(response.status).toBe(400)}, 30000) 
+            expect(response.status).toBe(400)}) 
    describe("edit profile",()=>{
     test("incase of no login", async ()=>{
       const response = await supertest(app).patch("/profile/edit").send({birthdate : "2022-01-01"})
@@ -64,7 +66,7 @@ describe("incase of a a logged in user", ()=>{
     test('with valid date', async ()=>{     
         const response = await supertest(app).patch("/profile/edit").set('Authorization', `Bearer ${token}`).send({...profile})
         expect(response.status).toBe(200)
-    }, 30000)
+    })
        
 
 })

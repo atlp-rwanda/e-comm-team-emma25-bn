@@ -4,6 +4,22 @@
  *  name: Products
  *  description: Endpoints that handles product actions
  */
+/**
+ * @swagger
+ * /cart/clear:
+ *   delete:
+ *     summary: clear cart
+ *     tags: [Cart]
+ *     security:
+ *       - authsecurity: []
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       "200":
+ *         description: cleared the cart.
+ *       "400":
+ *         description: cart is already empty
+ */
 
 /**
  * @swagger
@@ -73,6 +89,22 @@
  *          500:
  *              description: Something went wrong while fetching products
  */
+/**
+ * @swagger
+ * /cart/view:
+ *   get:
+ *     tags:
+ *       - Cart
+ *     name: cart
+ *     summary: Retrieve cart
+ *     consumes:
+ *        - application/json
+ *     responses:
+ *       200:
+ *             description:  successfully Retrieved.
+ *       400:
+ *             description: you are not a buyer 
+ * */
 
 /**
  * @swagger

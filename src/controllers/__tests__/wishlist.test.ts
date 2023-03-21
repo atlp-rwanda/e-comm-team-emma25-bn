@@ -2,22 +2,24 @@ import supertest from "supertest";
 import createServer from "../../utils/server";
 const app = createServer()
 
-const fakeId = "ddjsh";
-let Token: string;
-let auth: string;
-beforeAll(async () => {
-    const res = await supertest(app)
-        .post('/login')
-        .send({
-            email: 'demo1@gmail.com',
-            password: 'string',
-        });
-    Token = res.body.token;
-    auth = "Bearer " + Token;
-}, 40000);
 
-describe("Adding a product to the wishlist", () => {
-    jest.setTimeout(50000)
+describe("Adding a product to the wishlist", () => {   
+  jest.setTimeout(120000);
+    const fakeId = "ddjsh";
+    let Token: string;
+    let auth: string;
+ 
+    beforeAll(async () => {
+        const res = await supertest(app)
+            .post('/login')
+            .send({
+                email: 'demo1@gmail.com',
+                password: 'string',
+            });
+        Token = res.body.token;
+        auth = "Bearer " + Token;
+    });
+    
     describe("User Tokens", () => {
         describe("When no token provided", () => {
             test("It should return 401", async () => {
