@@ -164,12 +164,15 @@ class ProductController {
         try {
             const ProductID = req.params.product_id;
             const available = req.body.isAvailable;
-            if (typeof available === "boolean") {
+            console.log(typeof available);
+            if (typeof available !== "boolean") {
                 res.status(400).json({
                     statusCode: 400,
-                    message: "Use true or false for avalilable",
+                    message:
+                        "The 'isAvailable' field must be a boolean value (true or false)",
                 });
             }
+
             const bToken = req.headers.authorization
                 ? req.headers.authorization.split(" ")[1]
                 : "";
@@ -482,6 +485,50 @@ class ProductController {
             });
         }
     }
-}
 
+    static async deleteOneProduct(req: Request, res: Response) {
+        try {
+            const ProductID = req.params.product_id;
+            const bToken = req.headers.authorization
+                ? req.headers.authorization.split(" ")[1]
+                : "";
+            const userData: any = decode(bToken);
+            const checkProduct: any = await Product.findOne({
+                where: { ProductID },
+            });
+            if (checkProduct && userData) {
+                if (checkProduct.ProductOwner == userData.id) {
+                    console.log("YOU OWN THIS PRODUCT");
+                    // const deletedProduct = await checkProduct.desctroy();
+                    await Product.destroy({
+                        where: {
+                            ProductID,
+                        },
+                    });
+                    return res.status(201).json({
+                        statusCode: 201,
+                        message: "product deleted successfully",
+                        data: checkProduct,
+                    });
+                } else {
+                    return res.status(403).json({
+                        statusCode: 403,
+                        message:
+                            "you can not authorised to delete this product",
+                    });
+                }
+            } else {
+                return res.status(404).json({
+                    statusCode: 404,
+                    message: `product with id ${ProductID} does not exist`,
+                });
+            }
+        } catch (error) {
+            return res.json({
+                statusCode: 400,
+                message: error,
+            });
+        }
+    }
+}
 export default ProductController;
