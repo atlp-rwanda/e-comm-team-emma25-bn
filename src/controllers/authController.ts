@@ -164,6 +164,7 @@ class auth {
           token: encode({
             id: createData.id,
             email: createData.email,
+            name: `${createData.firstName} ${createData.lastName}`,
             role: role.name,
           }), //changed the token to keep same fields as login
         });
@@ -229,6 +230,7 @@ class auth {
                     const token = encode({
                         id: findUser.dataValues.id,
                         email: findUser.dataValues.email,
+                        name: `${findUser.dataValues.firstName} ${findUser.dataValues.lastName}`,
                         role: role.name,
                     });
                     res.set({
