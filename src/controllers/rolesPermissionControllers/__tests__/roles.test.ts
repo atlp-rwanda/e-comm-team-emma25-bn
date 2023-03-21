@@ -21,5 +21,9 @@ describe("Admin Manage roles", () => {
             const response = await supertest(app).get("/role/admin");
             expect(response.status).toBe(404);
         }, 60000);
+        test("Delete role by name", async () => {
+            const response = await supertest(app).get("/role/abc");
+            expect(response.status).toBe(404);
+        }, 60000);
     });
 });
