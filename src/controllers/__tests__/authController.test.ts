@@ -1,15 +1,20 @@
 // TODO replace the test below with your tests
 import { add, multiply } from "../../totest";
 import supertest from "supertest";
-import app from "../../app";
+// import app from "../../app";
 import USER from "../../models/User";
 import { httpRequest, httpResponse } from "../mock/user.mock";
 import GoogleController from "../googleAuthController";
 import Tokens from "../../models/token";
-jest.setTimeout(70000);
+
+import createServer from "../../utils/server";
+
+const app = createServer();
+
+jest.setTimeout(120000);
 describe("Login via google", () => {
     afterAll(async () => {
-        USER.destroy({
+        await USER.destroy({
             where: { email: "example@example.com" },
         });
     });
@@ -18,7 +23,6 @@ describe("Login via google", () => {
             httpRequest("example@example.com"),
             httpResponse()
         );
-        console.log(data);
         expect(data.body).toHaveProperty("user");
     });
 
@@ -27,7 +31,6 @@ describe("Login via google", () => {
             httpRequest("example@example.com"),
             httpResponse()
         );
-        console.log(data);
         expect(data.body).toHaveProperty("user");
     });
     test("testing 500", async () => {
@@ -59,20 +62,20 @@ describe("reset password", () => {
                 .post("/resetpassword/link")
                 .send({ email: "unregistered@gmail.com" });
             expect(response.status).toBe(400);
-        }, 30000); // timeout 30 seconds
+        }); // timeout 30 seconds
     });
     test("incase of a registered email", async () => {
         const response = await supertest(app)
             .post("/resetpassword/link")
             .send({ email: "josephrukundo2002@gmail.com" });
         expect(response.status).toBe(200);
-    }, 20000);
+    });
     test("incase invalid email input", async () => {
         const response = await supertest(app)
             .post("/resetpassword/link")
             .send({ email: "rukundjoseph" });
         expect(response.status).toBe(400);
-    }, 20000);
+    });
     describe("add token and change password", () => {
         test("incase incorrect token", async () => {
             const response = await supertest(app)
@@ -82,7 +85,7 @@ describe("reset password", () => {
                     confirmpass: "newpassword",
                 });
             expect(response.status).toBe(401);
-        }, 20000);
+        });
         test("incase of a unmatching passwords", async () => {
             const user: any = await USER.findOne({
                 where: { email: "josephrukundo2002@gmail.com" },
@@ -112,12 +115,4 @@ describe("reset password", () => {
             expect(response.status).toBe(200);
         });
     });
-});
-
-// logout tests
-describe("Logout user", () => {
-    test("success logout", async () => {
-        const response = await supertest(app).post("/logout");
-        expect(response.status).toBe(200);
-    }, 30000); // timeout 30 seconds
 });

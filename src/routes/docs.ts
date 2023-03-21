@@ -29,6 +29,66 @@
  *       500:
  *         description: Internal server error
  */
+/**
+ * @swagger
+ * /cart/remove/{cartitemid}:
+ *   delete:
+ *     summary: remove a productfrom the cart
+ *     tags: [Cart]
+ *     description: Adds a product to the user's cart based on the provided product ID
+ *     parameters:
+ *       - in: path
+ *         name: cartitemid
+ *         description: ID of the cartitem to be removed from the cart
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: item removed successfully
+ *       401:
+ *         description: unauthorized
+ *       404:
+ *         description: item not found
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /products/search:
+ *  get:
+ *      tags:
+ *          - Products
+ *      summary: Endpoint for searching products based on the product name or description
+ *      parameters:
+ *        - in: query
+ *          name: q
+ *          schema:
+ *            type: string
+ *          description: The query string to search for products
+ *      responses:
+ *          200:
+ *              description: Products matching the search query are fetched successfully
+ *          500:
+ *              description: Something went wrong while fetching products
+ */
+/**
+ * @swagger
+ * /cart/view:
+ *   get:
+ *     tags:
+ *       - Cart
+ *     name: cart
+ *     summary: Retrieve cart
+ *     consumes:
+ *        - application/json
+ *     responses:
+ *       200:
+ *             description:  successfully Retrieved.
+ *       400:
+ *             description: you are not a buyer 
+ * */
 
 /**
  * @swagger
@@ -55,6 +115,10 @@
  *                              type: string
  *                              required: true
  *                              example: "HP computer with 1TB SSD 16GB RAM"
+ *                          quantity:
+ *                              type: number
+ *                              required: false
+ *                              example: "4"
  *                          imgs:
  *                              type: array
  *                              required: true
@@ -72,6 +136,86 @@
  *          404:
  *              description: Invalid or missing security token
  *
+ */
+
+/**
+ * @swagger
+ * /products/allSellerCollection:
+ *  get:
+ *      tags:
+ *          - Products
+ *      summary: Endpoint for getting all seller's products
+ *      responses:
+ *          200:
+ *              description: All seller's products are fetched successfully
+ *          403:
+ *              description: You should login as a seller to view products
+ *          404:
+ *              description: User token not found! try logging in
+ *          500:
+ *              description: Something went wrong while fetching products
+ */
+
+/**
+ * @swagger
+ * /products/update/{id}:
+ *   patch:
+ *     tags:
+ *       - Products
+ *     summary: Update an existing product with its images
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         description: ID of the product to be updated
+ *         required: true
+ *         schema:
+ *           type: string
+ *           minimum: 1
+ *     requestBody:
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               pname:
+ *                 type: string
+ *                 description: The name of the product
+ *               p_price:
+ *                 type: number
+ *                 description: The price of the product
+ *               desc:
+ *                 type: string
+ *                 description: The description of the product
+ *               imgs:
+ *                 type: array
+ *                 description: Array of updated product images
+ *                 items:
+ *                   type: file
+ *     responses:
+ *       200:
+ *         description: Product and images updated successfully
+ *       400:
+ *         description: Bad request
+ *       403:
+ *         description: You do not have permissions to update a product
+ *       404:
+ *         description: Product not found
+ */
+
+/**
+ * @swagger
+ * /products:
+ *   get:
+ *     summary: Retrieve all products for users || seller collection
+ *     tags:
+ *       - Products
+ *     security:
+ *       - authsecurity: []
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       "200":
+ *         description: Successfully retrieved all products.
  */
 
 /**
@@ -111,6 +255,31 @@
  *         description: The user does not have permission to update the product
  *       '404':
  *         description: The specified product ID does not exist
+ */
+
+/**
+ * @swagger
+ * /products/{productId}:
+ *   get:
+ *     summary: Get one product by product ID
+ *     security:
+ *       - authsecurity: []
+ *     tags:
+ *       - Products
+ *     parameters:
+ *       - in: path
+ *         name: productId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Product ID of the product to return
+ *     responses:
+ *       '201':
+ *         description: Product returned successfully
+ *       '400':
+ *         description: Server Error
+ *       '404':
+ *         description: Product Not found
  */
 
 /**

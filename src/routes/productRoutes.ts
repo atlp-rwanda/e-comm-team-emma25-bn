@@ -6,6 +6,9 @@ import verifyToken from "../middlewares/verifyToken";
 
 const prod = Router();
 prod.post("/add", ProductController.saveProduct);
+prod.patch("/update/:id", ProductController.updateProduct);
+prod.get("/allSellerCollection", ProductController.getAllSellerProducts);
+prod.get("/search", ProductController.searchProducts);
 // seller manage their product availbility
 prod.patch(
     "/available/:product_id",
@@ -27,4 +30,15 @@ prod.post(
     ProductController.addToWishlist
 );
 
+prod.get(
+    "/",
+    roleAuthorization(["user", "seller", "admin"]),
+    ProductController.getAllProducts
+);
+
+prod.get(
+    "/:productId",
+    roleAuthorization(["user", "seller", "admin"]),
+    ProductController.getOneProduct
+);
 export default prod;

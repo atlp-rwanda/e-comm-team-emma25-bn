@@ -38,7 +38,7 @@ class GoogleController {
           return res.status(200).json({ user: user });
         }
       });
-           console.log(res);
+          
       return res;
     } catch (error) {
       return res.status(500).json({ status: 500, error: error });

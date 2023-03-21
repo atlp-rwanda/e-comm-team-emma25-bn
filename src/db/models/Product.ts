@@ -14,6 +14,11 @@ const Product = sequelizedb.define("Products", {
         type: DataTypes.DOUBLE,
         allowNull: false,
     },
+    quantity:{
+        type: DataTypes.INTEGER,  
+        allowNull: false,      
+        defaultValue: 1 //this is to set the quantity of the product        
+    },
     available: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
