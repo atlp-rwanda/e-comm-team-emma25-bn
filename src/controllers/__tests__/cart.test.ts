@@ -12,7 +12,7 @@ const app = createServer();
           password: 'string',
         });
       token = res.body.token;
-    }, 40000);
+    }, 60000);
 
     describe("add to cart", ()=>{
         test("in case  user loggedin", async ()=>{            

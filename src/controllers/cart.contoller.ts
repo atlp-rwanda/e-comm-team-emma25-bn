@@ -163,7 +163,7 @@ class CART {
                 itemproduct.quantity = itemproduct.quantity - (quantity - cartitem.quantity)
                 cartitem.quantity = quantity
                 await itemproduct.save()
-                await cartitem.save()        
+                await cartitem.save()      
                
                 }
                 else{

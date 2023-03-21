@@ -21,6 +21,6 @@ Cart.belongsTo(USER, {onDelete: "cascade"})
 Cart.hasMany(cartItem, {onDelete: "cascade", foreignKey:'cartId'})
 cartItem.belongsTo(Cart, {onDelete: "cascade"})
 
-Cart.sync({alter: true})
+Cart.sync()
 
 export default Cart

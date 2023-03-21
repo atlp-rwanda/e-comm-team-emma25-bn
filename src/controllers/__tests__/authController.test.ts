@@ -14,7 +14,7 @@ const app = createServer();
 
 jest.setTimeout(70000);
 describe("Login via google", () => {
-  afterAll(async () => {
+  afterAll(async () => {    
     USER.destroy({
       where: { email: "example@example.com" },
     });

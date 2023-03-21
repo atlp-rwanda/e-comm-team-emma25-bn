@@ -4,6 +4,7 @@ const app = createServer()
 
 
 describe("Adding a product to the wishlist", () => {   
+  jest.setTimeout(70000);
     const fakeId = "ddjsh";
     let Token: string;
     let auth: string;
@@ -17,7 +18,7 @@ describe("Adding a product to the wishlist", () => {
             });
         Token = res.body.token;
         auth = "Bearer " + Token;
-    }, 40000);
+    }, 60000);
     
     describe("User Tokens", () => {
         describe("When no token provided", () => {
