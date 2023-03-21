@@ -36,7 +36,7 @@ const app = createServer();
          
         test("view cart", async ()=>{
           const response: any = await supertest(app).get("/cart/view").set('Authorization', `Bearer ${token}`)
-          expect(response.status).toBe(200)
+          expect(response.status).toBe(200)// test car review
   })   
         
              
