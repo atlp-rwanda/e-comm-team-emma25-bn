@@ -27,7 +27,7 @@ const account_sid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const service_sid = process.env.TWILIO_SERVICE_SID;
 
-class auth {
+class auth {s
     /* Start: 2FA Feature for sellers */
     // Sending an OTP to user provided phone number
     static sendCode(req: Request, res: Response) {

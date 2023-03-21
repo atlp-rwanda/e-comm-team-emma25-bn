@@ -36,13 +36,13 @@ const USER = sequelizedb.define('user', {
   },
 });
 
-USER.sync();
+
 Role.hasMany(USER, {
   foreignKey: 'roleId',
 });
 USER.belongsTo(Role);
 
-USER.sync({ alter: true });
+USER.sync();
 
 USER.hasOne(Profile, { foreignKey: 'userId', as: 'profile' });
 Profile.belongsTo(Profile, { foreignKey: 'userId' });
