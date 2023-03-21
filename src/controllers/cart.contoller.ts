@@ -225,5 +225,55 @@ class CART {
 
         }
     
+        static async clearcart(req: Request, res:Response){
+            const user:any = req.user
+            try {
+                const cart:any = await Cart.findOne({where: {buyerId: user.id }, include:[{model: cartItem}]}) 
+                if(cart){
+                    const items: any = cart.CartItems
+                    interface CartItem {
+                        id: number;
+                        productID: number;                
+                        price: number;
+                        ProductName: string;
+                        image: string;
+                        cartId: string;
+                        quantity: number;
+                      }                       
+                      if(items.length > 0){                        
+                        await items.forEach( async (element: CartItem) => {
+                              const product: any = await Product.findOne({where: {ProductID : element.productID}})
+                              product.quantity = product.quantity + element.quantity
+                              await cartItem.destroy({where: {id: element.id}})
+                              await product.save()                  
+                        
+                            });
+                            
+                            await Cart.update({Total: 0},{where: {id: cart.id}})
+                const newcart:any = await Cart.findOne({where: {buyerId: user.id }, include:[{model: cartItem}]}) 
+
+                            res.status(200).json({
+                                statusCode: 200,
+                                message: "cart has bee cleared",
+                                newcart
+                            })
+                        }      
+                        else{
+                            throw new Error("your cart is already empty");
+                            
+                        }
+                    }
+                        
+
+            } catch (error:any) {
+                res.status(400).json({
+                    statusCode: 400,
+                    message: error.message
+
+                })
+                
+            }
+
+        }
     } 
 export default CART

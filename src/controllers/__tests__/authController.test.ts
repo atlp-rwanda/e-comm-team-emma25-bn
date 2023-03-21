@@ -71,7 +71,7 @@ describe('reset password', () => {
       .post('/resetpassword/link')
       .send({ email: 'josephrukundo2002@gmail.com' })
     expect(response.status).toBe(200)
-  })
+  }, 50000)
   test('incase invalid email input', async () => {
     const response = await supertest(app)
       .post('/resetpassword/link')

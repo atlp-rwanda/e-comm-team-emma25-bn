@@ -4,6 +4,22 @@
  *  name: Products
  *  description: Endpoints that handles product actions
  */
+/**
+ * @swagger
+ * /cart/clear:
+ *   delete:
+ *     summary: clear cart
+ *     tags: [Cart]
+ *     security:
+ *       - authsecurity: []
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       "200":
+ *         description: cleared the cart.
+ *       "400":
+ *         description: cart is already empty
+ */
 
 /**
  * @swagger

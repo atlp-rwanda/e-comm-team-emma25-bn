@@ -20,6 +20,11 @@ const app = createServer();
         const response: any = await supertest(app).post("/cart/add/so6JEwJcHlDh").set('Authorization', `Bearer ${token}`)       
         expect(response.status).toBe(200)
         })
+       
+        test("remove from cart", async ()=>{
+          const response: any = await supertest(app).delete("/cart/remove/9").set('Authorization', `Bearer ${token}`)
+          expect(response.status).toBe(200)
+          }, 40000)     
         test("update cart", async ()=>{
             const response: any = await supertest(app).patch("/cart/9").set('Authorization', `Bearer ${token}`).send({"itemQuantity": 9})
             expect(response.status).toBe(200)
@@ -31,7 +36,7 @@ const app = createServer();
          
         test("view cart", async ()=>{
           const response: any = await supertest(app).get("/cart/view").set('Authorization', `Bearer ${token}`)
-          expect(response.status).toBe(200)
+          expect(response.status).toBe(200)// test car review
   })   
         
              
