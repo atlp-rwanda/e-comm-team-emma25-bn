@@ -31,7 +31,7 @@ const  Order =  sequelizedb.define( "orders",
         allowNull: false,
         validate: {
           isIn:{
-            args: [["Pending", "Processing", "Shipped", "Delivered", "Cancelled", "Refunded", "On hold", "Backordered", "Partially shipped", "Payment declined"]
+            args: [["Pending","Paid", "Processing", "Shipped", "Delivered", "Cancelled", "Refunded", "On hold", "Backordered", "Partially shipped", "Payment declined"]
           ],
             msg: `Must be in ("Pending", "Processing", "Shipped", "Delivered", "Cancelled", "Refunded", "On hold", "Backordered", "Partially shipped", "Payment declined")`
           } 
@@ -45,7 +45,7 @@ const  Order =  sequelizedb.define( "orders",
   
   Order.belongsTo(User);
   User.hasMany(Order);  
-  Order.sync({alter: true})
+  Order.sync()
 
 
   

@@ -27,6 +27,11 @@ import Product from './Product';
         type: DataTypes.STRING,
         allowNull: false,
       },
+      productQuantity:{
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+      }
     },
     {
       tableName: 'orderproducts'      
@@ -37,7 +42,6 @@ import Product from './Product';
   Order.hasMany(OrderProduct);  
   OrderProduct.belongsTo(Product);
   Product.hasMany(OrderProduct);
-
-  OrderProduct.sync({alter: true})
+  OrderProduct.sync()
   
   export default OrderProduct;

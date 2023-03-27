@@ -45,7 +45,7 @@ export const checkoutController = {
       const productstripe: any = await stripe.products.create({
         name: product.ProductName,
         description: product.ProductDesc,
-        images: [product.pro_images[1].ImagePath],
+        images: [product.pro_images[0].ImagePath],
       });      
       const itemprice:any = await stripe.prices.create({
         product: productstripe.id,
@@ -60,31 +60,17 @@ export const checkoutController = {
           quantity: 1,
         }         
         ],
+        metadata: {
+          userId: user.id,
+          productId: productid,
+        },
+
         mode: 'payment',
         success_url: `${process.env.HOST}/product/success/${productid}`,
         cancel_url: `${process.env.HOST}/cancel`,
       });
           // Create an order in your database        
-          const delivarydate=getDateInTwoWeeks()
-    const order: any = await Order.create({
-      orderid : uids(),
-      userId: user.id,
-      amountPaid: product.ProductPrice,
-      paymentid: session.id,
-      expectedDeliveryDate: delivarydate,
-      status: 'Pending',
-    });
-    
-     await OrderProduct.create({
-      Orderid: order.Orderid,
-      price: product.ProductPrice,
-      productName: product.ProductName,
-      productId: product.ProductID
-    })
-    if(order){
-      product.qauntity = product.quantity - 1
-      await product.save()
-    } 
+      
     res.send({url : session.url})  
      
     } catch (err) {
@@ -97,6 +83,7 @@ export const checkoutController = {
 
 export const cartcheckout= async (req:Request, res: Response)=>{
   const cartid = req.params.cardId
+  const user:any = req.user
 
   try {    
     const cart:any = await Cart.findOne({where: {id: cartid} , include: [{model: cartItem}]})  
@@ -137,8 +124,12 @@ export const cartcheckout= async (req:Request, res: Response)=>{
     const session: any = await stripe.checkout.sessions.create({
       line_items: items,
       payment_method_types: ['card'],
+      metadata: {
+          userId: user.id,
+        cartId: cartid,
+      },
       mode: 'payment',
-      success_url: `${process.env.HOST}/cart/payment/?cart=${cartid}`,
+      success_url: `${process.env.HOST}/success`,
       cancel_url: `${process.env.HOST}/cancel`,
     });
     res.send({url:  session.url});
@@ -149,50 +140,79 @@ export const cartcheckout= async (req:Request, res: Response)=>{
     })
   }  
 }
- export const cartsuccess = async  (req: Request,res: Response)=>{
-    const cartid = req.params.cartid
-  const user: any = req.user 
-    
-    try {
-    const cart:any = await Cart.findOne({where: {id: cartid} , include: [{model: cartItem}]})  
-    const delivarydate=getDateInTwoWeeks()    
-    const order: any = await Order.create({
-      orderid : uids(),
-      userId: user.id,
-      amountPaid: cart.Total,      
-      paymentid: cart.id,
-      expectedDeliveryDate: delivarydate,
-      status: 'Pending',
-    });
-   
-    cart.CartItems.forEach(async (element: any) => {
+ const endpointSecret = `${process.env.ENDPPOINT_SECRET}`;
+
+export async  function successwebhook(req: Request, res: Response){
+
+  const sig: any = req.headers['stripe-signature'] ;
+  let event: any=0;
+  try {    
+    event  = stripe.webhooks.constructEvent(req['rawBody'],sig,endpointSecret);
+  } catch (err: any ) {
+    console.log(err.message)
+    res.status(400).send(`Webhook Error: ${err.message}`);
+    return;
+  }
+  // Handle the event
+  switch (event.type) {
+    case 'checkout.session.completed':
+      
+      const checkoutSessionCompleted: any  = event.data.object;
+      // Then define and call a function to handle the event checkout.session.completed      
+      if(checkoutSessionCompleted.metadata.cartId){
+        const cart: any = await Cart.findOne({where: {id:checkoutSessionCompleted.metadata.cartId}, include:[{model: cartItem}]})        
+        await cartItem.destroy({where: {cartId: checkoutSessionCompleted.metadata.cartId}})
+        const delivarydate=getDateInTwoWeeks()        
+        const order: any = await Order.create({
+          orderid : uids(),
+          userId: checkoutSessionCompleted.metadata.userId,
+          amountPaid: checkoutSessionCompleted.amount_total,
+          paymentid: checkoutSessionCompleted.payment_intent,
+          expectedDeliveryDate: delivarydate,
+          status: 'Paid',
+            });
+            cart.CartItems.forEach(async (element: any) => {
       await OrderProduct.create({
        Orderid: order.Orderid,
        price: element.price,
        quantity: element.quantity,
        productName: element.ProductName,
-       productId: element.productID
-     })
-     if(order){
-     await cartItem.destroy({where: {cartId : cartid}})    
-     res.status(200).json({
-      statusCode: 200,
-      message: "you have sucessfully paid for your order"
+       productId: element.productID,
+       productQuantity: element.quantity
+          })                   
+        });
+        cart.Total=0
+        await cart.save()
+      }
+      if(checkoutSessionCompleted.metadata.productId){
+   const product: any = await Product.findByPk(checkoutSessionCompleted.metadata.productId);
+   const delivarydate=getDateInTwoWeeks()
+   const order: any = await Order.create({
+     orderid : uids(),
+     userId: checkoutSessionCompleted.metadata.userId,
+     amountPaid: product.ProductPrice,
+     paymentid: checkoutSessionCompleted.payment_intent,
+     expectedDeliveryDate: delivarydate,
+     status: 'Paid',
+       });
+    await OrderProduct.create({
+     Orderid: order.Orderid,
+     price: product.ProductPrice,
+     productName: product.ProductName,
+     productId: product.ProductID     
+   })
+   if(order){
+     product.qauntity = product.quantity - 1
+     await product.save()
+   }
+   
+      }
+      break;
+    // ... handle other event types
+    default:
+      console.log(`Unhandled event type ${event.type}`);
+  }
 
-     }) 
-     }
-
-        
-    });
-     cart.Total = 0
-     await cart.save()
-      
-    } catch (error: any) {
-      res.status(400).json({
-        statusCode: 400,
-        message: error.message
-      })
-      
-    }
-
- }
+  // Return a 200 response to acknowledge receipt of the event
+  res.send();
+}

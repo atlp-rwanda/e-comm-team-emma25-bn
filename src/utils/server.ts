@@ -8,6 +8,7 @@ import cors from "cors"
 import chatRoutes from "../routes/chatRoutes";
 import checkoutRouter from '../routes/checkout.routes';
 import orderStatusRoutes from '../routes/orderstatus.routes';
+import bodyParser from "body-parser"
 import { config } from 'dotenv';
 config()
 const allowedOrigins: string[] = [process.env.LOCAL as string, process.env.FRONTEND_HOST as string]
@@ -17,6 +18,11 @@ function createServer() {
     app.use(cors({
         origin: allowedOrigins
     }))
+    app.use(bodyParser.json({
+  verify: (req, res, buf) => {
+    req['rawBody'] = buf;
+  },
+}));
     app.use(express.json())
     app.use(cookieParser())
     app.use('/products', productRoutes)

@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 import Product from "../db/models/Product";
 import ProductImages from "../db/models/Image";
 import { Op } from "sequelize";
+import { createCart } from "../services/cart.services";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 
@@ -25,10 +26,13 @@ function gettotal(items: any) {
 }
  
 class CART {
-    static async additem(req: Request, res: Response) {
-        const item = req.params.productID
-        const user: any = req.user
-        const foundcart: any = await Cart.findOne({ where: { buyerId: user.id }, include: [{ model: cartItem }] })
+    static async additem(req: Request, res: Response){
+        const item = req.params.productID        
+        const user:any = req.user
+        let foundcart: any  = await Cart.findOne({where: {buyerId: user.id},include:[{model : cartItem}]})
+        if(!foundcart){
+            foundcart = await createCart(user.id,0)
+        }
         try {
             if (user.role == "buyer" || user.role == "user") {
                 const product: any = await Product.findOne({ where: { ProductID: item }, include: [{ model: ProductImages }] })
