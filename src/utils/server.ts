@@ -8,6 +8,7 @@ import cors from "cors"
 import { config } from 'dotenv'; 
 config()
 const allowedOrigins: string[] = [ process.env.LOCAL as string ,process.env.FRONTEND_HOST as string ]
+// use the env values to add the appropriate routes 
 function createServer () {
     const app: Application = express()
     app.use(cors({
