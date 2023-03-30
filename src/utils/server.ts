@@ -16,12 +16,12 @@ function createServer() {
         origin: allowedOrigins
     }))
     app.use(express.json())
+    app.use(cookieParser())
     app.use('/products', productRoutes)
     app.use(chatRoutes)
     app.use(authRoutes)
     app.use(profileRoutes)
     app.use('/cart', Cartrouter)
-    app.use(cookieParser())
     return app
 }
 

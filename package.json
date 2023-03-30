@@ -18,9 +18,8 @@
     "lint": "npx eslint ./src",
     "lint-fix": "npx eslint --fix ./src",
     "dev": "tsnd --respawn ./src/app.ts",
-    "test": "jest --detect-openHandles --config ./src/jest.config.ts --forceExit",
-    "test:w": "jest  --config ./src/jest.config.ts --watch",
-    "test:coverage": "jest --detect-openHandles --config ./src/jest.config.ts --coverage --forceExit"
+    "test": "jest --detect-openHandles --config ./src/jest.config.ts --coverage --forceExit",
+    "test:w": "jest  --config ./src/jest.config.ts --watch"
   },
   "keywords": [
     "typescript",
@@ -35,6 +34,7 @@
     "@joi/date": "^2.1.0",
     "@types/babel__core": "^7.20.0",
     "bcrypt": "^5.1.0",
+    "cloudinary": "^1.35.0",
     "connect-redis": "^6.1.3",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",

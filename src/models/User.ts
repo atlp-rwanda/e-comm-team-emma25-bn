@@ -17,6 +17,15 @@ const USER = sequelizedb.define('user', {
     allowNull: false,
     unique: true,
   },
+  phone_number: {
+    type: DataTypes.STRING,
+    defaultValue: null
+  },
+  isPhoneVerified: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+    allowNull: false
+  },
   emailVerified: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
