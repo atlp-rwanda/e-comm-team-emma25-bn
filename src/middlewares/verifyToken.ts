@@ -8,6 +8,7 @@ interface User {
   id: number;
   email: string;
   role: string;
+  name: string;
 }
 export interface CustomRequest extends Request {
   users?: User;
@@ -33,6 +34,7 @@ const verifyToken: RequestHandler<CustomRequest> = async (
           id: decoded.id,
           email: decoded.email,
           role: decoded.role,
+          name: decoded.name
         };
         next();
       } catch (err: any) {

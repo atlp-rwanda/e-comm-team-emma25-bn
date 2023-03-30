@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Nunito Sans", sans-serif;
+        }
+
+        .container {
+            width: 500px;
+            padding: 2%;
+            max-width: 100%;
+            background: white;
+            box-shadow: 0 7px 10px 1px rgba(0, 0, 0, 0.3);
+            margin: 5em auto;
+            border-radius: 10px;
+        }
+
+        .container .title {
+            text-align: center;
+            margin-bottom: 1em;
+        }
+
+        .container .messages {
+            margin: 1em 0;
+        }
+
+        .container .messages .message {
+            padding: 5px;
+            margin: 10px 0 0 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .container .messages .message.mine {
+            background-color: #f6f5f5;
+        }
+
+        .container .formBox {
+            width: 100%;
+            margin-top: 2em;
+        }
+
+        .container .formBox .error {
+            display: none;
+            font-size: 13px;
+            color: #f00;
+        }
+
+        .container .formBox .error.show {
+            display: block;
+        }
+
+        .container .formBox form input {
+            width: 80%;
+            padding: 0.4em 0.5em;
+            outline: none;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .container .formBox form input:focus {
+            border-bottom-color: #05f;
+        }
+
+        .container .formBox form button {
+            padding: 0.5em 1.3em;
+            font-size: 16px;
+            background-color: #05f;
+            color: #fff;
+            border-radius: 5px;
+            border-style: none;
+            cursor: pointer;
+        }
+
+        .notification {
+            width: 300px;
+            position: absolute;
+            top: -70px;
+            border-radius: 5px;
+            background-color: whitesmoke;
+            right: 2%;
+            padding: 1%;
+            box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .notification p {
+            margin-top: 5px;
+        }
+
+        .notification.show {
+            transition: all 1s ease;
+            top: 30px;
+        }
+
+        .notification.hide {
+            top: -70px;
+            transition: all 1s ease;
+        }
+
+        .notification h5 sup.on {
+            color: green;
+        }
+
+        .notification h5 sup.off {
+            color: #aaa;
+        }
+
+        /*# sourceMappingURL=main.css.map */
+    </style>
+</head>
+
+<body>
+    <div class="notification" id="notification"></div>
+    <div class="container" id="container">
+        <div class="title">
+            <h2>Chats</h2>
+        </div>
+        <div class="messages" id="messages"></div>
+        <div class="formBox">
+            <form id="form">
+                <input type="text" id="ipt" required name="txt" placeholder="Type a message" autocomplete="off" />
+                <button type="submit">Send</button>
+                <span class="error">Please provide a message</span>
+            </form>
+        </div>
+    </div>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script>
+        const socket = io();
+        let messages = document.getElementById("messages")
+        let form = document.getElementById("form")
+        let input = document.getElementById("ipt")
+        let container = document.getElementById("container")
+        let notify = document.getElementById("notification")
+        const notifyUser = (person, message) => {
+            const alert = `<h5>${person}</h5> <p>${message}</p>`;
+            notify.innerHTML = alert;
+            notify.className = 'notification'
+            notify.classList.add('show');
+            setTimeout(() => {
+                if (notify.className.includes('show')) {
+                    notify.classList.replace('show', 'hide')
+                }
+            }, 5000)
+        }
+        const displayMessage = (person, message) => {
+            let cls = (person == 'You') ? 'mine' : '';
+            let sms = `<div class="message ${cls}">
+                <h5>${person}</h5>
+                <p>${message}</p>
+            </div>`;
+            messages.innerHTML += sms;
+            window.scroll(0, document.body.scrollHeight)
+        }
+
+        socket.on('failure_connection', message => {
+            container.innerHTML = message.error;
+        })
+        socket.on('recent-chats', chats => {
+            const {sender, message} = chats;
+            chats.map((chat, inx) => {
+                displayMessage(chat.sender, chat.message)
+            })
+        })
+        socket.on('recents-chats', chats => {
+            const {sender, message} = chats;
+            notifyUser(sender, message)
+        })
+        let person;
+        let userData;
+        let datas;
+        socket.on('recents', data => {
+            data.map((chArr, inx) => {
+                let message = chArr[0];
+                displayMessage(message.sender, message.message)
+            })
+        })
+        console.log(datas)
+        socket.on('new-user', user => {
+            person = user.name;
+            userData = user;
+            notifyUser('ChatBot', `Welcome <b>${user.name}</b>`)
+            socket.emit('connected', person)
+        })
+        socket.on('welcome', data => {
+            notifyUser(data.person, data.message)
+        })
+        socket.on('bye', data => {
+            notifyUser(data.person, data.message);
+            notify.classList.add('show')
+        })
+        socket.on('failure_message', data => {
+            displayMessage('ChatBot', data.error);
+            input.value = data.data.message;
+        })
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            let message = form.txt.value;
+            let senderId = userData.id;
+            if (message) {
+                socket.emit('chat', {
+                    senderId,
+                    person,
+                    message
+                });
+                input.value = '';
+                displayMessage('You', message)
+            }
+        })
+        socket.on('chat-message', data => {
+            displayMessage(data.person, data.message);
+        })
+    </script>
+</body>
+
+</html>
