@@ -60,6 +60,7 @@
     "sequelize": "^6.28.0",
     "short-unique-id": "^4.4.4",
     "socket.io": "^4.6.1",
+    "socket.io-client": "^4.6.1",
     "stripe": "^11.14.0",
     "supertest": "^6.3.3",
     "swagger-jsdoc": "^6.2.8",

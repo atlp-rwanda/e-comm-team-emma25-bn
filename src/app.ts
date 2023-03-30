@@ -10,7 +10,6 @@ import permissionRoutes from "./routes/rolesPermissionsRoutes/permission.route";
 import createServer from "./utils/server";
 import passport from "passport";
 import session from "express-session";
-import chatRoutes from "./routes/chatRoutes";
 import "./config/googlePassport.config";
 import { chat } from "./chat/chat";
 import http from "http";
@@ -35,7 +34,6 @@ app.use(express.json());
 app.use(roleRoutes);
 app.use(permissionRoutes);
 app.use(rolePermissionRoutes);
-app.use(chatRoutes)
 
 
 const PORT = process.env.PORT || 3000;
