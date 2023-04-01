@@ -27,7 +27,7 @@ const account_sid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const service_sid = process.env.TWILIO_SERVICE_SID;
 
-class auth {
+class auth {s
     /* Start: 2FA Feature for sellers */
     // Sending an OTP to user provided phone number
     static sendCode(req: Request, res: Response) {
@@ -164,6 +164,7 @@ class auth {
           token: encode({
             id: createData.id,
             email: createData.email,
+            name: `${createData.firstName} ${createData.lastName}`,
             role: role.name,
           }), //changed the token to keep same fields as login
         });
@@ -229,6 +230,7 @@ class auth {
                     const token = encode({
                         id: findUser.dataValues.id,
                         email: findUser.dataValues.email,
+                        name: `${findUser.dataValues.firstName} ${findUser.dataValues.lastName}`,
                         role: role.name,
                     });
                     res.set({

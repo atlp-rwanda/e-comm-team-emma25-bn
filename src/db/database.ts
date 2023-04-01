@@ -5,11 +5,13 @@ config();
 so the connection below uses connection string 
 */
 
-export const sequelizedb = new Sequelize(process.env.DBLINK as string, {
-    dialect: "postgres",
-    protocol: "postgres",
+export const sequelizedb = new Sequelize(process.env.DBLINK as string, {    
     dialectOptions: {
-        ssl: true,
+        ssl: {
+      require: true,
+      rejectUnauthorized: false,
+
+        },
         native: true,
     },
     logging: false,
