@@ -24,7 +24,7 @@ const Product = sequelizedb.define("Products", {
         allowNull: false,
         defaultValue: true, // Product is available by default
     },
-    ProductDesc: DataTypes.TEXT("long"),
+    ProductDesc: DataTypes.TEXT,
     ProductOwner: {
         type: DataTypes.STRING,
         allowNull: false,

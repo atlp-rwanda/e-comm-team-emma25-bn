@@ -27,7 +27,6 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-
 config();
 //middleware section
 app.use(express.json());

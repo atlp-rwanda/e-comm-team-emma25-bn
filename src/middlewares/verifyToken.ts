@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -8,6 +9,7 @@ interface User {
   id: number;
   email: string;
   role: string;
+  phone: string,
   name: string;
 }
 export interface CustomRequest extends Request {
@@ -34,6 +36,7 @@ const verifyToken: RequestHandler<CustomRequest> = async (
           id: decoded.id,
           email: decoded.email,
           role: decoded.role,
+          phoneNumber: decoded.phone,
           name: decoded.name
         };
         next();

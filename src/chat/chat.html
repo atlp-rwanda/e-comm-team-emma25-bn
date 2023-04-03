@@ -150,7 +150,7 @@
                 if (notify.className.includes('show')) {
                     notify.classList.replace('show', 'hide')
                 }
-            }, 5000)
+            }, 7000)
         }
         const displayMessage = (person, message) => {
             let cls = (person == 'You') ? 'mine' : '';
@@ -161,6 +161,7 @@
             messages.innerHTML += sms;
             window.scroll(0, document.body.scrollHeight)
         }
+        notifyUser('ChatBot', 'Getting previous chats...')
 
         socket.on('failure_connection', message => {
             container.innerHTML = message.error;
