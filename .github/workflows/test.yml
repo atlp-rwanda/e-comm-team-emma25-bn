@@ -38,12 +38,11 @@ jobs:
       - name: npm install
         run: |
           npm install
-      - name: Test with Jest
+          
+      - name: Test with Jest and Generate coverage information
         run: |
           npm run test
-      - name: Generate coverage information
-        run: |
-          npm run test:coverage
+
       - name: Coveralls
         uses: coverallsapp/github-action@master
         with:

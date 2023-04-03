@@ -1,10 +1,11 @@
-import { Router, Request, Response, NextFunction } from "express";
+import { Router } from "express";
 import passports from "passport";
 import auth from "../controllers/authController";
 import signupValidation from "../middlewares/signupValidation";
 import GoogleController from "../controllers/googleAuthController";
 import resetpass from "../controllers/resetcontrollers";
 import Stripe from 'stripe'
+import verifyToken from "../middlewares/verifyToken";
 
 
 const stripe = new Stripe (process.env.STRIPE_SECRET as string, {
@@ -21,6 +22,7 @@ router.get('/users', auth.getAlluser)
 router.delete('/delete/:id', auth.deleteUser)
 router.get('/sendcode/:phone', auth.sendCode)
 router.get('/verify/:phone/:code', auth.verify2FA)
+router.get('/verify/:code', verifyToken, auth.verify2FA)
 router.post("/logout", auth.logout);
 // router.post("/authorize", auth.authorize);
 router.post("/resetpassword/link", resetpass.sendlink);

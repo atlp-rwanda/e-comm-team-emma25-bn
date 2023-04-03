@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
 import { MulterError } from "multer";
 import { decode } from "../helper/jwtTokenize";
@@ -7,6 +8,7 @@ import Images from "../db/models/Image";
 import Product from "../db/models/Product";
 import Wishlist from "../db/models/Wishlist";
 import { Op } from "sequelize";
+import cloudinary from "../config/cloudinary.config";
 
 const uids = new shortUniqueId({ length: 12 });
 class ProductController {
@@ -65,14 +67,8 @@ class ProductController {
                             for (let i = 0; i < totalFiles; i++) {
                                 const img = imgs[i];
                                 const fileType = img.mimetype;
-                                const fullPath =
-                                    req.protocol +
-                                    "://" +
-                                    req.hostname +
-                                    "/" +
-                                    img.destination +
-                                    "/" +
-                                    img.filename;
+                                const save = await cloudinary.uploader.upload(img.path)
+                                const fullPath = save.secure_url
                                 await Images.create({
                                     ImageID: uids(),
                                     ImagePath: fullPath,

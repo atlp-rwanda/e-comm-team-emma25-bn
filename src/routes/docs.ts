@@ -348,6 +348,7 @@
  *                    - firstName
  *                    - lastName
  *                    - password
+ *                    - phone_number
  *                 properties:
  *                    email:
  *                      type: string
@@ -356,6 +357,8 @@
  *                    lastName:
  *                       type: string
  *                    password:
+ *                       type : string
+ *                    phone_number:
  *                       type : string
  *     responses:
  *       201:

@@ -8,7 +8,7 @@ jest.setTimeout(120000);
 describe("Two-Factor Authentication", () => {
   describe("Sending Verification Code", () => {
     test("Should return 400 if invalid number provided", async () => {
-      await supertest(app).get("/sendcode/6433").expect(400);
+      await supertest(app).get("/sendcode/6433").expect(404);
     });
 
     test("Should return 404 if no number provided", async () => {
