@@ -12,9 +12,7 @@ const allowedOrigins: string[] = [process.env.LOCAL as string, process.env.FRONT
 // use the env values to add the appropriate routes 
 function createServer() {
     const app: Application = express()
-    app.use(cors({
-        origin: allowedOrigins
-    }))
+    app.use(cors())
     app.use(express.json())
     app.use(cookieParser())
     app.use('/products', productRoutes)
