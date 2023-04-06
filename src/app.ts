@@ -18,10 +18,6 @@ import { Server } from "socket.io"
 const server = http.createServer(app);
 const io = new Server(server)
 
-
-
-
-
 app.use(
     session({
         secret: `process.env.SECRET`,
