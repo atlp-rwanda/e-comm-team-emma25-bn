@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
 
-    "target": "ES3",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
+    "target": "ES6",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
 
     "module": "CommonJS",                                
     "rootDir": "./src/",                                  

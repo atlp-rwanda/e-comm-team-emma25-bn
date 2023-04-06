@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 import Product from "../db/models/Product";
 import ProductImages from "../db/models/Image";
 import { Op } from "sequelize";
+import { createCart } from "../services/cart.services";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 
@@ -11,24 +12,27 @@ function gettotal(items: any) {
     const cartItemsArray = items.CartItems
     let totalprice = 0
     interface CartItem {
-        productID: number;
-        price: number;
-        ProductName: string;
-        image: string;
-        cartId: string;
-        quantity: number;
-    }
-    cartItemsArray.forEach((element: CartItem) => {
-        totalprice = totalprice + element.price * element.quantity
-    });
-    return totalprice
+       productID: number;                
+       price: number;
+       ProductName: string;
+       image: string;
+       cartId: string;
+       quantity: number;
+     }             
+    cartItemsArray.forEach((element:CartItem) => {
+       totalprice = totalprice + element.price * element.quantity
+     });          
+     return totalprice    
 }
-
+ 
 class CART {
-    static async additem(req: Request, res: Response) {
-        const item = req.params.productID
-        const user: any = req.user
-        const foundcart: any = await Cart.findOne({ where: { buyerId: user.id }, include: [{ model: cartItem }] })
+    static async additem(req: Request, res: Response){
+        const item = req.params.productID        
+        const user:any = req.user
+        let foundcart: any  = await Cart.findOne({where: {buyerId: user.id},include:[{model : cartItem}]})
+        if(!foundcart){
+            foundcart = await createCart(user.id,0)
+        }
         try {
             if (user.role == "buyer" || user.role == "user") {
                 const product: any = await Product.findOne({ where: { ProductID: item }, include: [{ model: ProductImages }] })
@@ -82,30 +86,30 @@ class CART {
                     statusCode: 401,
                     message: "you are not a buyer"
                 })
-
-            }
+            
+            }        
         } catch (error: any) {
             res.status(400).json({
                 statusCode: 400,
                 message: error.message
             })
-        }
-    }
-    static async removeitem(req: Request, res: Response) {
-        const cartitemid = req.params.cartitemid
-        const loggeduser: any = req.user
-        try {
-            const foundcart: any = await Cart.findOne({ where: { buyerId: loggeduser.id } })
-            const foundcartitem: any = await cartItem.findOne({ where: { id: cartitemid } })
-            if (!foundcart) {
-                throw new Error("cart not found")
-            }
-            if (!foundcartitem) {
-                throw new Error("product not found in cart")
-            }
-            const product: any = await Product.findOne({ where: { ProductID: foundcartitem.productID }, include: [{ model: ProductImages }] })
-
-            if (foundcart.id == foundcartitem.cartId) {
+        }}
+      static async  removeitem(req: Request, res: Response){
+       const cartitemid = req.params.cartitemid
+       const loggeduser: any = req.user
+       try {         
+           const foundcart: any= await Cart.findOne({where: {buyerId: loggeduser.id}})
+           const foundcartitem: any = await cartItem.findOne({where: {id:cartitemid}})         
+           if(!foundcart)
+           {
+            throw new Error("cart not found")              
+            }         
+           if(!foundcartitem){
+            throw new Error("product not found in cart")              
+            } 
+            const product:any = await Product.findOne({where: {ProductID: foundcartitem.productID},include: [{model: ProductImages}]})                           
+            
+           if(foundcart.id == foundcartitem.cartId ){
 
                 if (foundcartitem.quantity == 1) {
                     await cartItem.destroy({ where: { id: cartitemid } })

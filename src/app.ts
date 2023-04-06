@@ -18,6 +18,10 @@ import { Server } from "socket.io"
 const server = http.createServer(app);
 const io = new Server(server)
 
+
+
+
+
 app.use(
     session({
         secret: `process.env.SECRET`,
@@ -33,7 +37,6 @@ app.use(express.json());
 app.use(roleRoutes);
 app.use(permissionRoutes);
 app.use(rolePermissionRoutes);
-
 
 const PORT = process.env.PORT || 3000;
 app.get("/", (req, res) =>

@@ -6,6 +6,9 @@ import productRoutes from "../routes/productRoutes";
 import Cartrouter from '../routes/cart.routes'
 import cors from "cors"
 import chatRoutes from "../routes/chatRoutes";
+import checkoutRouter from '../routes/checkout.routes';
+import orderStatusRoutes from '../routes/orderstatus.routes';
+import bodyParser from "body-parser"
 import { config } from 'dotenv';
 config()
 const allowedOrigins: string[] = [process.env.LOCAL as string, process.env.FRONTEND_HOST as string]
@@ -15,6 +18,11 @@ function createServer() {
     app.use(cors({
         origin: allowedOrigins
     }))
+    app.use(bodyParser.json({
+  verify: (req, res, buf) => {
+    req['rawBody'] = buf;
+  },
+}));
     app.use(express.json())
     app.use(cookieParser())
     app.use('/products', productRoutes)
@@ -22,6 +30,11 @@ function createServer() {
     app.use(authRoutes)
     app.use(profileRoutes)
     app.use('/cart', Cartrouter)
+    app.use( checkoutRouter)
+    app.use("/orders",orderStatusRoutes)
+    
+
+
     return app
 }
 

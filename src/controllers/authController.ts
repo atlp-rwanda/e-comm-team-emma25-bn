@@ -23,6 +23,7 @@ import jwt from 'jsonwebtoken';
 import USER from '../models/User';
 import { encode } from '../helper/jwtTokenize';
 import { foundUser } from '../helper/authHelpers';
+import { createCart } from '../services/cart.services';
 config();
 const account_sid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -149,8 +150,8 @@ class auth {
             userId: createData.id,
           };
           await PROFILE.create({ ...profiledata });
+          await createCart(createData.id,0)         
         }
-
         const user = await USER.findOne({
           where: { email: email },
           attributes: ['id', 'firstName', 'lastName', 'email', 'roleId', 'phone_number'],
