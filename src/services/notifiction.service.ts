@@ -34,8 +34,7 @@ async function sendNotitfictation(buyerid: number| null, sellerid: string,subjec
         const buyer :any =  await USER.findOne({where:{id:buyerid}})             
         const admins: any = await USER.findAll({where : {roleId: 1}})
 
-        
-        
+                
          admins.forEach(async (element: any) => {
             const note =
         {
