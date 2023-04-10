@@ -10,14 +10,13 @@ import checkoutRouter from '../routes/checkout.routes';
 import orderStatusRoutes from '../routes/orderstatus.routes';
 import bodyParser from "body-parser"
 import { config } from 'dotenv';
+import NotificationRouter from '../routes/notification';
 config()
-const allowedOrigins: string[] = [process.env.LOCAL as string, process.env.FRONTEND_HOST as string]
+// const allowedOrigins: string[] = [process.env.LOCAL as string, process.env.FRONTEND_HOST as string]
 // use the env values to add the appropriate routes 
 function createServer() {
     const app: Application = express()
-    app.use(cors({
-        origin: allowedOrigins
-    }))
+    app.use(cors())
     app.use(bodyParser.json({
   verify: (req, res, buf) => {
     req['rawBody'] = buf;
@@ -32,6 +31,7 @@ function createServer() {
     app.use('/cart', Cartrouter)
     app.use( checkoutRouter)
     app.use("/orders",orderStatusRoutes)
+    app.use(NotificationRouter)
     
 
 

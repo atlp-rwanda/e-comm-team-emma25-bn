@@ -1,15 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { any } from 'joi';
 
 import session from 'express-session';
 import connectRedis from 'connect-redis';
 import { createClient } from 'redis';
 import Redis from 'ioredis';
-
 const RedisStore = connectRedis(session);
 import { object } from 'joi';
 import ADDRESS from '../models/profilemodels/Address';
 import BILLINGADDRESS from '../models/profilemodels/BillingAdress';
+import { io } from '../app'; 
 
 import { Request, Response } from 'express';
 import { Twilio } from 'twilio';
@@ -266,6 +265,7 @@ class auth {
             token: token,
           });
         } else {
+          
           res.status(400).json({
             stastus: 400,
             message: "Wrong password",

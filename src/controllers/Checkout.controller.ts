@@ -8,6 +8,7 @@ import Cart from '../db/models/cart';
 import cartItem from '../db/models/cartItems';
 import { config } from 'dotenv';
 import ProductImages from '../db/models/Image';
+import sendNotitfictation from '../services/notifiction.service';
 config()
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -172,14 +173,20 @@ export async  function successwebhook(req: Request, res: Response){
           status: 'Paid',
             });
             cart.CartItems.forEach(async (element: any) => {
-      await OrderProduct.create({
+      const product:any = await Product.findByPk(element.productID)
+              await OrderProduct.create({        
        Orderid: order.Orderid,
        price: element.price,
        quantity: element.quantity,
        productName: element.ProductName,
        productId: element.productID,
        productQuantity: element.quantity
-          })                   
+          })          
+       await sendNotitfictation(checkoutSessionCompleted.metadata.userId,product.ProductOwner,"PurchasedProduct", 
+    `${element.ProductName} has been succesfully purchased buy ${checkoutSessionCompleted.metadata.userId}`,
+    `your ${element.ProductName} has been purchased`,
+    `you have successfully bought ${element.ProductName}`)
+             
         });
         cart.Total=0
         await cart.save()
@@ -202,7 +209,15 @@ export async  function successwebhook(req: Request, res: Response){
      productId: product.ProductID     
    })
    if(order){
+    
+    await sendNotitfictation(checkoutSessionCompleted.metadata.userId,product.ProductOwner, "PurchasedProduct", 
+    `${product.ProductName} has been succesfully purchased buy ${checkoutSessionCompleted.metadata.userId}`,
+    `your ${product.ProductName} has been purchased`,
+    `you have successfully bought ${product.ProductName}`
+    )
+    
      product.qauntity = product.quantity - 1
+
      await product.save()
    }
    

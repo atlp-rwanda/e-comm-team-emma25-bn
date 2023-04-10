@@ -3,7 +3,7 @@ import { config } from "dotenv"
 config()
 /* eslint-disable @typescript-eslint/no-explicit-any */ 
 
-const sendEmail= async(email: string ,subject: string  ,text: string )=>{
+const sendEmail= async(email: string ,subject: string  ,text: any)=>{
     try {
         const transporter = nodemailer.createTransport({    
             service: 'gmail',       

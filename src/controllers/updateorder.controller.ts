@@ -30,8 +30,6 @@ class ORDER {
                 message: error.message
             })
         }
-
-
     }
     static async getallorders(req: Request,res: Response): Promise<void>{        
         try {
