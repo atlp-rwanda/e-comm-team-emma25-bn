@@ -8,6 +8,7 @@ import Cart from '../db/models/cart';
 import cartItem from '../db/models/cartItems';
 import { config } from 'dotenv';
 import ProductImages from '../db/models/Image';
+import sendNotitfictation from '../services/notifiction.service';
 config()
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -62,6 +63,7 @@ export const checkoutController = {
         ],
         metadata: {
           userId: user.id,
+          userEmail: user.email,
           productId: productid,
         },
 
@@ -126,6 +128,7 @@ export const cartcheckout= async (req:Request, res: Response)=>{
       payment_method_types: ['card'],
       metadata: {
           userId: user.id,
+          userEmail: user.email,
         cartId: cartid,
       },
       mode: 'payment',
@@ -172,17 +175,25 @@ export async  function successwebhook(req: Request, res: Response){
           status: 'Paid',
             });
             cart.CartItems.forEach(async (element: any) => {
-      await OrderProduct.create({
+      const product:any = await Product.findByPk(element.productID)
+              await OrderProduct.create({        
        Orderid: order.Orderid,
        price: element.price,
        quantity: element.quantity,
        productName: element.ProductName,
        productId: element.productID,
        productQuantity: element.quantity
-          })                   
+          })          
+       await sendNotitfictation(checkoutSessionCompleted.metadata.userId,product.ProductOwner,"PurchasedProduct", 
+    `${element.ProductName} has been succesfully purchased buy ${checkoutSessionCompleted.metadata.userEmail}`,
+    `your ${element.ProductName} has been purchased.Thank you for your service.It was nice working with you.`,
+    `you have successfully bought ${element.ProductName}from !shop team-emma ecommerce.
+    Thank you for shopping with us we appreciate your service. keep shoping with !shop`)
+             
         });
         cart.Total=0
         await cart.save()
+        
       }
       if(checkoutSessionCompleted.metadata.productId){
    const product: any = await Product.findByPk(checkoutSessionCompleted.metadata.productId);
@@ -202,7 +213,16 @@ export async  function successwebhook(req: Request, res: Response){
      productId: product.ProductID     
    })
    if(order){
+    
+    await sendNotitfictation(checkoutSessionCompleted.metadata.userId,product.ProductOwner, "PurchasedProduct", 
+    `${product.ProductName} has been succesfully purchased buy ${checkoutSessionCompleted.metadata.userEmail}`,
+    `your ${product.ProductName} from ecommerce has been purchased buy ${checkoutSessionCompleted.metadata.userEmail}.Thank you for your service.It was nice working with you.`,
+    `you have bought ${product.ProductName} from !shop team-emma ecommerce.
+    Thank you for shopping with us we appreciate your service. keep shoping with !shop`
+    )
+    
      product.qauntity = product.quantity - 1
+
      await product.save()
    }
    

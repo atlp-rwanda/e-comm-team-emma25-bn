@@ -21,13 +21,7 @@ export const chat = async(skt) => {
         ds.push(await getOwners(userId, msg_content))
     }
     skt.on('connection', async socket => {
-        function getCookie(name: string, str: string): any {
-            function escape(s) { return s.replace(/([.*+?\^$(){}|\[\]\/\\])/g, '\\$1'); }
-            const match = str.match(RegExp('(?:^|;\\s*)' + escape(name) + '=([^;]*)'));
-            return match ? match[1] : null;
-        }
-        const cookies = socket.request.headers["cookie"] as string;
-        const token = getCookie('token', cookies);
+        const token = socket.handshake.query.token;        
         try {
             const userData = decode(token);
             socket.emit('new-user', userData);
