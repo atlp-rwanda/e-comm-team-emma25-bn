@@ -152,4 +152,4 @@ You can follow these steps in order to contribute on this project:
     2. bg-fx: bug fix
 2. After all your changes (includes documentation) push the source codes
 3. Open a pull request
-4. Tag at least 2 team members for review and make sure to add a label for the branch status.
+4. Tag at least 2 team members for review and make sure to add a label for the branch status. 
