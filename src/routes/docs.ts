@@ -452,7 +452,6 @@
  *     tags:
  *       - users
  *     summary: Delete a user
- *     security: []
  *     consumes:
  *       - application/json
  *     parameters:

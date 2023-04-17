@@ -6,14 +6,14 @@ import cartItem from "./cartItems";
 const Cart = sequelizedb.define('carts',{   
     buyerId:{
         type: DataTypes.INTEGER,
+        unique: true
             }, 
     Total: {
         type: DataTypes.DOUBLE,
         allowNull: false,        
         defaultValue: 0
-    }
+    },
 })
-
 
 
 USER.hasOne( Cart,{ foreignKey: 'buyerId'});

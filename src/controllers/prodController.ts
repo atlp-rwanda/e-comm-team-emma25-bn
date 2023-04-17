@@ -9,6 +9,7 @@ import Product from "../db/models/Product";
 import Wishlist from "../db/models/Wishlist";
 import { Op } from "sequelize";
 import cloudinary from "../config/cloudinary.config";
+import sendNotitfictation from "../services/notifiction.service";
 
 const uids = new shortUniqueId({ length: 12 });
 class ProductController {
@@ -17,7 +18,6 @@ class ProductController {
         const bToken = req.headers.authorization
             ? req.headers.authorization.split(" ")[1]
             : "";
-
         if (jwt || bToken != "") {
             const userData: any = decode(jwt || bToken);
             if (userData.role != "seller") {
@@ -53,7 +53,7 @@ class ProductController {
                     });
                     if (checkProduct == null) {
                         try {
-                            const prd = await Product.create({
+                            const prd: any = await Product.create({
                                 ProductID,
                                 ProductName,
                                 ProductPrice,
@@ -79,6 +79,10 @@ class ProductController {
                             const uploadedImages = await Images.findAll({
                                 where: { ProductID },
                             });
+    await sendNotitfictation( null,prd.ProductOwner,"AddProduct", 
+    `${prd.ProductName} has been succesfully added buy ${prd.ProductOwner}`,
+    `your sucessfully created ${prd.ProductName}.`,
+    null)
                             res.status(201).json({
                                 status: 201,
                                 message: "Product image and details are saved.",

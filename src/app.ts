@@ -15,8 +15,14 @@ import { chat } from "./chat/chat";
 import http from "http";
 const app: Application = createServer()
 import { Server } from "socket.io"
+import { notificationserver } from "./services/notifiction.service";
 const server = http.createServer(app);
-const io = new Server(server)
+
+export const io = new Server(server,{
+    cors: {
+      origin: "*"
+    }
+  })
 
 app.use(
     session({
@@ -34,7 +40,6 @@ app.use(roleRoutes);
 app.use(permissionRoutes);
 app.use(rolePermissionRoutes);
 
-
 const PORT = process.env.PORT || 3000;
 app.get("/", (req, res) =>
     res.send('Hello, use  "/docs" to view the swagger docs. <br> use <code>/chat</code> to open up a chat.')
@@ -44,6 +49,7 @@ app.get("/", (req, res) =>
 connectdb().then(async() => {
     server.listen(PORT, () => console.log(`Server started on port ${PORT}`));
     chat(io)
+    notificationserver(io)
     swaggerDocs(app);
     // change this to just port in case someone is listening from 127.0.0.1 instead of localhost
 });
