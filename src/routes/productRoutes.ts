@@ -33,4 +33,7 @@ prod.get(
     roleAuthorization(["user", "seller", "admin"]),
     ProductController.getOneProduct
 );
+
+prod.delete("/delete/image/:id", verifyToken, validateProductID, ProductController.delProductImage)
+
 export default prod;
