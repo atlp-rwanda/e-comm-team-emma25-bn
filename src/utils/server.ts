@@ -12,30 +12,31 @@ import bodyParser from "body-parser"
 import { config } from 'dotenv';
 import NotificationRouter from '../routes/notification';
 config()
-// const allowedOrigins: string[] = [process.env.LOCAL as string, process.env.FRONTEND_HOST as string]
+const allowedOrigins: string[] = process.env.ALLOWED_ORIGINS?.split(',') || [];
 // use the env values to add the appropriate routes 
 function createServer() {
-    const app: Application = express()
-    app.use(cors())
-    app.use(bodyParser.json({
-  verify: (req, res, buf) => {
-    req['rawBody'] = buf;
-  },
-}));
-    app.use(express.json())
-    app.use(cookieParser())
-    app.use('/products', productRoutes)
-    app.use(chatRoutes)
-    app.use(authRoutes)
-    app.use(profileRoutes)
-    app.use('/cart', Cartrouter)
-    app.use( checkoutRouter)
-    app.use("/orders",orderStatusRoutes)
-    app.use(NotificationRouter)
-    
+  const app: Application = express()
+  app.use(cors({
+    origin: allowedOrigins,
+    credentials: true,
+  }));
+  app.use(bodyParser.json({
+    verify: (req, res, buf) => {
+      req['rawBody'] = buf;
+    },
+  }));
+  app.use(express.json())
+  app.use(cookieParser())
+  app.use('/products', productRoutes)
+  app.use(chatRoutes)
+  app.use(authRoutes)
+  app.use(profileRoutes)
+  app.use('/cart', Cartrouter)
+  app.use(checkoutRouter)
+  app.use("/orders", orderStatusRoutes)
+  app.use(NotificationRouter)
 
-
-    return app
+  return app
 }
 
 export default createServer
