@@ -19,9 +19,9 @@ prod.post(
     "/wishlist/add/:id",
     verifyToken,
     validateProductID,
-    ProductController.addToWishlist
+    ProductController.addItem
 );
-
+prod.get('/wishlist/view', verifyToken, ProductController.viewWishlist)
 prod.get(
     "/",
     roleAuthorization(["user", "seller", "admin"]),
