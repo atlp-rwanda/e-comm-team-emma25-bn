@@ -11,6 +11,7 @@ const Address = sequelizedb.define('Addresses',{
       city: {
         type: DataTypes.STRING,
         allowNull: true,
+        defaultValue: 'Kigali'
       },
       stateOrProvince: {
         type: DataTypes.STRING,
