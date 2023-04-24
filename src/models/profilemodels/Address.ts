@@ -2,9 +2,6 @@ import { DataTypes } from "sequelize";
 import { sequelizedb } from "../../db/database";
 // import countrylist from "country-data-list"
 
-// console.log(countrylist.languages.all)
-// const countries = countrylist.countries
-
 
 const Address = sequelizedb.define('Addresses',{
     streetAddress: {
@@ -14,6 +11,7 @@ const Address = sequelizedb.define('Addresses',{
       city: {
         type: DataTypes.STRING,
         allowNull: true,
+        defaultValue: 'Kigali'
       },
       stateOrProvince: {
         type: DataTypes.STRING,

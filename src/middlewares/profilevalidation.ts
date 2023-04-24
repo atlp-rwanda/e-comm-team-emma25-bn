@@ -23,9 +23,12 @@ const profileValidator = async (req: Request,res: Response, next: NextFunction)=
     try{
    const schema =  Joi.object()
     .keys({
-        "profileDetails": {
+      "profileDetails": {
+          "firstName": Joi.string().min(3),
+          "lastName": Joi.string().min(3),
+          "email": Joi.string().min(3),
           "phoneNumber": Joi.string().min(6),
-          "gender": Joi.string().allow(''),
+          "gender": Joi.string(),
           "birthdate": Joi.string().custom(validateBirthday),
           "language": Joi.string().allow('')
         },
@@ -41,7 +44,7 @@ const profileValidator = async (req: Request,res: Response, next: NextFunction)=
           "city": Joi.string().allow(''),
           "stateOrProvince": Joi.string().allow(''),
           "zipOrPostalCode": Joi.number().allow(''),
-          "country": "Rwanda"
+          "country": Joi.string().allow('')
         }
       }) 
       const { error } = schema.validate(req.body);

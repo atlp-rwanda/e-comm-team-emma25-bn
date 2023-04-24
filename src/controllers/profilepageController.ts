@@ -31,12 +31,12 @@ static async getprofile(req: Request , res: Response){
         if(!user){
           throw new Error("user not found");
         }
-        let profilepage: any = await PROFILE.findOne({where:{userId: req.params.userId},
+        const profilepage: any = await PROFILE.findOne({where:{userId: req.params.userId},
          include: [{ model: BILLINGADRESS , as: 'billingAddress' },{ model: ADDRESS , as: 'Address' }]
          
     })       
     if(!profilepage){   
-     profilepage = createProfile(userId)
+    throw new Error("profile not found")
     }
     
         res.status(200).json({
@@ -45,25 +45,22 @@ static async getprofile(req: Request , res: Response){
             data: profilepage
         })
     } catch (error: any) {
-        res.status(400).json({
-            statusCode: 400,
-            message: error.message
-
-        })     
+      res.status(400).json({
+        statusCode: 400,
+        message: error.message
+      })
     }
 }
     
 static async edit(req: CustomRequest , res: Response){      
     const loggedinuser:any = req.user     
-    let profile:any = await PROFILE.findOne({where: {userId : loggedinuser.id}})
-    let profileId = profile.id    
+    const profile:any = await PROFILE.findOne({where: {userId : loggedinuser.id}})
+    const profileId = profile.id    
    
-try {      
-  if(!profile){
-      profile = createProfile(profileId)
-      profileId = profile.id    
-  }
+try {
+    
 const foundProfile: any = await PROFILE.findOne({where:{id: profileId}})
+if(foundProfile){
     const bAddress= req.body.billingAddress
     const profileDetails= req.body.profileDetails
     const Address = req.body.address
@@ -81,7 +78,7 @@ const foundProfile: any = await PROFILE.findOne({where:{id: profileId}})
         message: `updated profile for ${foundProfile.firstName}`,
         
     })
-   
+}    
 } catch (error: any) {
     res.status(400).json({
         StatusCode: 400,
@@ -89,6 +86,7 @@ const foundProfile: any = await PROFILE.findOne({where:{id: profileId}})
       })
     }
   }
+
   static async getall(req: Request, res: Response) {
     try {
       const profiles = await PROFILE.findAll({
@@ -96,7 +94,7 @@ const foundProfile: any = await PROFILE.findOne({where:{id: profileId}})
       })
       res.status(200).json({
         statusCode: 200,
-        message: 'sucessfully retreived the profiles',
+        message: 'Successfully retrieved the profiles',
         data: profiles,
       })
     } catch (error: any) {
@@ -107,4 +105,5 @@ const foundProfile: any = await PROFILE.findOne({where:{id: profileId}})
     }
   }
 }
+
 export default Profiles
