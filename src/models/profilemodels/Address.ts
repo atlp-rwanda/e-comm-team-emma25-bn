@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
 import { sequelizedb } from "../../db/database";
-import countrylist from "country-data-list"
+// import countrylist from "country-data-list"
 
 // console.log(countrylist.languages.all)
 // const countries = countrylist.countries
@@ -13,11 +13,11 @@ const Address = sequelizedb.define('Addresses',{
       },
       city: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       stateOrProvince: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       zipOrPostalCode: {
         type: DataTypes.STRING,
@@ -25,7 +25,7 @@ const Address = sequelizedb.define('Addresses',{
       },
       country:  {
         type: DataTypes.STRING,
-        allowNull: false,       
+        allowNull: true,       
     },
     profileId: {
         type: DataTypes.INTEGER,
