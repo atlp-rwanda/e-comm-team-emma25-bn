@@ -1,7 +1,7 @@
 import { sequelizedb } from "../database";
 import { DataTypes } from "sequelize";
 import USER from "../../models/User";
-import Product from "./Product"
+import WishlistItem from "./WishlistItem";
 
 const Wishlist = sequelizedb.define("wishlist", {
   id: {
@@ -11,8 +11,10 @@ const Wishlist = sequelizedb.define("wishlist", {
   }
 });
 
-Product.belongsToMany(USER, { through: Wishlist, foreignKey: 'ProductID' })
-USER.belongsToMany(Product, { through: Wishlist })
-Wishlist.sync()
+USER.hasOne(Wishlist);
+Wishlist.belongsTo(USER, { onDelete: "cascade" })
+Wishlist.hasMany(WishlistItem, { onDelete: "cascade", foreignKey: 'wishlistId' })
+WishlistItem.belongsTo(Wishlist, { onDelete: "cascade" })
 
+Wishlist.sync();
 export default Wishlist;

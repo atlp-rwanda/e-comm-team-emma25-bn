@@ -19,18 +19,17 @@ prod.post(
     "/wishlist/add/:id",
     verifyToken,
     validateProductID,
-    ProductController.addToWishlist
+    ProductController.addItem
 );
-
-prod.get(
-    "/",
-    roleAuthorization(["user", "seller", "admin"]),
-    ProductController.getAllProducts
-);
+prod.get('/wishlist/view', verifyToken, ProductController.viewWishlist)
+prod.get("/", ProductController.getAllProducts);
 
 prod.get(
     "/:productId",
     roleAuthorization(["user", "seller", "admin"]),
     ProductController.getOneProduct
 );
+
+prod.delete("/delete/image/:id", verifyToken, validateProductID, ProductController.delProductImage)
+
 export default prod;

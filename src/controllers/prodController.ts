@@ -10,8 +10,15 @@ import Wishlist from "../db/models/Wishlist";
 import { Op } from "sequelize";
 import cloudinary from "../config/cloudinary.config";
 import sendNotitfictation from "../services/notifiction.service";
+import WishlistItem from "../db/models/WishlistItem";
 
 const uids = new shortUniqueId({ length: 12 });
+type user = {
+    id: string,
+    name: string,
+    email: string,
+    phoneNumber: string
+}
 class ProductController {
     static async saveProduct(req: Request, res: Response) {
         const jwt = req.cookies.token;
@@ -79,10 +86,10 @@ class ProductController {
                             const uploadedImages = await Images.findAll({
                                 where: { ProductID },
                             });
-    await sendNotitfictation( null,prd.ProductOwner,"AddProduct", 
-    `${prd.ProductName} has been succesfully added buy ${prd.ProductOwner}`,
-    `your sucessfully created ${prd.ProductName}.`,
-    null)
+                            await sendNotitfictation(null, prd.ProductOwner, "AddProduct",
+                                `${prd.ProductName} has been succesfully added buy ${prd.ProductOwner}`,
+                                `your sucessfully created ${prd.ProductName}.`,
+                                null)
                             res.status(201).json({
                                 status: 201,
                                 message: "Product image and details are saved.",
@@ -213,52 +220,6 @@ class ProductController {
         }
     }
 
-    // Adding to cart
-    static async addToWishlist(req: Request, res: Response) {
-        const id: string = req.params.id;
-        const loggedUser = req.user;
-        const user_id = (loggedUser as any).id;
-        // Check product existence
-        const checkProduct = await Product.findOne({
-            where: { ProductID: id },
-            include: [Images],
-        });
-        if (checkProduct == null) {
-            return res.status(404).json({
-                status: 404,
-                message: "Product provided does not match with any products.",
-            });
-        } else {
-            // Check if the logged in user have already added this product to his/her wishlist
-            const checkWish = await Wishlist.findOne({
-                where: { ProductID: id, userId: user_id },
-            });
-            if (checkWish != null) {
-                return res.status(409).json({
-                    status: 409,
-                    message:
-                        "The product you chose is already on your wishlist.",
-                    product_details: checkProduct,
-                });
-            } else {
-                try {
-                    const product_name = (checkProduct as any).ProductName;
-                    const addProduct = await Wishlist.create({
-                        ProductID: id,
-                        userId: user_id,
-                    });
-                    res.status(202).json({
-                        status: 202,
-                        message: `${product_name} added to your wish list`,
-                        recently_added: checkProduct,
-                    });
-                } catch (err: any) {
-                    res.status(400).json({ status: 400, message: err.message });
-                }
-            }
-        }
-    }
-
     // UPDATE PRODUCT
     static async updateProduct(req: Request, res: Response) {
         const jwt =
@@ -322,11 +283,13 @@ class ProductController {
                     );
                     const ProductPrice: string = req.body.p_price;
                     const ProductDesc: string = req.body.desc;
+                    const quantity: number | string = req.body.quantity;
                     try {
                         const updatedProduct = await product.update({
                             ProductName,
                             ProductPrice,
                             ProductDesc,
+                            quantity
                         });
                         // console.log("Just Passed 2nd multipleUploader", updatedProduct.dataValues.ProductName);
                         if (req.files) {
@@ -336,14 +299,8 @@ class ProductController {
                             for (let i = 0; i < totalFiles; i++) {
                                 const img = imgs[i];
                                 const fileType = img.mimetype;
-                                const fullPath =
-                                    req.protocol +
-                                    "://" +
-                                    req.hostname +
-                                    "/" +
-                                    img.destination +
-                                    "/" +
-                                    img.filename;
+                                const save = await cloudinary.uploader.upload(img.path)
+                                const fullPath = save.secure_url
                                 await Images.create({
                                     ImageID: uids(),
                                     ImagePath: fullPath,
@@ -414,35 +371,47 @@ class ProductController {
         }
     }
 
+    // static async getAllProducts(req: Request, res: Response) {
+    //     const bToken = req.headers.authorization
+    //         ? req.headers.authorization.split(" ")[1]
+    //         : "";
+    //     const userData: any = decode(bToken);
+    //     const userId = userData.id;
+    //     try {
+    //         if (userData.role == "user" || userData.role == "admin") {
+    //             const allProducts: any = await Product.findAll({
+    //                 include: Images,
+    //             });
+    //             return res.status(200).json({ status: 200, data: allProducts });
+    //         } else if (userData.role == "seller") {
+    //             const sellerProducts: any = await Product.findAll({
+    //                 where: {
+    //                     ProductOwner: String(userId),
+    //                 },
+    //                 include: Images,
+    //             });
+    //             return res.status(200).json({
+    //                 status: 200,
+    //                 message: "PRODUCTS IN YOUR SELLER ACCOUNT COLLECTION",
+    //                 data: sellerProducts,
+    //             });
+    //         }
+    //     } catch (error) {
+    //         res.status(500).json({ status: 500, message: error });
+    //     }
+    // }
+
     static async getAllProducts(req: Request, res: Response) {
-        const bToken = req.headers.authorization
-            ? req.headers.authorization.split(" ")[1]
-            : "";
-        const userData: any = decode(bToken);
-        const userId = userData.id;
         try {
-            if (userData.role == "user" || userData.role == "admin") {
-                const allProducts: any = await Product.findAll({
-                    include: Images,
-                });
-                return res.status(200).json({ status: 200, data: allProducts });
-            } else if (userData.role == "seller") {
-                const sellerProducts: any = await Product.findAll({
-                    where: {
-                        ProductOwner: String(userId),
-                    },
-                    include: Images,
-                });
-                return res.status(200).json({
-                    status: 200,
-                    message: "PRODUCTS IN YOUR SELLER ACCOUNT COLLECTION",
-                    data: sellerProducts,
-                });
-            }
+            const allProducts: any = await Product.findAll({
+                include: Images,
+            });
+            return res.status(200).json({ status: 200, data: allProducts });
         } catch (error) {
             res.status(500).json({ status: 500, message: error });
         }
     }
+
 
     static async getOneProduct(req: Request, res: Response) {
         const ProductID = req.params.productId;
@@ -481,6 +450,96 @@ class ProductController {
                 Message: `product ${ProductID} not found`,
             });
         }
+    }
+
+    static async delProductImage(req: Request, res: Response) {
+        const user: user = req.user as user;
+        const image = req.params.id;
+        const imageCheck = await Images.findOne({ where: { ImageID: image } })
+        if (imageCheck) {
+            const check_product = await Product.findOne({ where: { ProductID: imageCheck.dataValues.ProductID } })
+            if (check_product) {
+                if (check_product.dataValues.ProductOwner == user.id) {
+                    await Images.destroy({ where: { ImageID: image } });
+                    return res.status(200).json({
+                        status: 200,
+                        message: "Image deleted successfully",
+                    });
+                } else {
+                    return res.status(403).json({
+                        status: 403,
+                        message: "You are not allowed to delete this image",
+                    });
+                }
+            } else {
+                return res.status(404).json({
+                    status: 404,
+                    message: "Image ID given does not match with any product.",
+                })
+            }
+        } else {
+            return res.status(404).json({
+                status: 404,
+                message: "Image ID given does not match with any image.",
+            })
+        }
+    }
+
+    static async viewWishlist(req: Request, res: Response) {
+        const user: user = req.user as user;
+        const data = await Wishlist.findAll({ where: { userId: user.id }, include: {model: WishlistItem, include: [{model: Product}]} })
+        res.status(200).json({status: 200, message: "Your wishlist products", data})
+    }
+
+    static async addItem(req: Request, res: Response) {
+        const id: string = req.params.id;
+        const loggedUser = req.user as any;
+        const user_id = loggedUser.id;
+        let foundWishlist: any = await Wishlist.findOne({ where: { userId: user_id } })
+        if (!foundWishlist) {
+            foundWishlist = await Wishlist.create({ userId: user_id })
+        }
+        try {
+            if (loggedUser.role == "buyer" || loggedUser.role == "user") {
+                const checkProduct = await Product.findOne({
+                    where: { ProductID: id },
+                    include: [Images],
+                });
+                if (checkProduct == null || !checkProduct) {
+                    return res.status(404).json({
+                        status: 404,
+                        message: "Product ID provided does not match with any products.",
+                    });
+                } else {
+                    const check_existence = await WishlistItem.findOne({ where: { wishlistId: foundWishlist.id, ProductID: id } });
+                    if (check_existence) {
+                        return res.status(409).json({ status: 409, message: "This product already exists on your wishlist!" })
+                    } else {
+                        const addNow = await WishlistItem.create({
+                            wishlistId: foundWishlist.id,
+                            ProductID: id,
+                        });
+                        return res.status(201).json({
+                            status: 201,
+                            message: "Product added to your wishlist successfully",
+                            wishList: addNow
+                        });
+                    }
+                }
+            } else {
+                res.status(401).json({
+                    statusCode: 401,
+                    message: "A buyer is only who allowed to add a product to wishlist"
+                })
+
+            }
+        } catch (error) {
+            res.status(500).json({
+                status: 500,
+                message: error
+            })
+        }
+
     }
 }
 

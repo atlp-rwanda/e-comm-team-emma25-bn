@@ -15,11 +15,30 @@ config()
 const allowedOrigins: string[] = process.env.ALLOWED_ORIGINS?.split(',') || [];
 // use the env values to add the appropriate routes 
 function createServer() {
-    const app: Application = express()
+
+  const app: Application = express()
+
   app.use(cors({
     origin: allowedOrigins,
     credentials: true,
   }));
+
+  app.use(bodyParser.json({
+    verify: (req, res, buf) => {
+      req['rawBody'] = buf;
+    },
+  }));
+  app.use(express.json())
+  app.use(cookieParser())
+  app.use('/products', productRoutes)
+  app.use(chatRoutes)
+  app.use(authRoutes)
+  app.use(profileRoutes)
+  app.use('/cart', Cartrouter)
+  app.use(checkoutRouter)
+  app.use("/orders", orderStatusRoutes)
+  app.use(NotificationRouter)
+
     app.use(bodyParser.json({
   verify: (req, res, buf) => {
     req['rawBody'] = buf;
@@ -37,8 +56,7 @@ function createServer() {
     app.use(NotificationRouter)
     
 
-
-    return app
+  return app
 }
 
 export default createServer

@@ -3,23 +3,23 @@ import { DataTypes } from "sequelize"
 import USER from "../../models/User";
 import cartItem from "./cartItems";
 
-const Cart = sequelizedb.define('carts',{   
-    buyerId:{
+const Cart = sequelizedb.define('carts', {
+    buyerId: {
         type: DataTypes.INTEGER,
         unique: true
-            }, 
+    },
     Total: {
         type: DataTypes.DOUBLE,
-        allowNull: false,        
+        allowNull: false,
         defaultValue: 0
     },
 })
 
 
-USER.hasOne( Cart,{ foreignKey: 'buyerId'});
-Cart.belongsTo(USER, {onDelete: "cascade"})
-Cart.hasMany(cartItem, {onDelete: "cascade", foreignKey:'cartId'})
-cartItem.belongsTo(Cart, {onDelete: "cascade"})
+USER.hasOne(Cart, { foreignKey: 'buyerId' });
+Cart.belongsTo(USER, { onDelete: "cascade" })
+Cart.hasMany(cartItem, { onDelete: "cascade", foreignKey: 'cartId' })
+cartItem.belongsTo(Cart, { onDelete: "cascade" })
 
 Cart.sync()
 
