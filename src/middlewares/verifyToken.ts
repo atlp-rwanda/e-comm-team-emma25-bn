@@ -24,9 +24,14 @@ const verifyToken: RequestHandler<CustomRequest> = async (
 ) => {
   try {
     const token = req.headers["authorization"] as string;
-    if (token) {
-      const auth = token.split(" ")[1];
-      // const token=authHeader && authHeader.split('')[1]
+    const tokenCookie = req.cookies.token
+    if (token || tokenCookie) {
+      let auth: string;
+      if (tokenCookie) {
+        auth = tokenCookie;
+      } else {
+        auth = token.split(" ")[1];
+      }
       if (!auth) {
         return res.status(403).send("A token is required for authentication");
       }

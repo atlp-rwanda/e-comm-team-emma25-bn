@@ -15,6 +15,13 @@ prod.patch(
     ProductController.updateProductAvailability
 );
 
+prod.delete(
+    "/delete/:id",
+    verifyToken,
+    validateProductID,
+    ProductController.deleteOneProduct
+);
+
 prod.post(
     "/wishlist/add/:id",
     verifyToken,

@@ -475,8 +475,8 @@ class ProductController {
 
     static async viewWishlist(req: Request, res: Response) {
         const user: user = req.user as user;
-        const data = await Wishlist.findAll({ where: { userId: user.id }, include: {model: WishlistItem, include: [{model: Product}]} })
-        res.status(200).json({status: 200, message: "Your wishlist products", data})
+        const data = await Wishlist.findAll({ where: { userId: user.id }, include: { model: WishlistItem, include: [{ model: Product }] } })
+        res.status(200).json({ status: 200, message: "Your wishlist products", data })
     }
 
     static async addItem(req: Request, res: Response) {
@@ -528,6 +528,45 @@ class ProductController {
             })
         }
 
+    }
+    static async deleteOneProduct(req: Request, res: Response) {
+        const ProductID = req.params.id;
+        const user = req.user as user;
+        const checkProduct: any = await Product.findOne({
+            where: { ProductID },
+        });
+        try {
+            if (checkProduct && user) {
+                if (checkProduct.ProductOwner == user.id) {
+                    await Product.destroy({ where: { ProductID } });
+                    await sendNotitfictation(null, user.name, "Product Deletion",
+                        `${checkProduct.ProductName} has been succesfully deleted`,
+                        `You have sucessfully deteted ${checkProduct.ProductName}.`,
+                        null)
+                    return res.status(201).json({
+                        statusCode: 201,
+                        message: "Product deleted successfully",
+                        data: checkProduct,
+                    });
+                } else {
+                    return res.status(403).json({
+                        statusCode: 403,
+                        message: "You are not authorised to delete this product",
+                    });
+                }
+            } else {
+                return res.status(404).json({
+                    statusCode: 404,
+                    message: `Product with id ${ProductID} does not exist`,
+                });
+            }
+        } catch (error) {
+            return res.json({
+                statusCode: 201,
+                message: "Product deleted successfully",
+                data: checkProduct,
+            });
+        }
     }
 }
 
