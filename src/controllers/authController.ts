@@ -230,6 +230,7 @@ class auth {
           "password",
         ],
       });
+
       if (!findUser) {
         res.status(404).json({ message: "User not found" });
       } else {
@@ -238,34 +239,43 @@ class auth {
           password,
           dbPassword
         );
-        // GET ROLE FROM FOREIGN KEY
-        const logginUser: any = findUser;
-        const role = await logginUser.getRole();
+
         if (decreptedPassword) {
-          const token = encode({
-            id: findUser.dataValues.id,
-            email: findUser.dataValues.email,
-            name: `${findUser.dataValues.firstName} ${findUser.dataValues.lastName}`,
-            phone: findUser.dataValues.phone_number,
-            role: role.name,
+          const findProfile = await PROFILE.findOne({
+            where: { email: email },
+            attributes: ['userId']
           });
-          // res.set({
-          //   authorization: `Bearer ${token}`
-          // })
-          res.setHeader("Authorization", `Bearer ${token}`)
-          res.cookie("token", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "none",
-          });
-          res.status(200).json({
-            stastus: 200,
-            message: "Login succefull ",
-            role: role.name,
-            token: token,
-          });
+
+          if (!findProfile) {
+            res.status(404).json({ message: "Profile not found" });
+          } else {
+            const logginUser: any = findUser;
+            const role = await logginUser.getRole();
+            const token = encode({
+              id: findUser.dataValues.id,
+              email: findUser.dataValues.email,
+              name: `${findUser.dataValues.firstName} ${findUser.dataValues.lastName}`,
+              phone: findUser.dataValues.phone_number,
+              role: role.name,
+              userId: findProfile.dataValues.userId,
+            });
+
+            res.setHeader("Authorization", `Bearer ${token}`);
+            res.cookie("token", token, {
+              httpOnly: true,
+              secure: true,
+              sameSite: "none",
+            });
+
+            res.status(200).json({
+              stastus: 200,
+              message: "Login successful",
+              role: role.name,
+              token: token,
+              userId: findProfile.dataValues.userId,
+            });
+          }
         } else {
-          
           res.status(400).json({
             stastus: 400,
             message: "Wrong password",
@@ -279,6 +289,8 @@ class auth {
       });
     }
   }
+
+
 
   //UPDATE PASSWORD
 
