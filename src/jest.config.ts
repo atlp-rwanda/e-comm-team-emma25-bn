@@ -1,6 +1,7 @@
 export default {
   preset: 'ts-jest',
   testEnvironment: 'node',
+  testRunner: "jest-circus/runner",
   roots: ['<rootDir>'],
   transform: {
     '^.+\\.tsx?$': 'ts-jest',

@@ -8,6 +8,7 @@ describe("Chat Testing", () => {
   beforeAll((done) => {
     const httpServer = createServer();
     io = new Server(httpServer);
+    jest.setTimeout(120000);
     httpServer.listen(() => {
       const port = (httpServer as any).address().port;
       clientSocket = Client(`http://localhost:${port}`);

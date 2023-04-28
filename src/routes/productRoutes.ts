@@ -28,10 +28,10 @@ prod.post(
     validateProductID,
     ProductController.addItem
 );
+prod.delete("/wishlist/remove/:id",verifyToken, validateProductID , ProductController.removeItem )
 prod.get('/wishlist/view', verifyToken, ProductController.viewWishlist)
 prod.get(
-    "/",
-    roleAuthorization(["user", "seller", "admin"]),
+    "/",    
     ProductController.getAllProducts
 );
 

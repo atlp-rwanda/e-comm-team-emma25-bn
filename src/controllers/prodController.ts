@@ -341,11 +341,12 @@ class ProductController {
         const query = req.query.q;
         try {
             const products = await Product.findAll({
+                include: Images,
                 where: {
                     [Op.or]: [
                         {
                             ProductName: {
-                                [Op.iLike]: `%${query}%`,
+                                [Op.iLike]: `%${query}%`, 
                             },
                         },
                         {
@@ -353,7 +354,7 @@ class ProductController {
                                 [Op.iLike]: `%${query}%`,
                             },
                         },
-                    ],
+                    ]
                 },
             });
             res.status(200).json({
@@ -370,33 +371,15 @@ class ProductController {
             });
         }
     }
-
+// get all products 
     static async getAllProducts(req: Request, res: Response) {
-        const bToken = req.headers.authorization
-            ? req.headers.authorization.split(" ")[1]
-            : "";
-        const userData: any = decode(bToken);
-        const userId = userData.id;
-        try {
-            if (userData.role == "user" || userData.role == "admin") {
+        try {            
                 const allProducts: any = await Product.findAll({
                     include: Images,
                 });
                 return res.status(200).json({ status: 200, data: allProducts });
-            } else if (userData.role == "seller") {
-                const sellerProducts: any = await Product.findAll({
-                    where: {
-                        ProductOwner: String(userId),
-                    },
-                    include: Images,
-                });
-                return res.status(200).json({
-                    status: 200,
-                    message: "PRODUCTS IN YOUR SELLER ACCOUNT COLLECTION",
-                    data: sellerProducts,
-                });
             }
-        } catch (error) {
+               catch (error) {
             res.status(500).json({ status: 500, message: error });
         }
     }
@@ -475,7 +458,7 @@ class ProductController {
 
     static async viewWishlist(req: Request, res: Response) {
         const user: user = req.user as user;
-        const data = await Wishlist.findAll({ where: { userId: user.id }, include: { model: WishlistItem, include: [{ model: Product }] } })
+        const data = await Wishlist.findAll({ where: { userId: user.id }, include: { model: WishlistItem, include: [{ model: Product ,include: [{model : Images}] }] } })
         res.status(200).json({ status: 200, message: "Your wishlist products", data })
     }
 
@@ -522,6 +505,41 @@ class ProductController {
 
             }
         } catch (error) {
+            res.status(500).json({
+                status: 500,
+                message: error
+            })
+        }
+
+    }
+    static async removeItem(req: Request, res: Response) {
+        const id: string = req.params.id;
+        const loggedUser = req.user as any;
+        const user_id = loggedUser.id;
+        const foundWishlist: any = await Wishlist.findOne({ where: { userId: user_id } })
+        if (!foundWishlist) {
+            throw new Error("unauthorized user");
+        }
+        try {
+            if (loggedUser.role == "buyer" || loggedUser.role == "user") {          
+         
+                    const check_existence = await WishlistItem.findOne({ where: { wishlistId: foundWishlist.id, ProductID: id } });
+                    if (check_existence) {
+                         await WishlistItem.destroy({where: {                         
+                            wishlistId: foundWishlist.id, 
+                            ProductID: id
+                        }
+                        });
+                        return res.status(201).json({
+                            status: 201,
+                            message: `product has been removed`,
+                        });
+                    } else {
+                        return res.status(409).json({ status: 409, message: "no wish list product with that id" })
+                    }
+                }
+            } 
+         catch (error) {
             res.status(500).json({
                 status: 500,
                 message: error

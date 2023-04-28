@@ -31,6 +31,6 @@ const Product = sequelizedb.define("Products", {
     },
 });
 
-Product.sync({ alter: true });
+Product.sync();
 
 export default Product;

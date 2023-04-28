@@ -225,8 +225,7 @@
  *     summary: Retrieve all products for users || seller collection
  *     tags:
  *       - Products
- *     security:
- *       - authsecurity: []
+ *     security: []
  *     produces:
  *       - application/json
  *     responses:

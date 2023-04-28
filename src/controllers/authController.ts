@@ -218,7 +218,7 @@ class auth {
   static async Login(req: Request, res: Response) {
     try {
       const { email, password } = req.body;
-      const findUser = await USER.findOne({
+      const findUser: any = await USER.findOne({
         where: { email: email },
         attributes: [
           "id",
@@ -262,6 +262,7 @@ class auth {
             stastus: 200,
             message: "Login succefull ",
             role: role.name,
+            userid: findUser.id,
             token: token,
           });
         } else {

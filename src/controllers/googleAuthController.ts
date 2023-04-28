@@ -2,9 +2,8 @@ import User from "../models/User";
 import bcrypyt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { randomUUID } from "crypto";
-import { any } from "joi";
 
-class GoogleController {
+class GoogleController { 
   static async googleAuth(req: any, res: any) {
     try {
       await User.findOne({

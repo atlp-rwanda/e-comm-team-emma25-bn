@@ -68,7 +68,7 @@ export const checkoutController = {
         },
 
         mode: 'payment',
-        success_url: `${process.env.HOST}/product/success/${productid}`,
+        success_url: `${process.env.HOST}/success`,
         cancel_url: `${process.env.HOST}/cancel`,
       });
           // Create an order in your database        
