@@ -13,7 +13,7 @@ describe("Adding a product to the wishlist", () => {
         const res = await supertest(app)
             .post('/login')
             .send({
-                email: 'demo1@gmail.com',
+                email: 'bicis68140@loongwin.com',
                 password: 'string',
             });
         Token = res.body.token;
@@ -46,4 +46,14 @@ describe("Adding a product to the wishlist", () => {
             })
         })
     })
+    describe("adding product to wishlist with all the valid authentication", () => {
+            test('It should return 200', async () => {
+     (await supertest(app).post('/products/wishlist/add/Kn5w1rfBk9Ww').set("Authorization", auth).expect(201))
+        }) })
+    describe("removing a product from the wishlist with all the valid authentication", () => {        
+            test('It should return 200', async () => {
+     (await supertest(app).delete('/products/wishlist/remove/Kn5w1rfBk9Ww').set("Authorization", auth).expect(201))        
+        }) })
+            
+  
 });

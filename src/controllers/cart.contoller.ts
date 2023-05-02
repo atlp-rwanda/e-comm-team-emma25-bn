@@ -29,12 +29,12 @@ class CART {
     static async additem(req: Request, res: Response) {
         const item = req.params.productID
         const user: any = req.user
-        let foundcart: any = await Cart.findOne({ where: { buyerId: user.id }, include: [{ model: cartItem }] })
-        if (!foundcart) {
-            foundcart = await createCart(user.id, 0)
-        }
+        let foundcart: any = await Cart.findOne({ where: { buyerId: user.id }, include: [{ model: cartItem }] })    
         try {
             if (user.role == "buyer" || user.role == "user") {
+                if (!foundcart) {
+                    foundcart = await createCart(user.id, 0)
+                }
                 const product: any = await Product.findOne({ where: { ProductID: item }, include: [{ model: ProductImages }] })
                 if (product) {
                     const productcart = {
@@ -66,7 +66,7 @@ class CART {
 
                         res.status(200).json({
                             statusCode: 200,
-                            message: "cart retrieved successfully",
+                            message: `${productcart.ProductName} has been added to cart`,
                             data: newcart,
                         })
                     } else {

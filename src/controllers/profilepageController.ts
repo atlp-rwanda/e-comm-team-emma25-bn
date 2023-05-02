@@ -3,18 +3,40 @@ import ADDRESS from '../models/profilemodels/Address'
 import BILLINGADRESS from '../models/profilemodels/BillingAdress'
 import {Request, Response} from 'express'
 import {CustomRequest} from '../middlewares/verifyToken'
+import USER from '../models/User'
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
+async function createProfile(userid: string){
+  try {
+    const user: any |undefined= await USER.findByPk(userid)
+    if(user){
+      const profiledata = {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        userId: user.id,
+      };
+      const profile = await PROFILE.create({ ...profiledata});
+      return profile      
+    }
+  } catch (error: any) {
+  throw new Error(error.message);
+  }
+}
 
 class Profiles{
 static async getprofile(req: Request , res: Response){
+  const userId = req.params.userId 
        try {
-        const profilepage: any = await PROFILE.findOne({where:{userId: req.params.userId},
+        const user: any |undefined= await USER.findByPk(userId)
+        if(!user){
+          throw new Error("user not found");
+        }
+        let profilepage: any = await PROFILE.findOne({where:{userId: req.params.userId},
          include: [{ model: BILLINGADRESS , as: 'billingAddress' },{ model: ADDRESS , as: 'Address' }]
          
     })       
     if(!profilepage){   
-    throw new Error("profile not found")
+     profilepage = createProfile(userId)
     }
     
         res.status(200).json({
@@ -33,13 +55,15 @@ static async getprofile(req: Request , res: Response){
     
 static async edit(req: CustomRequest , res: Response){      
     const loggedinuser:any = req.user     
-    const profile:any = await PROFILE.findOne({where: {userId : loggedinuser.id}})
-    const profileId = profile.id    
+    let profile:any = await PROFILE.findOne({where: {userId : loggedinuser.id}})
+    let profileId = profile.id    
    
-try {
-    
+try {      
+  if(!profile){
+      profile = createProfile(profileId)
+      profileId = profile.id    
+  }
 const foundProfile: any = await PROFILE.findOne({where:{id: profileId}})
-if(foundProfile){
     const bAddress= req.body.billingAddress
     const profileDetails= req.body.profileDetails
     const Address = req.body.address
@@ -57,7 +81,7 @@ if(foundProfile){
         message: `updated profile for ${foundProfile.firstName}`,
         
     })
-}    
+   
 } catch (error: any) {
     res.status(400).json({
         StatusCode: 400,

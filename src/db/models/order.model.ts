@@ -6,7 +6,7 @@ import User from "../../models/User";
 const  Order =  sequelizedb.define( "orders",
     {
       Orderid: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
       },
@@ -19,7 +19,7 @@ const  Order =  sequelizedb.define( "orders",
         allowNull: false,
       },
       userId: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
       paymentid:{

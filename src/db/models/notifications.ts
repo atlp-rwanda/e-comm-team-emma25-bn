@@ -4,20 +4,20 @@ import { sequelizedb } from "../database";
 const  Notification =sequelizedb.define( "notifications",
   {
     id: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
     message: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING,
       allowNull: false,
     },
     subject: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING,
       allowNull: false,
     },
     userId: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
     status: {
@@ -28,6 +28,6 @@ const  Notification =sequelizedb.define( "notifications",
   }
 );
 
-Notification.sync({alter: true})
+Notification.sync()
 
 export { Notification};

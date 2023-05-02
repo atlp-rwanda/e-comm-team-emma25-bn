@@ -86,10 +86,17 @@ describe('reset password', () => {
       expect(response.status).toBe(401)
     })
     test('incase of a unmatching passwords', async () => {
-      const user: any = await USER.findOne({
-        where: { email: 'josephrukundo2002@gmail.com' },
-      })
-      const token: any = await Tokens.findOne({ where: { userId: `${user.id}` } })
+      let  user : any | undefined = undefined
+      let token: any | undefined = undefined
+      try {
+         user = await USER.findOne({
+          where: { email: 'josephrukundo2002@gmail.com' },
+        })
+       token = await Tokens.findOne({ where: { userId: `${user.id}` } })
+
+      } catch (error) {
+        console.log(error);
+      }
       const response = await supertest(app)
         .patch(`/changepassword/josephrukundo2002@gmail.com/${token.token}`)
         .send({ newpassword: 'newpas', confirmpass: 'newpaa' })
