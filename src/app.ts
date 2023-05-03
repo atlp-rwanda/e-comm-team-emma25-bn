@@ -40,7 +40,7 @@ app.use(roleRoutes);
 app.use(permissionRoutes);
 app.use(rolePermissionRoutes);
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 7000;
 app.get("/", (req, res) =>
     res.send('Hello, use  "/docs" to view the swagger docs. <br> use <code>/chat</code> to open up a chat.')
 );

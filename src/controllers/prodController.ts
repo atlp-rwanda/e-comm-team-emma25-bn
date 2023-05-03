@@ -384,6 +384,7 @@ class ProductController {
         }
     }
 
+
     static async getOneProduct(req: Request, res: Response) {
         const ProductID = req.params.productId;
         const bToken = req.headers.authorization
