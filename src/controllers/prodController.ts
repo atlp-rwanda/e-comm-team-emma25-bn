@@ -557,7 +557,7 @@ class ProductController {
             if (checkProduct && user) {
                 if (checkProduct.ProductOwner == user.id) {
                     await Product.destroy({ where: { ProductID } });
-                    await sendNotitfictation(null, user.name, "Product Deletion",
+                    await sendNotitfictation(null, checkProduct.ProductOwner, "Product Deletion",
                         `${checkProduct.ProductName} has been succesfully deleted`,
                         `You have sucessfully deteted ${checkProduct.ProductName}.`,
                         null)
