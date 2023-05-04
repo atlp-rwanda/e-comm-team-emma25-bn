@@ -20,7 +20,7 @@ export function notificationserver(server){
             console.log("someone has disconnected");
             
         } )
-        clientsocket= socket
+        clientsocket = socket
     })
 
    
@@ -34,7 +34,7 @@ async function sendNotitfictation(buyerid: number| null, sellerid: string,subjec
         const buyer :any =  await USER.findOne({where:{id:buyerid}})             
         const admins: any = await USER.findAll({where : {roleId: 1}})
 
-                
+                console.log(admins)
          admins.forEach(async (element: any) => {
             const note =
         {
@@ -46,7 +46,9 @@ async function sendNotitfictation(buyerid: number| null, sellerid: string,subjec
         const notification = await Notification.create(note)    
 
             await sendEmail(element.email, subject,Adminmessage) 
+            if(clientsocket){
             clientsocket.in(`${element.id}`).emit("notification", notification)  
+                    }
             
          });   
                 
