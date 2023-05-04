@@ -8,7 +8,7 @@ const orderStatusRoutes = express.Router()
 
 
 orderStatusRoutes.patch("/change/:orderid", roleAuthorization(["admin"]) ,ORDER.changeStatus)
-orderStatusRoutes.get("/getall", roleAuthorization(["Admin"]), ORDER.getallorders)
+orderStatusRoutes.get("/getall", roleAuthorization(["admin"]), ORDER.getallorders)
 orderStatusRoutes.get("/userorders" ,verifyToken, roleAuthorization(["seller" , "user"]), ORDER.getpersonalorders)
 
 export default orderStatusRoutes
